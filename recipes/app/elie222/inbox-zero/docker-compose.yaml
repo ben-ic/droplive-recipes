@@ -58,10 +58,15 @@ services:
       MICROSOFT_CLIENT_ID: droplive-demo
       MICROSOFT_CLIENT_SECRET: droplive-demo-secret
 
-      # The application treats an LLM provider as required and refuses to start with
-      # an empty key. The emulator ignores the key; it exists so boot succeeds.
-      DEFAULT_LLM_PROVIDER: openai-compatible
-      DEFAULT_LLM_MODEL: "${OPENAI_COMPATIBLE_MODEL:-droplive-emulated}"
+      # DEFAULT_LLMS is REQUIRED — `z.string().min(1)` in the application's own env
+      # schema — and it is the modern form: an ordered `provider:model` chain whose
+      # first entry is primary. Setting `DEFAULT_LLM_PROVIDER` and `DEFAULT_LLM_MODEL`
+      # also satisfies it, because `buildLegacyLlmsEnv` converts them at startup, but
+      # those two are marked deprecated in the source and are a worse thing to depend
+      # on. The model half comes from the emulator so the name the application asks
+      # for is the name the fixture serves; `:?` rather than `:-` so a missing binding
+      # fails loudly instead of quietly disagreeing.
+      DEFAULT_LLMS: "openai-compatible:${OPENAI_COMPATIBLE_MODEL:?DropLive supplies the emulated model name}"
 
       # Upstash's HTTP client demands a token. The companion is a shim over the
       # session's own Redis and does not check it.
