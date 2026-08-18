@@ -2,7 +2,7 @@
 
 This repository tells DropLive how to run open-source software.
 
-Most projects need one small file. If the upstream project needs help, you can
+Start with one small file. If the upstream project needs help, you can
 also add `docker-compose.yaml`, a `Dockerfile`, and helper scripts. You do not
 need to change the upstream repository.
 
@@ -128,6 +128,24 @@ run:
 The recipe does not contain a GitHub URL, branch, tag, commit, license result,
 artifact digest, measurement, or secret. The folder identifies the GitHub
 repository. DropLive records the requested commit separately.
+
+## Environment ownership
+
+Most environment variables stay in Docker Compose. Add an `environment` entry
+to `droplive.yaml` only when DropLive must generate a value or ask the visitor
+for it:
+
+```yaml
+environment:
+  APP_SECRET:
+    owner: droplive
+  ADMIN_EMAIL:
+    owner: user
+```
+
+Generated values can select a documented `format`, `length`, and safe
+`pattern`. See the [recipe reference](docs/recipe-format.md#environment).
+Never commit the value itself.
 
 ## Versions
 

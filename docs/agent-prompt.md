@@ -34,9 +34,13 @@ Rules:
    check.
 7. Add a recipe Dockerfile or entrypoint only when Compose cannot fix the
    problem. Pin every FROM image by sha256 digest.
-8. Put normal environment declarations in Docker Compose or the Dockerfile.
-   Never commit a secret. Use the exact DropLive annotation documented in
-   docs/recipe-format.md when DropLive must generate an owner credential.
+8. Put normal public defaults and optional variables in Docker Compose. In
+   droplive.yaml, declare only values that DropLive must generate or ask the
+   visitor to supply. Use owner: droplive or owner: user. For generated values,
+   use only the documented formats: hex, url-safe, alphanumeric, password,
+   base64, or laravel-base64. Add length or a safe RE2 pattern only when the
+   application requires it. Never commit a secret or add a # droplive:
+   entrypoint annotation.
 9. Use companions for databases and caches. Use only listed emulator
    capabilities for external services. Never add an arbitrary external host.
 10. Do not put a repository URL, branch, tag, commit, measurement, artifact

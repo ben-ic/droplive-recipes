@@ -15,3 +15,4 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - run: python3 -m pip install -r requirements-dev.txt
       - run: python3 tools/lint_recipes.py
+      - run: python3 tools/test_environment_schema.py

@@ -85,12 +85,37 @@
       "additionalProperties": false,
       "required": ["owner"],
       "properties": {
-        "owner": {"enum": ["droplive", "recipe", "user", "optional"]},
-        "generate": {"enum": ["url-safe16", "hex32", "hex64", "hex96", "laravel-base64"]},
-        "capability": {"enum": ["owner-login", "admin-login"]},
-        "username": {"type": "string", "minLength": 1},
-        "phase": {"enum": ["runtime", "post-install"], "default": "runtime"}
-      }
+        "owner": {"enum": ["droplive", "user"]},
+        "format": {"enum": ["hex", "url-safe", "alphanumeric", "password", "base64", "laravel-base64"]},
+        "length": {"type": "integer", "minimum": 8, "maximum": 256},
+        "pattern": {"type": "string", "minLength": 2, "maxLength": 256, "pattern": "^\\^.*\\$$"},
+        "login": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["username"],
+          "properties": {
+            "username": {"type": "string", "minLength": 1, "maxLength": 128}
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"owner": {"const": "user"}}, "required": ["owner"]},
+          "then": {"not": {"anyOf": [{"required": ["format"]}, {"required": ["length"]}, {"required": ["pattern"]}, {"required": ["login"]}]}}
+        },
+        {
+          "if": {"properties": {"format": {"const": "laravel-base64"}}, "required": ["format"]},
+          "then": {"not": {"anyOf": [{"required": ["length"]}, {"required": ["pattern"]}]}}
+        },
+        {
+          "if": {"properties": {"format": {"const": "hex"}}, "required": ["format"]},
+          "then": {"properties": {"length": {"multipleOf": 2}}}
+        },
+        {
+          "if": {"properties": {"format": {"const": "base64"}}, "required": ["format"]},
+          "then": {"properties": {"length": {"multipleOf": 4}}}
+        }
+      ]
     },
     "relativePath": {
       "type": "string",

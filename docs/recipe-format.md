@@ -106,57 +106,116 @@ Do not add a `data` path for temporary files. Put temporary paths in the
 
 ## `environment`
 
-Optional, but required for anything that needs a secret, a credential, or a value
-a human must supply.
+Most recipes do not need this section. Add a variable only when DropLive must
+generate its value or ask the visitor for it.
 
-DropLive reads the image for what the image can state: `EXPOSE`, `VOLUME` and
-`HEALTHCHECK` are picked up automatically. What it cannot work out is **who
-supplies each environment variable**, so that is what you declare here.
+DropLive can infer two common cases from Docker Compose:
+
+- A literal or public default is owned by the recipe.
+- A variable that Compose permits to be empty is optional.
+
+Do not repeat those variables in `droplive.yaml`.
+
+Use `owner: droplive` when DropLive must generate a fresh value:
 
 ```yaml
 environment:
   SECRET_KEY:
     owner: droplive
-    generate: hex96
-  ADMIN_PASSWORD:
-    owner: droplive
-    generate: hex96
-    capability: owner-login
-    username: admin
-  DATA_PATH:
-    owner: recipe
-  LICENSE_KEY:
+```
+
+Use `owner: user` only when a human must supply a value and no DropLive
+companion or emulator can supply it:
+
+```yaml
+environment:
+  ADMIN_EMAIL:
     owner: user
-  TZ:
-    owner: optional
 ```
 
 | Owner | Meaning |
 |---|---|
-| `droplive` | DropLive mints a fresh value for every session. Never reused, never checked in. |
-| `recipe` | This recipe sets it, typically to keep state under one path. |
-| `user` | A human must supply it, and DropLive cannot stand in. Use this sparingly: an app nobody can launch unattended is a poor demo. Say so here rather than letting a build stall waiting for input. |
-| `optional` | Leaving it unset is fine. |
+| `droplive` | DropLive generates a fresh value for the demo. The value is never committed. |
+| `user` | DropLive asks the visitor for the value before launch. Use this sparingly because the demo cannot start unattended. |
 
-`generate` is only valid with `owner: droplive`, and gives the shape of the minted
-value: `url-safe16`, `hex32`, `hex64`, `hex96`, or `laravel-base64`. A value that
-seeds an owner or admin login must be `hex64` or `hex96`.
+### Generated formats
 
-Add `capability: owner-login` (or `admin-login`) to the one value a visitor signs
-in with, and `username` when the account has a fixed name. DropLive surfaces that
-pair as the demo's sign-in card.
+`format` is optional with `owner: droplive`. It defaults to `url-safe`.
 
-`phase` defaults to `runtime`; use `post-install` for a value that is only needed
-after first start.
+| Format | Output | Default length |
+|---|---|---|
+| `hex` | Lowercase `0-9` and `a-f` | 64 |
+| `url-safe` | Letters, digits, `_`, and `-` | 32 |
+| `alphanumeric` | Letters and digits | 32 |
+| `password` | Letters, digits, and `!@#$%^&*_-` | 24 |
+| `base64` | Standard Base64 | 44 |
+| `laravel-base64` | `base64:` followed by a Base64-encoded 32-byte key | Fixed |
 
-Do not list variables the app defaults internally and never reads from the
-environment. Declare what DropLive has to supply, not the app's whole config
-surface.
+Set `length` only when the application requires another final character
+count:
 
-**Vendor credentials do not belong here.** An API key or base URL for a service
-DropLive emulates is declared under `emulators`, whose `bindings` point the app at
-its session's own emulator. `owner: user` is for the rare value nothing can stand
-in for — a paid licence key, say — not for anything a vendor emulator serves.
+```yaml
+environment:
+  SESSION_SECRET:
+    owner: droplive
+    format: hex
+    length: 96
+```
+
+`length` must be between 8 and 256. A `hex` length must be even. A `base64`
+length must be a multiple of 4. `laravel-base64` has a fixed shape and does not
+accept `length`.
+
+Use `pattern` only when the application documents an additional regular
+expression requirement:
+
+```yaml
+environment:
+  APP_PASSWORD:
+    owner: droplive
+    format: password
+    length: 24
+    pattern: '^[A-Za-z0-9!_-]+$'
+```
+
+The pattern must:
+
+- use RE2 syntax;
+- start with `^` and end with `$`;
+- contain at most 256 characters; and
+- avoid lookarounds and backreferences, which RE2 does not support.
+
+DropLive generates from `format` and `length`, then checks the complete value
+against `pattern`. If the selected format cannot satisfy the pattern, the
+recipe check fails and names the variable. A pattern is a constraint, not a
+second generator. `laravel-base64` does not accept `pattern`.
+
+For the credential shown on the demo sign-in card, add its fixed username:
+
+```yaml
+environment:
+  APP_ADMIN_PASSWORD:
+    owner: droplive
+    format: password
+    length: 24
+    login:
+      username: admin
+```
+
+Docker Compose still passes the variable to the application:
+
+```yaml
+services:
+  app:
+    environment:
+      APP_ADMIN_PASSWORD: "${APP_ADMIN_PASSWORD:?DropLive supplies this value}"
+```
+
+Never put the generated value in Docker Compose, a Dockerfile, a script, or
+`droplive.yaml`.
+
+Vendor credentials and vendor base URLs do not belong in `environment`. Use a
+reviewed emulator capability and map its outputs through `emulators.bindings`.
 
 ## `companions`
 
@@ -194,9 +253,10 @@ A capability may offer a reviewed `dataset`, and a recipe may layer its own cont
 over one with `seed`. See [seeding](seeding.md); identities and credentials always
 come from the dataset.
 
-`access: browser` means a visitor's browser reaches the emulator at its own session
-hostname, which is what an OAuth redirect needs. `access: server` is reachable only
-by the application.
+`access: server` is reachable only by the application. Use
+`access: server-and-browser` when the application and the visitor's browser must
+reach the emulator, such as during OAuth. Use `access: browser` only when the
+capability lists a browser-only surface. The capability file is authoritative.
 
 An unsupported capability fails clearly. It never sends traffic to a real
 vendor as a fallback.
@@ -253,32 +313,14 @@ Do not use an archive to construct a private database schema by hand. Do not use
 application seeds for external mailboxes, OAuth identities, tokens, or vendor
 data. Use a supported emulator capability.
 
-## Environment variables and secrets
+## Build secrets
 
-Declare normal environment variables in `docker-compose.yaml` or the
-Dockerfile. Never put a secret value in the recipe.
+The `environment` section above describes runtime values. Do not use an
+entrypoint comment or put a secret value in the recipe.
 
-Use normal Compose syntax for a required value:
-
-```yaml
-environment:
-  ADMIN_EMAIL: "${ADMIN_EMAIL:?an administrator email is required}"
-```
-
-For a credential that DropLive must generate, put this exact annotation in the
-entrypoint script that reads the variable:
-
-```sh
-# droplive: generate=hex96 ownership=app purpose=owner-bootstrap lifecycle=stable rotation=app name=APP_ADMIN_PASSWORD capability=owner-login username=admin
-: "${APP_ADMIN_PASSWORD:?DropLive must generate the owner password}"
-```
-
-Only `hex64` and `hex96` are valid generators. Keep the fields in this order.
-The annotated script must be the script used by `ENTRYPOINT` or `CMD`.
-
-Build keys and private package credentials must never be committed. Declare the
-secret name through Docker or Compose secret syntax. A contribution that needs
-a private build value requires separate review.
+Private package credentials and other build secrets are not accepted in public
+recipe tests. A project that cannot build from public inputs cannot use the open
+recipe test path.
 
 ## Releases and commits
 

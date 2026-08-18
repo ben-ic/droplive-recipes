@@ -56,13 +56,22 @@ run:
 
 ## A required environment variable is missing
 
-First decide who owns it:
+First decide who supplies it:
 
-- Put a public default in Docker Compose.
-- Use a required Compose variable for a value a person must provide.
-- Use the DropLive annotation for a generated owner credential.
+- Put a public literal or default in Docker Compose when the recipe supplies it.
+- Make it optional in Docker Compose when the application can run without it.
+- Add `owner: droplive` to `droplive.yaml` when DropLive must generate it.
+- Add `owner: user` only when a human must supply it.
 - Use a companion for a database or cache connection.
 - Use an emulator binding for a supported external service.
+
+Do not add the old `# droplive:` entrypoint annotation. The public contract is
+the `environment` section in `droplive.yaml`.
+
+For a generated value, `format` defaults to `url-safe`. Supported formats are
+`hex`, `url-safe`, `alphanumeric`, `password`, `base64`, and
+`laravel-base64`. See [the recipe reference](recipe-format.md) for length and
+pattern rules.
 
 Never add a real secret to Git.
 
