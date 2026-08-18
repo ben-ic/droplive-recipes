@@ -48,6 +48,9 @@ python3 tools/lint_recipes.py
 - [ ] `docker-compose.yaml` sets `read_only: true` on the main service.
 - [ ] The main service has a port and health check.
 - [ ] Writable paths use `tmpfs` or a volume.
+- [ ] Docker Compose supplies public defaults and marks optional values.
+- [ ] `droplive.yaml` declares only `owner: droplive` or `owner: user` values.
+- [ ] Generated values use a supported format, length, and safe pattern.
 - [ ] No password, token, private key, or API key is committed.
 - [ ] `seed.sh`, when present, is repeatable and contains only obvious sample data.
 - [ ] The validator passes.
