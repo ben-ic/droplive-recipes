@@ -88,8 +88,8 @@ under `recipes/skill/`. Each recipe has its own entrypoint, sandbox, evidence,
 and admission result. Do not put both sections in one recipe.
 
 Use the behavior test in [MCP servers and skills](mcp-and-skills.md). A process
-that answers MCP `initialize` is an MCP server. A `SKILL.md` file that an agent
-loads as instructions is a skill.
+that completes supported MCP protocol negotiation is an MCP server. A
+`SKILL.md` file that an agent loads as instructions is a skill.
 
 ## An MCP server starts but the test cannot use it
 
@@ -100,9 +100,9 @@ For Streamable HTTP, confirm that `mcp.path` is the exact endpoint and that the
 service listens on the allocated container port. The endpoint is not made
 public during the test.
 
-The server must answer `initialize`, list its advertised primitives, and run at
-least one reviewed operation. A successful health check without an MCP
-operation is not a passing MCP test.
+The server must complete protocol negotiation, list its advertised primitives,
+and run at least one reviewed operation. For Streamable HTTP, a successful HTTP
+health check without an MCP operation is not a passing MCP test.
 
 ## A skill asks for a tool or credential that the test does not provide
 

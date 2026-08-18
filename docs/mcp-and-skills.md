@@ -3,6 +3,12 @@
 MCP servers and skills are different products. DropLive must classify and test
 them in different ways.
 
+> **Status: planned DropLive test contract.** DropLive does not run MCP or skill
+> recipe tests yet. The schema and linter enforce the static boundaries that are
+> present in this repository. The build-brain behavior, sandbox execution,
+> evidence capture, and admission flow below are requirements for the future
+> implementation, not claims about the current service.
+
 ## Classification rule
 
 Use `kind: mcp` when the repository starts a process that implements the Model
@@ -18,7 +24,7 @@ Do not classify from the repository name, topic, or README claim. Use behavior:
 | Check | MCP server | Skill |
 |---|---|---|
 | Has an MCP transport | Required | No |
-| Answers MCP `initialize` | Required | No |
+| Completes MCP protocol negotiation | Required | No |
 | Has a `SKILL.md` entrypoint | Optional documentation only | Required |
 | Runs as a service | Yes | No |
 | Is loaded as agent instructions | No | Yes |
@@ -62,17 +68,18 @@ inside the sandbox.
 
 ### Check the protocol
 
-The test client performs this sequence:
+The planned test client performs this sequence:
 
-1. Send `initialize` with the protocol version supported by DropLive.
-2. Check the server name, version, and advertised capabilities.
-3. Send the initialized notification.
-4. List each advertised primitive: tools, resources, prompts, and resource
+1. Detect the protocol era. Use `server/discover` for `2026-07-28` and use the
+   `initialize` and initialized exchange for a supported legacy version.
+2. Check the negotiated protocol version, server identity, and advertised
+   capabilities.
+3. List each advertised primitive: tools, resources, prompts, and resource
    templates.
-5. Reject malformed JSON-RPC, duplicate names, invalid schemas, and responses
+4. Reject malformed JSON-RPC, duplicate names, invalid schemas, and responses
    that do not match the advertised capability.
-6. Invoke reviewed test cases with fixed fixture input.
-7. Close the client and confirm that the server exits or becomes idle cleanly.
+5. Invoke reviewed test cases with fixed fixture input.
+6. Close the client and confirm that the server exits or becomes idle cleanly.
 
 Listing is not sufficient evidence. At least one advertised operation must run.
 An operation that can change data runs only against a disposable fixture. A
@@ -86,8 +93,9 @@ Recipes use the same emulator and companion declarations as applications:
 - SMTP uses `mail.smtp.v1`.
 - Gmail and Google OAuth use the Google capabilities and reviewed mailbox
   datasets.
-- S3 uses `storage.s3.v1`. DropLive supplies a real S3-compatible service, a
-  bucket, and credentials for this test only.
+- S3 uses `storage.s3.v1`. Its dependency is a DropLive-provided S3-compatible
+  fixture service. DropLive owns the fixture topology, bucket, and per-test
+  credentials.
 - PostgreSQL, MySQL, MariaDB, MongoDB, Redis, and Upstash use companions.
 - Other vendor sign-in and API calls use reviewed emulator capabilities.
 

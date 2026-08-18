@@ -31,9 +31,11 @@ The runtime must:
 - run with a read-only root filesystem;
 - write temporary files only to declared `tmpfs` paths;
 - write persistent files only to declared volumes;
-- expose one main port for an app, API, or Streamable HTTP MCP server;
-- have a health check that proves it is ready;
 - contain no committed secret.
+
+An app, API, or Streamable HTTP MCP server must expose one main port and have an
+HTTP health check that proves it is ready. A `stdio` MCP server needs neither.
+Its MCP handshake and a successful operation prove readiness.
 
 An MCP test must also complete the protocol checks in
 [MCP servers and skills](docs/mcp-and-skills.md).
@@ -58,7 +60,8 @@ python3 tools/test_kind_schema.py
 - [ ] The recipe is as small as possible.
 - [ ] Every recipe-owned `FROM` image is pinned by digest.
 - [ ] For a runtime recipe, `docker-compose.yaml` sets `read_only: true` on the main service.
-- [ ] For a runtime recipe, the main service has its required port and health check.
+- [ ] An app, API, or Streamable HTTP MCP service has its required port and HTTP health check.
+- [ ] A `stdio` MCP service proves readiness with its MCP handshake and an operation.
 - [ ] For a runtime recipe, writable paths use `tmpfs` or a volume.
 - [ ] Docker Compose supplies public defaults and marks optional values.
 - [ ] `droplive.yaml` declares only `owner: droplive` or `owner: user` values.

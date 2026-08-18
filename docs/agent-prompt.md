@@ -38,8 +38,9 @@ Rules:
 5. For a runtime recipe, if upstream does not work, add recipe-owned
    docker-compose.yaml. Prefer Compose before a replacement Dockerfile.
 6. Name the main Compose service app when practical. Set read_only: true. Use
-   tmpfs for temporary writes and volumes for persistent data. Add a real health
-   check.
+   tmpfs for temporary writes and volumes for persistent data. Add an HTTP
+   health check for an app, API, or Streamable HTTP MCP server. A stdio MCP
+   server does not need a port or HTTP health check.
 7. Add a recipe Dockerfile or entrypoint only when Compose cannot fix the
    problem. Pin every FROM image by sha256 digest.
 8. Put normal public defaults and optional variables in Docker Compose. In
@@ -65,14 +66,17 @@ Rules:
     fixed prompt and an explicit tool allowlist. Never use a real vendor
     credential for either test.
 
-For an app, API, or MCP server, test the selected Docker or Compose path.
-Confirm:
+For an app, API, or MCP server, test the selected Docker or Compose path. Confirm:
 - it builds for linux/amd64;
 - it starts without privileged mode or host networking;
 - it starts with a read-only root filesystem;
-- its health check proves readiness;
 - every write goes to tmpfs or declared persistent data;
 - no secret is present in the committed files.
+
+For an app, API, or Streamable HTTP MCP server, confirm that its HTTP health
+check proves readiness. For a stdio MCP server, confirm the MCP handshake and at
+least one operation instead. Do not add a port or HTTP health check only to
+satisfy the recipe.
 
 For a skill, confirm:
 - `skill.entrypoint` resolves inside the pinned source tree;
