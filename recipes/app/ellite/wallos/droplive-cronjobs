@@ -1,0 +1,14 @@
+# Ten operational Wallos 5.4.2 schedules. DropLive owns immutable-release update
+# discovery, so the upstream GitHub latest-release poll is deliberately omitted.
+# The wrapper logs start/finish/exit, prevents overlap, and persists one
+# successful execution marker per schedule slot.
+0 1 * * * /usr/local/bin/droplive-cron-run updatenextpayment 300 day /usr/local/bin/php /var/www/html/endpoints/cronjobs/updatenextpayment.php >> /proc/1/fd/1 2>&1
+0 2 * * * /usr/local/bin/droplive-cron-run updateexchange 300 day /usr/local/bin/php /var/www/html/endpoints/cronjobs/updateexchange.php >> /proc/1/fd/1 2>&1
+0 8 * * * /usr/local/bin/droplive-cron-run sendcancellationnotifications 300 day /usr/local/bin/php /var/www/html/endpoints/cronjobs/sendcancellationnotifications.php >> /proc/1/fd/1 2>&1
+0 9 * * * /usr/local/bin/droplive-cron-run sendnotifications 300 day /usr/local/bin/php /var/www/html/endpoints/cronjobs/sendnotifications.php >> /proc/1/fd/1 2>&1
+*/2 * * * * /usr/local/bin/droplive-cron-run sendverificationemails 90 minute /usr/local/bin/php /var/www/html/endpoints/cronjobs/sendverificationemails.php >> /proc/1/fd/1 2>&1
+*/2 * * * * /usr/local/bin/droplive-cron-run sendresetpasswordemails 90 minute /usr/local/bin/php /var/www/html/endpoints/cronjobs/sendresetpasswordemails.php >> /proc/1/fd/1 2>&1
+30 1 * * 1 /usr/local/bin/droplive-cron-run storetotalyearlycost 300 week /usr/local/bin/php /var/www/html/endpoints/cronjobs/storetotalyearlycost.php >> /proc/1/fd/1 2>&1
+0 3 * * * /usr/local/bin/droplive-cron-run cleanupresettokens 120 day /usr/local/bin/php /var/www/html/endpoints/cronjobs/cleanupresettokens.php >> /proc/1/fd/1 2>&1
+30 3 * * 1 /usr/local/bin/droplive-cron-run generaterecommendations-weekly 900 week /usr/local/bin/php /var/www/html/endpoints/cronjobs/generaterecommendations.php weekly >> /proc/1/fd/1 2>&1
+0 4 1 * * /usr/local/bin/droplive-cron-run generaterecommendations-monthly 900 month /usr/local/bin/php /var/www/html/endpoints/cronjobs/generaterecommendations.php monthly >> /proc/1/fd/1 2>&1

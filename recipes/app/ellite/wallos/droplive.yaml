@@ -1,0 +1,11 @@
+version: 1
+kind: app
+run:
+  port: 80
+  health:
+    path: /health.php
+    contains:
+    - OK
+  data:
+  - /var/www/html/db
+  - /var/www/html/images/uploads/logos

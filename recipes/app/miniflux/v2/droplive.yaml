@@ -1,0 +1,10 @@
+version: 1
+kind: app
+run:
+  port: 8080
+  health:
+    path: /readiness
+    contains:
+    - OK
+companions:
+  database: postgres

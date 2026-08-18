@@ -1,0 +1,11 @@
+version: 1
+kind: app
+run:
+  port: 8080
+  health:
+    path: /
+    status:
+    - 200
+    - 302
+  data:
+  - /var/www/grocy-data

@@ -1,0 +1,52 @@
+schema: droplive.capabilities/v1
+
+capabilities:
+  mail.smtp.v1:
+    access:
+      - server
+    outputs:
+      transport: public_value
+      host: server_address
+      port: server_port
+      from_address: public_value
+    datasets: []
+
+  llm.openai_chat.v1:
+    access:
+      - server
+    outputs:
+      api_base_url: server_url
+      model_name: public_value
+      non_authenticating_api_key: public_value
+    datasets: []
+
+  microsoft.oidc.v1:
+    access:
+      - server-and-browser
+    outputs:
+      authorization_endpoint: browser_url
+      token_endpoint: server_url
+      userinfo_endpoint: server_url
+      jwks_endpoint: server_url
+      client_id: public_value
+      non_authenticating_client_secret: public_value
+    datasets: []
+
+  google.oauth2.v1:
+    access:
+      - server-and-browser
+    outputs:
+      unified_origin: browser_url
+      client_id: public_value
+      non_authenticating_client_secret: public_value
+      gmail_push_verification_token: generated_session_secret
+    datasets:
+      - google.productivity_mailbox.v1
+
+  google.gmail.v1:
+    access:
+      - server
+    outputs:
+      api_base_url: server_url
+    datasets:
+      - google.productivity_mailbox.v1

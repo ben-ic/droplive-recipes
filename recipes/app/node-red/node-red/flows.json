@@ -1,0 +1,92 @@
+[
+  {
+    "id": "droplive-starter-tab",
+    "type": "tab",
+    "label": "DropLive starter",
+    "disabled": false,
+    "info": "A small starter flow that provides health and hello endpoints."
+  },
+  {
+    "id": "droplive-health-in",
+    "type": "http in",
+    "z": "droplive-starter-tab",
+    "name": "Health check",
+    "url": "/healthz",
+    "method": "get",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 150,
+    "y": 80,
+    "wires": [["droplive-health-body"]]
+  },
+  {
+    "id": "droplive-health-body",
+    "type": "change",
+    "z": "droplive-starter-tab",
+    "name": "Healthy JSON",
+    "rules": [
+      {"t": "set", "p": "statusCode", "pt": "msg", "to": "200", "tot": "num"},
+      {"t": "set", "p": "payload", "pt": "msg", "to": "{\"status\":\"ok\",\"app\":\"node-red\",\"flow\":\"droplive-starter\"}", "tot": "json"}
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 370,
+    "y": 80,
+    "wires": [["droplive-health-out"]]
+  },
+  {
+    "id": "droplive-health-out",
+    "type": "http response",
+    "z": "droplive-starter-tab",
+    "name": "Health response",
+    "statusCode": "",
+    "headers": {},
+    "x": 600,
+    "y": 80,
+    "wires": []
+  },
+  {
+    "id": "droplive-hello-in",
+    "type": "http in",
+    "z": "droplive-starter-tab",
+    "name": "Hello endpoint",
+    "url": "/hello",
+    "method": "get",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 150,
+    "y": 160,
+    "wires": [["droplive-hello-body"]]
+  },
+  {
+    "id": "droplive-hello-body",
+    "type": "change",
+    "z": "droplive-starter-tab",
+    "name": "Hello JSON",
+    "rules": [
+      {"t": "set", "p": "payload", "pt": "msg", "to": "{\"message\":\"Node-RED is running\",\"source\":\"DropLive starter flow\"}", "tot": "json"}
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 370,
+    "y": 160,
+    "wires": [["droplive-hello-out"]]
+  },
+  {
+    "id": "droplive-hello-out",
+    "type": "http response",
+    "z": "droplive-starter-tab",
+    "name": "Hello response",
+    "statusCode": "",
+    "headers": {},
+    "x": 600,
+    "y": 160,
+    "wires": []
+  }
+]

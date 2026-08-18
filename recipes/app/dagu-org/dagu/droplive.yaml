@@ -1,0 +1,10 @@
+version: 1
+kind: app
+run:
+  port: 8080
+  health:
+    path: /api/v1/health
+    contains:
+    - '"status":"healthy"'
+  data:
+  - /var/lib/dagu

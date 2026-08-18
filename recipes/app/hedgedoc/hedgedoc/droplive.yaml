@@ -1,0 +1,12 @@
+version: 1
+kind: app
+run:
+  port: 3000
+  health:
+    path: /_health
+    contains:
+    - '"ready":true'
+  data:
+  - /hedgedoc/public/uploads
+companions:
+  database: postgres

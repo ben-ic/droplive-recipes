@@ -1,0 +1,94 @@
+#!/bin/sh
+set -eu
+
+if [ "$#" -lt 4 ]; then
+  echo '[wallos-cron] usage: droplive-cron-run JOB TIMEOUT SLOT COMMAND...' >&2
+  exit 64
+fi
+
+job=$1
+limit=$2
+slot=$3
+shift 3
+
+case "$job" in
+  *[!A-Za-z0-9._-]*|'')
+    echo '[wallos-cron] invalid job name' >&2
+    exit 64
+    ;;
+esac
+case "$limit" in
+  *[!0-9]*|'')
+    echo "[wallos-cron] invalid timeout for $job" >&2
+    exit 64
+    ;;
+esac
+
+state_dir=/var/www/html/db/.droplive-scheduler
+mkdir -p "$state_dir"
+chmod 0700 "$state_dir"
+
+exec 9>"$state_dir/$job.lock"
+deadline=$(($(date +%s) + limit))
+if [ "$slot" = none ]; then
+  # Required startup catch-up must run under the new release before traffic. It
+  # may wait for an old container's scheduled operation, but wait plus command
+  # share one absolute deadline.
+  while ! flock -n 9; do
+    if [ "$(date +%s)" -ge "$deadline" ]; then
+      echo "[wallos-cron] job=$job result=lock-timeout" >&2
+      exit 124
+    fi
+    sleep 1
+  done
+else
+  if ! flock -n 9; then
+    echo "[wallos-cron] job=$job result=skipped-overlap"
+    exit 0
+  fi
+fi
+
+case "$slot" in
+  none) slot_key= ;;
+  minute) slot_key=$(date -u +%Y%m%d%H%M) ;;
+  hour) slot_key=$(date -u +%Y%m%d%H) ;;
+  day) slot_key=$(date -u +%Y%m%d) ;;
+  week) slot_key=$(date -u +%Y-%W) ;;
+  month) slot_key=$(date -u +%Y%m) ;;
+  *)
+    echo "[wallos-cron] invalid schedule slot for $job" >&2
+    exit 64
+    ;;
+esac
+
+state_file=$state_dir/last-$job
+if [ -n "$slot_key" ] && [ -f "$state_file" ] &&
+   [ "$(cat "$state_file")" = "$slot_key" ]; then
+  echo "[wallos-cron] job=$job slot=$slot_key result=skipped-complete"
+  exit 0
+fi
+
+started=$(date +%s)
+remaining=$((deadline - started))
+if [ "$remaining" -le 0 ]; then
+  echo "[wallos-cron] job=$job slot=${slot_key:-none} result=deadline-exhausted" >&2
+  exit 124
+fi
+echo "[wallos-cron] job=$job slot=${slot_key:-none} event=start timeout=${remaining}s"
+set +e
+timeout "$remaining" "$@"
+status=$?
+set -e
+duration=$(($(date +%s) - started))
+
+if [ "$status" -ne 0 ]; then
+  echo "[wallos-cron] job=$job slot=${slot_key:-none} event=finish exit=$status duration=${duration}s" >&2
+  exit "$status"
+fi
+
+if [ -n "$slot_key" ]; then
+  tmp=$state_file.tmp.$$
+  printf '%s\n' "$slot_key" >"$tmp"
+  mv -f "$tmp" "$state_file"
+fi
+echo "[wallos-cron] job=$job slot=${slot_key:-none} event=finish exit=0 duration=${duration}s"

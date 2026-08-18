@@ -1,0 +1,7 @@
+version: 1
+kind: app
+run:
+  port: 7745
+  health: /api/v1/status
+  data:
+  - /data

@@ -1,0 +1,54 @@
+server:
+  port: 8080
+  proxied: true
+
+auth:
+  secret-key: "@@GLANCE_SECRET_KEY@@"
+  users:
+    admin:
+      password-hash: "@@GLANCE_ADMIN_PASSWORD_HASH@@"
+
+branding:
+  app-name: My Glance
+  logo-text: G
+
+pages:
+  - name: Home
+    hide-desktop-navigation: true
+    columns:
+      - size: small
+        widgets:
+          - type: clock
+            hour-format: 24h
+            timezones:
+              - timezone: UTC
+                label: UTC
+
+          - type: calendar
+            first-day-of-week: monday
+
+      - size: full
+        widgets:
+          - type: search
+            search-engine: duckduckgo
+            new-tab: true
+            placeholder: Search the web
+
+          - type: bookmarks
+            groups:
+              - title: Everyday
+                links:
+                  - title: Wikipedia
+                    url: https://www.wikipedia.org/
+                    description: Learn something new
+                  - title: Internet Archive
+                    url: https://archive.org/
+                    description: Books, media, and the web
+              - title: Build
+                links:
+                  - title: GitHub
+                    url: https://github.com/
+                    description: Code and projects
+                  - title: MDN Web Docs
+                    url: https://developer.mozilla.org/
+                    description: Learn how the web works

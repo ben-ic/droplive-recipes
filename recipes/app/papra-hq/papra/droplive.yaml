@@ -1,0 +1,20 @@
+version: 1
+kind: app
+run:
+  port: 1221
+  health:
+    path: /api/health
+    contains:
+    - '"status":"ok"'
+    - '"isDatabaseHealthy":true'
+    - '"isEverythingOk":true'
+  data:
+  - /app/app-data
+emulators:
+  mail:
+    capability: mail.smtp.v1
+    bindings:
+      EMAILS_DRIVER: transport
+      SMTP_HOST: host
+      SMTP_PORT: port
+      EMAILS_FROM_ADDRESS: from_address

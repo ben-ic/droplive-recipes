@@ -1,0 +1,26 @@
+Wakapi DropLive image — BusyBox 1.37.0 corresponding source
+
+This image copies the unchanged `/bin/busybox` executable from the pinned
+Docker Official Image BusyBox 1.37.0 amd64-compatible manifest
+`sha256:9db7b59979c38555a39def84a31fb98b5296952f9e3afd4f6f11f05b07adfab0`.
+BusyBox is licensed under GPL-2.0-only. The complete corresponding BusyBox
+source archive is included in this image at:
+
+    /usr/share/doc/droplive-wakapi/busybox-1.37.0.tar.bz2
+
+The archive SHA-256 is:
+
+    3311dff32e746499f4df0d5df04d7eb396382d7e108bb9250e7b519b837043a4
+
+The same source is available from the upstream release URL:
+
+    https://busybox.net/downloads/busybox-1.37.0.tar.bz2
+
+The upstream license and notices are in the archive (`LICENSE` and `COPYING`).
+The Docker Official Image packaging source used to publish the pinned image is
+available at:
+
+    https://github.com/docker-library/busybox/tree/master/1.37
+
+This offer is provided with the image for the GPL corresponding-source
+requirement and is retained with the recipe provenance.

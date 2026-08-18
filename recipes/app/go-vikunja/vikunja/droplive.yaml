@@ -1,0 +1,10 @@
+version: 1
+kind: app
+run:
+  port: 3456
+  health:
+    path: /api/v2/health
+    contains:
+    - '"status":"OK"'
+  data:
+  - /data

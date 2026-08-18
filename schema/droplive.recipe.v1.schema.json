@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://droplive.io/schemas/recipe/v1",
+  "title": "DropLive recipe v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "kind"],
+  "properties": {
+    "version": {"const": 1},
+    "kind": {"enum": ["app", "api", "mcp", "skill"]},
+    "interfaces": {
+      "type": "array",
+      "items": {"enum": ["web", "api"]},
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "build": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "docker-compose": {"$ref": "#/$defs/relativePath"},
+        "service": {"type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.-]*$"},
+        "dockerfile": {"$ref": "#/$defs/relativePath"},
+        "context": {"$ref": "#/$defs/relativePath"},
+        "image": {"type": "string", "pattern": "^[^@[:space:]]+@sha256:[0-9a-f]{64}$"}
+      },
+      "oneOf": [
+        {"required": ["docker-compose"], "not": {"anyOf": [{"required": ["dockerfile"]}, {"required": ["image"]}]}},
+        {"required": ["dockerfile"], "not": {"anyOf": [{"required": ["docker-compose"]}, {"required": ["image"]}]}},
+        {"required": ["image"], "not": {"anyOf": [{"required": ["docker-compose"]}, {"required": ["dockerfile"]}]}},
+        {"required": ["service"], "not": {"anyOf": [{"required": ["docker-compose"]}, {"required": ["dockerfile"]}, {"required": ["image"]}]}}
+      ]
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "port": {"type": "integer", "minimum": 1, "maximum": 65535},
+        "health": {
+          "oneOf": [
+            {"type": "string", "pattern": "^/"},
+            {"$ref": "#/$defs/health"}
+          ]
+        },
+        "data": {
+          "type": "array",
+          "items": {"type": "string", "pattern": "^/"},
+          "uniqueItems": true
+        },
+        "working-directory": {"type": "string", "pattern": "^/"}
+      }
+    },
+    "companions": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[a-z][a-z0-9_-]*$"},
+      "additionalProperties": {"enum": ["postgres", "mysql", "mariadb", "mongodb", "redis", "upstash"]}
+    },
+    "emulators": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[a-z][a-z0-9_-]*$"},
+      "additionalProperties": {"$ref": "#/$defs/emulator"}
+    },
+    "mcp": {"$ref": "#/$defs/mcp"},
+    "skill": {"$ref": "#/$defs/skill"},
+    "seed": {"$ref": "#/$defs/seed"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"kind": {"const": "mcp"}}, "required": ["kind"]},
+      "then": {"required": ["mcp"]}
+    },
+    {
+      "if": {"properties": {"kind": {"const": "skill"}}, "required": ["kind"]},
+      "then": {"required": ["skill"]}
+    }
+  ],
+  "$defs": {
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    },
+    "health": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path"],
+      "properties": {
+        "path": {"type": "string", "pattern": "^/"},
+        "status": {
+          "type": "array",
+          "items": {"type": "integer", "minimum": 100, "maximum": 599},
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "contains": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "minItems": 1
+        }
+      }
+    },
+    "emulator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capability", "bindings"],
+      "properties": {
+        "capability": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*\\.v[0-9]+$"},
+        "access": {"enum": ["server", "browser", "server-and-browser"]},
+        "dataset": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*\\.v[0-9]+$"},
+        "bindings": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {"pattern": "^[A-Z_][A-Z0-9_]*$"},
+          "additionalProperties": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}
+        },
+        "callbacks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path"],
+            "properties": {
+              "path": {"type": "string", "pattern": "^/(?!/)(?!.*(?:\\.\\.|%2[fF]|%5[cC]))[^?#]*$"},
+              "verification-environment": {"type": "string", "pattern": "^[A-Z_][A-Z0-9_]*$"}
+            }
+          }
+        }
+      }
+    },
+    "mcp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["transport"],
+      "properties": {
+        "transport": {"enum": ["stdio", "streamable-http"]},
+        "command": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "minItems": 1
+        },
+        "path": {"type": "string", "pattern": "^/"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"transport": {"const": "stdio"}}, "required": ["transport"]},
+          "then": {"required": ["command"]}
+        },
+        {
+          "if": {"properties": {"transport": {"const": "streamable-http"}}, "required": ["transport"]},
+          "then": {"required": ["path"]}
+        }
+      ]
+    },
+    "skill": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entrypoint"],
+      "properties": {
+        "entrypoint": {"$ref": "#/$defs/relativePath"}
+      }
+    },
+    "seed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["archive", "target"],
+      "properties": {
+        "archive": {"$ref": "#/$defs/relativePath"},
+        "target": {"type": "string", "pattern": "^/"}
+      }
+    }
+  }
+}

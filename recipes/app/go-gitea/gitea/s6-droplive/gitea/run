@@ -1,0 +1,3 @@
+#!/bin/sh
+cd /app/gitea
+exec su-exec "$USER" /usr/local/bin/gitea web

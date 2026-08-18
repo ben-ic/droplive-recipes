@@ -1,0 +1,10 @@
+version: 1
+kind: app
+run:
+  port: 6806
+  health:
+    path: /api/system/bootProgress
+    contains:
+    - '"progress":100'
+  data:
+  - /data/siyuan

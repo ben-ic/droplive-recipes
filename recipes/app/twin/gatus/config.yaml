@@ -1,0 +1,21 @@
+storage:
+  type: sqlite
+  path: /data/gatus.db
+  maximum-number-of-results: 100
+  maximum-number-of-events: 50
+
+ui:
+  title: DropLive Status | Gatus
+  header: DropLive Status
+  description: A lightweight status dashboard with persistent check history.
+  dashboard-heading: Status checks
+  dashboard-subheading: Edit the monitored URL in Author mode whenever you need.
+
+endpoints:
+  - name: First monitored site
+    group: Quick start
+    url: ${GATUS_MONITOR_URL}
+    interval: ${GATUS_MONITOR_INTERVAL}
+    conditions:
+      - "[STATUS] == 200"
+      - "[RESPONSE_TIME] < 5s"

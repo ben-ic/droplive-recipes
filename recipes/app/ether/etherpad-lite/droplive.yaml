@@ -1,0 +1,12 @@
+version: 1
+kind: app
+run:
+  port: 9001
+  health:
+    path: /health
+    contains:
+    - '"status":"pass"'
+  data:
+  - /opt/etherpad-lite/var
+companions:
+  database: postgres

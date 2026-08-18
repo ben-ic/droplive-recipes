@@ -1,0 +1,13 @@
+name: droplive-welcome
+description: A safe starter workflow that proves Dagu can execute and persist a run.
+type: chain
+artifacts:
+  enabled: true
+steps:
+  - id: write_marker
+    name: Write a persistent marker
+    run: |
+      set -eu
+      marker="${DAG_RUN_ID:-manual}-$(date -u +%Y%m%dT%H%M%SZ)"
+      printf '%s\n' "$marker" > "${DAG_RUN_ARTIFACTS_DIR}/droplive-marker.txt"
+      printf 'Dagu workflow completed: %s\n' "$marker"
