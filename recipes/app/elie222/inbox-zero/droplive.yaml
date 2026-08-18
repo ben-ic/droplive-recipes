@@ -1,0 +1,45 @@
+version: 1
+kind: app
+run:
+  port: 3000
+  health:
+    path: /api/health
+    contains:
+    - '"status":"ok"'
+companions:
+  database: postgres
+  cache: upstash
+environment:
+  AUTH_SECRET:
+    owner: droplive
+    format: hex
+  EMAIL_ENCRYPT_SECRET:
+    owner: droplive
+    format: hex
+  EMAIL_ENCRYPT_SALT:
+    owner: droplive
+    format: hex
+    length: 32
+  INTERNAL_API_KEY:
+    owner: droplive
+  API_KEY_SALT:
+    owner: droplive
+emulators:
+  google:
+    capability: google.oauth2.v1
+    access: server-and-browser
+    dataset: google.productivity_mailbox.v1
+    bindings:
+      GOOGLE_BASE_URL: unified_origin
+      GOOGLE_CLIENT_ID: client_id
+      GOOGLE_CLIENT_SECRET: non_authenticating_client_secret
+      GOOGLE_PUBSUB_VERIFICATION_TOKEN: gmail_push_verification_token
+    callbacks:
+    - path: /api/google/webhook
+      verification-environment: GOOGLE_PUBSUB_VERIFICATION_TOKEN
+  llm:
+    capability: llm.openai_chat.v1
+    bindings:
+      OPENAI_COMPATIBLE_BASE_URL: api_base_url
+      OPENAI_COMPATIBLE_MODEL: model_name
+      LLM_API_KEY: non_authenticating_api_key
