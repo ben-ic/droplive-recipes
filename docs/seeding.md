@@ -89,21 +89,60 @@ Application seeding and emulator seeding are different.
 - `seed.sh` creates data owned by the application.
 - `seed.archive` plants files in the application filesystem.
 - `emulators.<name>.dataset` selects a reviewed external-service dataset.
+- `emulators.<name>.seed` layers your own content over that dataset.
 
-An application recipe cannot provide external-service identities, tokens,
-mailboxes, OAuth users, or vendor fixtures. Those values must stay together in a
-reviewed emulator dataset so an identity always matches its token.
+A dataset is a matched set: users, tokens, OAuth clients and content that were
+reviewed together, so an identity always matches its token. Selecting one is the
+default and is usually enough.
 
-Example selection:
+### Bringing your own content
+
+An inbox application wants its own mailbox. A CI application wants its own
+repositories. Declare what the demo needs and it is layered over the dataset for
+your session:
 
 ```yaml
 emulators:
   google:
     capability: google.gmail.v1
     dataset: google.productivity_mailbox.v1
+    seed:
+      messages:
+        - id: demo-invoice
+          from: Fern Ellery <fern@sample-supplier.invalid>
+          subject: Invoice 4471 for August
+          body_text: |
+            The August invoice is attached. Total is 412.00, due on the 30th.
+          label_ids: [INBOX, UNREAD]
     bindings:
       GMAIL_API_BASE_URL: api_base_url
 ```
 
-The data is sample data. A demo must never present it as a real mailbox, account,
-or vendor response.
+**Objects merge, lists replace.** Declaring `messages` gives the demo exactly that
+mailbox rather than those messages appended to the dataset's. Labels, calendars and
+users from the dataset stay. To keep a list and add to it, restate it.
+
+The seed is pinned by the recipe's runtime identity, so the same commit always
+produces the same fixtures, and every session builds them fresh. The emulator keeps
+nothing between sessions.
+
+### What a recipe still may not do
+
+Create identities or credentials. Users, tokens, OAuth clients, API keys and account
+ids come from the dataset.
+
+This is not a formality. The emulator resolves a caller's token against the vendor's
+own store, so a user a recipe invents has no token and every authenticated call
+answers `401`. A recipe cannot see the dataset's tokens to match one, so it cannot
+get this right even in principle.
+
+The validator rejects a `seed` that declares `users`, `tokens`, `oauth_clients`,
+`oauth_apps`, `api_keys`, `account`, `integrations`, `database_users` or `iam`.
+Content only: messages, files, repositories, issues, customers, events.
+
+A `seed` without a `dataset` is also rejected. There is nothing to layer it over.
+
+### It is sample data
+
+A demo must never present it as a real mailbox, account, or vendor response. Use
+`.invalid` for every address, and write names that read as fictional.
