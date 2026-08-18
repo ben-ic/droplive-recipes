@@ -16,3 +16,4 @@ jobs:
       - run: python3 -m pip install -r requirements-dev.txt
       - run: python3 tools/lint_recipes.py
       - run: python3 tools/test_environment_schema.py
+      - run: python3 tools/test_kind_schema.py

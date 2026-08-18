@@ -72,11 +72,19 @@
   "allOf": [
     {
       "if": {"properties": {"kind": {"const": "mcp"}}, "required": ["kind"]},
-      "then": {"required": ["mcp"]}
+      "then": {
+        "required": ["mcp"],
+        "not": {"required": ["skill"]}
+      },
+      "else": {"not": {"required": ["mcp"]}}
     },
     {
       "if": {"properties": {"kind": {"const": "skill"}}, "required": ["kind"]},
-      "then": {"required": ["skill"]}
+      "then": {
+        "required": ["skill"],
+        "not": {"required": ["mcp"]}
+      },
+      "else": {"not": {"required": ["skill"]}}
     }
   ],
   "$defs": {
@@ -192,11 +200,17 @@
       "allOf": [
         {
           "if": {"properties": {"transport": {"const": "stdio"}}, "required": ["transport"]},
-          "then": {"required": ["command"]}
+          "then": {
+            "required": ["command"],
+            "not": {"required": ["path"]}
+          }
         },
         {
           "if": {"properties": {"transport": {"const": "streamable-http"}}, "required": ["transport"]},
-          "then": {"required": ["path"]}
+          "then": {
+            "required": ["path"],
+            "not": {"required": ["command"]}
+          }
         }
       ]
     },

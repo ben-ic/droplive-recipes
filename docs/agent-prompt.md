@@ -10,25 +10,33 @@ SOURCE: <GitHub URL or absolute local path>
 
 Work in a clone of the droplive-recipes repository. Read README.md,
 CONTRIBUTING.md, docs/recipe-format.md, and docs/troubleshooting.md before you
-edit files.
+edit files. For an MCP server or skill, also read docs/mcp-and-skills.md.
 
 Goal:
 - Add one recipe under recipes/<kind>/<github-owner>/<github-repository>/.
-- Make the project build and start with a read-only root filesystem.
+- For an app, API, or MCP server, make the project build and start with a
+  read-only root filesystem.
+- For a skill, identify the complete instruction package and its entrypoint.
 - Keep droplive.yaml as small as possible.
 
 Rules:
 1. Inspect the source before you choose a build path.
 2. Set kind to app, api, mcp, or skill.
-3. If one upstream Docker Compose file or Dockerfile already works, do not copy
-   it. Start with only:
+   - Use mcp only when a process answers MCP initialize over stdio or
+     Streamable HTTP.
+   - Use skill only when SKILL.md is the instruction entrypoint and the product
+     does not provide an MCP transport.
+   - If the source contains both, create one recipe for each product. Do not mix
+     mcp and skill in one recipe.
+3. For an app or API, if one upstream Docker Compose file or Dockerfile already
+   works, do not copy it. Start with only:
 
      version: 1
      kind: <kind>
 
 4. If several upstream build files exist, select the exact file in build.
-5. If upstream does not work, add recipe-owned docker-compose.yaml. Prefer
-   Compose before a replacement Dockerfile.
+5. For a runtime recipe, if upstream does not work, add recipe-owned
+   docker-compose.yaml. Prefer Compose before a replacement Dockerfile.
 6. Name the main Compose service app when practical. Set read_only: true. Use
    tmpfs for temporary writes and volumes for persistent data. Add a real health
    check.
@@ -52,14 +60,26 @@ Rules:
     Keep seed data deterministic, repeatable, obviously fictional, and free of
     secrets. Skip seeding when the project has no stable seeding interface.
 13. Run python3 tools/lint_recipes.py before you finish.
+14. For MCP, verify initialize, capability listing, and at least one operation
+    against disposable fixtures. For a skill, verify observable effects with a
+    fixed prompt and an explicit tool allowlist. Never use a real vendor
+    credential for either test.
 
-Test the selected Docker or Compose path. Confirm:
+For an app, API, or MCP server, test the selected Docker or Compose path.
+Confirm:
 - it builds for linux/amd64;
 - it starts without privileged mode or host networking;
 - it starts with a read-only root filesystem;
 - its health check proves readiness;
 - every write goes to tmpfs or declared persistent data;
 - no secret is present in the committed files.
+
+For a skill, confirm:
+- `skill.entrypoint` resolves inside the pinned source tree;
+- all referenced local files stay inside that tree;
+- the package has no embedded secret or undeclared download; and
+- fixed scenarios produce observable fixture effects without an unlisted tool
+  or network destination.
 
 If the project cannot meet a DropLive limit, stop and report the exact limit.
 Do not weaken the limit. At the end, list the files you added, the command you

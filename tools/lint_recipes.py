@@ -23,7 +23,9 @@ def location(parts: list[Any]) -> str:
     return ".".join(str(part) for part in parts) or "root"
 
 
-def dockerfile_errors(path: Path, run: dict[str, Any]) -> list[str]:
+def dockerfile_errors(
+    path: Path, run: dict[str, Any], require_network_probe: bool = True
+) -> list[str]:
     errors: list[str] = []
     stages: set[str] = set()
     has_expose = False
@@ -44,14 +46,19 @@ def dockerfile_errors(path: Path, run: dict[str, Any]) -> list[str]:
         if len(parts) >= 3 and parts[1].lower() == "as":
             stages.add(parts[2])
 
-    if not has_expose and "port" not in run:
+    if require_network_probe and not has_expose and "port" not in run:
         errors.append("add EXPOSE to Dockerfile or add run.port to droplive.yaml")
-    if not has_healthcheck and "health" not in run:
+    if require_network_probe and not has_healthcheck and "health" not in run:
         errors.append("add HEALTHCHECK to Dockerfile or add run.health to droplive.yaml")
     return errors
 
 
-def compose_errors(path: Path, service_name: str | None, run: dict[str, Any]) -> list[str]:
+def compose_errors(
+    path: Path,
+    service_name: str | None,
+    run: dict[str, Any],
+    require_network_probe: bool = True,
+) -> list[str]:
     try:
         document = yaml.safe_load(path.read_text())
     except yaml.YAMLError as exc:
@@ -76,9 +83,14 @@ def compose_errors(path: Path, service_name: str | None, run: dict[str, Any]) ->
     errors: list[str] = []
     if service.get("read_only") is not True:
         errors.append(f"service {service_name} must set read_only: true")
-    if "port" not in run and not service.get("ports") and not service.get("expose"):
+    if (
+        require_network_probe
+        and "port" not in run
+        and not service.get("ports")
+        and not service.get("expose")
+    ):
         errors.append(f"service {service_name} must expose a port or droplive.yaml must set run.port")
-    if "health" not in run and not service.get("healthcheck"):
+    if require_network_probe and "health" not in run and not service.get("healthcheck"):
         errors.append(f"service {service_name} needs a healthcheck or droplive.yaml must set run.health")
     image = service.get("image")
     if image and not service.get("build") and "@sha256:" not in str(image):
@@ -92,13 +104,19 @@ def build_errors(recipe_file: Path, recipe: dict[str, Any]) -> list[str]:
     run = recipe.get("run") or {}
     local_compose = folder / "docker-compose.yaml"
     local_dockerfile = folder / "Dockerfile"
+    require_network_probe = not (
+        recipe.get("kind") == "mcp"
+        and (recipe.get("mcp") or {}).get("transport") == "stdio"
+    )
 
     if build.get("docker-compose") or build.get("dockerfile") or build.get("image"):
         return []
     if local_compose.is_file():
-        return compose_errors(local_compose, build.get("service"), run)
+        return compose_errors(
+            local_compose, build.get("service"), run, require_network_probe
+        )
     if local_dockerfile.is_file():
-        return dockerfile_errors(local_dockerfile, run)
+        return dockerfile_errors(local_dockerfile, run, require_network_probe)
     if build.get("service"):
         return ["build.service requires docker-compose.yaml or build.docker-compose"]
     return []

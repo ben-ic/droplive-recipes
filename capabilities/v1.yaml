@@ -50,3 +50,14 @@ capabilities:
       api_base_url: server_url
     datasets:
       - google.productivity_mailbox.v1
+
+  storage.s3.v1:
+    access:
+      - server
+    outputs:
+      endpoint: server_url
+      region: public_value
+      bucket: public_value
+      access_key: generated_session_secret
+      secret_key: generated_session_secret
+    datasets: []
