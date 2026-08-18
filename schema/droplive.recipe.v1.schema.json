@@ -50,6 +50,11 @@
         "working-directory": {"type": "string", "pattern": "^/"}
       }
     },
+    "environment": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[A-Z_][A-Z0-9_]*$"},
+      "additionalProperties": {"$ref": "#/$defs/environment-variable"}
+    },
     "companions": {
       "type": "object",
       "propertyNames": {"pattern": "^[a-z][a-z0-9_-]*$"},
@@ -75,6 +80,18 @@
     }
   ],
   "$defs": {
+    "environment-variable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["owner"],
+      "properties": {
+        "owner": {"enum": ["droplive", "recipe", "user", "optional"]},
+        "generate": {"enum": ["url-safe16", "hex32", "hex64", "hex96", "laravel-base64"]},
+        "capability": {"enum": ["owner-login", "admin-login"]},
+        "username": {"type": "string", "minLength": 1},
+        "phase": {"enum": ["runtime", "post-install"], "default": "runtime"}
+      }
+    },
     "relativePath": {
       "type": "string",
       "minLength": 1,

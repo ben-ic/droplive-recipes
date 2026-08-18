@@ -104,6 +104,60 @@ run:
 Do not add a `data` path for temporary files. Put temporary paths in the
 `tmpfs` section of `docker-compose.yaml`.
 
+## `environment`
+
+Optional, but required for anything that needs a secret, a credential, or a value
+a human must supply.
+
+DropLive reads the image for what the image can state: `EXPOSE`, `VOLUME` and
+`HEALTHCHECK` are picked up automatically. What it cannot work out is **who
+supplies each environment variable**, so that is what you declare here.
+
+```yaml
+environment:
+  SECRET_KEY:
+    owner: droplive
+    generate: hex96
+  ADMIN_PASSWORD:
+    owner: droplive
+    generate: hex96
+    capability: owner-login
+    username: admin
+  DATA_PATH:
+    owner: recipe
+  LICENSE_KEY:
+    owner: user
+  TZ:
+    owner: optional
+```
+
+| Owner | Meaning |
+|---|---|
+| `droplive` | DropLive mints a fresh value for every session. Never reused, never checked in. |
+| `recipe` | This recipe sets it, typically to keep state under one path. |
+| `user` | A human must supply it, and DropLive cannot stand in. Use this sparingly: an app nobody can launch unattended is a poor demo. Say so here rather than letting a build stall waiting for input. |
+| `optional` | Leaving it unset is fine. |
+
+`generate` is only valid with `owner: droplive`, and gives the shape of the minted
+value: `url-safe16`, `hex32`, `hex64`, `hex96`, or `laravel-base64`. A value that
+seeds an owner or admin login must be `hex64` or `hex96`.
+
+Add `capability: owner-login` (or `admin-login`) to the one value a visitor signs
+in with, and `username` when the account has a fixed name. DropLive surfaces that
+pair as the demo's sign-in card.
+
+`phase` defaults to `runtime`; use `post-install` for a value that is only needed
+after first start.
+
+Do not list variables the app defaults internally and never reads from the
+environment. Declare what DropLive has to supply, not the app's whole config
+surface.
+
+**Vendor credentials do not belong here.** An API key or base URL for a service
+DropLive emulates is declared under `emulators`, whose `bindings` point the app at
+its session's own emulator. `owner: user` is for the rare value nothing can stand
+in for — a paid licence key, say — not for anything a vendor emulator serves.
+
 ## `companions`
 
 Optional. A companion is a reviewed service that runs with the project.
