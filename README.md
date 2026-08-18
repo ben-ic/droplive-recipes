@@ -2,7 +2,7 @@
 
 This repository tells DropLive how to run open-source software.
 
-Most projects need one small file. If the upstream project needs help, you can
+Start with one small file. If the upstream project needs help, you can
 also add `docker-compose.yaml`, a `Dockerfile`, and helper scripts. You do not
 need to change the upstream repository.
 
