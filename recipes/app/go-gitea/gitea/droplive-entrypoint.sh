@@ -6,7 +6,7 @@ set -eu
 # droplive: generate=hex64 ownership=app purpose=owner-bootstrap lifecycle=stable rotation=app name=GITEA_ADMIN_PASSWORD capability=owner-login username=owner
 
 : "${APP_BASE_URL:?DropLive must derive APP_BASE_URL from the public origin}"
-: "${GITEA_ADMIN_EMAIL:?The owner must supply GITEA_ADMIN_EMAIL}"
+: "${GITEA_ADMIN_EMAIL:?The recipe must provide the initial owner email address}"
 : "${GITEA_ADMIN_PASSWORD:?DropLive must generate GITEA_ADMIN_PASSWORD}"
 # droplive: generate=hex96 ownership=app purpose=owner-bootstrap lifecycle=stable rotation=app name=GITEA_SECRET_KEY
 : "${GITEA_SECRET_KEY:?DropLive must generate GITEA_SECRET_KEY}"
