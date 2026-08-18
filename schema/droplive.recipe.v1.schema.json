@@ -4,30 +4,13 @@
   "title": "DropLive recipe v1",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "version",
-    "kind"
-  ],
+  "required": ["version", "kind"],
   "properties": {
-    "version": {
-      "const": 1
-    },
-    "kind": {
-      "enum": [
-        "app",
-        "api",
-        "mcp",
-        "skill"
-      ]
-    },
+    "version": {"const": 1},
+    "kind": {"enum": ["app", "api", "mcp", "skill"]},
     "interfaces": {
       "type": "array",
-      "items": {
-        "enum": [
-          "web",
-          "api"
-        ]
-      },
+      "items": {"enum": ["web", "api"]},
       "minItems": 1,
       "uniqueItems": true
     },
@@ -35,376 +18,102 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "docker-compose": {
-          "$ref": "#/$defs/relativePath"
-        },
-        "service": {
-          "type": "string",
-          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.-]*$"
-        },
-        "dockerfile": {
-          "$ref": "#/$defs/relativePath"
-        },
-        "context": {
-          "$ref": "#/$defs/relativePath"
-        },
-        "image": {
-          "type": "string",
-          "pattern": "^[^@[:space:]]+@sha256:[0-9a-f]{64}$"
-        }
+        "docker-compose": {"$ref": "#/$defs/relativePath"},
+        "service": {"type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.-]*$"},
+        "dockerfile": {"$ref": "#/$defs/relativePath"},
+        "context": {"$ref": "#/$defs/relativePath"},
+        "image": {"type": "string", "pattern": "^[^@[:space:]]+@sha256:[0-9a-f]{64}$"}
       },
       "oneOf": [
-        {
-          "required": [
-            "docker-compose"
-          ],
-          "not": {
-            "anyOf": [
-              {
-                "required": [
-                  "dockerfile"
-                ]
-              },
-              {
-                "required": [
-                  "image"
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "required": [
-            "dockerfile"
-          ],
-          "not": {
-            "anyOf": [
-              {
-                "required": [
-                  "docker-compose"
-                ]
-              },
-              {
-                "required": [
-                  "image"
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "required": [
-            "image"
-          ],
-          "not": {
-            "anyOf": [
-              {
-                "required": [
-                  "docker-compose"
-                ]
-              },
-              {
-                "required": [
-                  "dockerfile"
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "required": [
-            "service"
-          ],
-          "not": {
-            "anyOf": [
-              {
-                "required": [
-                  "docker-compose"
-                ]
-              },
-              {
-                "required": [
-                  "dockerfile"
-                ]
-              },
-              {
-                "required": [
-                  "image"
-                ]
-              }
-            ]
-          }
-        }
+        {"required": ["docker-compose"], "not": {"anyOf": [{"required": ["dockerfile"]}, {"required": ["image"]}]}},
+        {"required": ["dockerfile"], "not": {"anyOf": [{"required": ["docker-compose"]}, {"required": ["image"]}]}},
+        {"required": ["image"], "not": {"anyOf": [{"required": ["docker-compose"]}, {"required": ["dockerfile"]}]}},
+        {"required": ["service"], "not": {"anyOf": [{"required": ["docker-compose"]}, {"required": ["dockerfile"]}, {"required": ["image"]}]}}
       ]
     },
     "run": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "port": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 65535
-        },
+        "port": {"type": "integer", "minimum": 1, "maximum": 65535},
         "health": {
           "oneOf": [
-            {
-              "type": "string",
-              "pattern": "^/"
-            },
-            {
-              "$ref": "#/$defs/health"
-            }
+            {"type": "string", "pattern": "^/"},
+            {"$ref": "#/$defs/health"}
           ]
         },
         "data": {
           "type": "array",
-          "items": {
-            "type": "string",
-            "pattern": "^/"
-          },
+          "items": {"type": "string", "pattern": "^/"},
           "uniqueItems": true
         },
-        "working-directory": {
-          "type": "string",
-          "pattern": "^/"
-        }
+        "working-directory": {"type": "string", "pattern": "^/"}
       }
     },
     "environment": {
       "type": "object",
-      "propertyNames": {
-        "pattern": "^[A-Z_][A-Z0-9_]*$"
-      },
-      "additionalProperties": {
-        "$ref": "#/$defs/environment-variable"
-      }
+      "propertyNames": {"pattern": "^[A-Z_][A-Z0-9_]*$"},
+      "additionalProperties": {"$ref": "#/$defs/environment-variable"}
     },
     "companions": {
       "type": "object",
-      "propertyNames": {
-        "pattern": "^[a-z][a-z0-9_-]*$"
-      },
-      "additionalProperties": {
-        "enum": [
-          "postgres",
-          "mysql",
-          "mariadb",
-          "mongodb",
-          "redis",
-          "upstash"
-        ]
-      }
+      "propertyNames": {"pattern": "^[a-z][a-z0-9_-]*$"},
+      "additionalProperties": {"enum": ["postgres", "mysql", "mariadb", "mongodb", "redis", "upstash"]}
     },
     "emulators": {
       "type": "object",
-      "propertyNames": {
-        "pattern": "^[a-z][a-z0-9_-]*$"
-      },
-      "additionalProperties": {
-        "$ref": "#/$defs/emulator"
-      }
+      "propertyNames": {"pattern": "^[a-z][a-z0-9_-]*$"},
+      "additionalProperties": {"$ref": "#/$defs/emulator"}
     },
-    "mcp": {
-      "$ref": "#/$defs/mcp"
-    },
-    "skill": {
-      "$ref": "#/$defs/skill"
-    },
-    "seed": {
-      "$ref": "#/$defs/seed"
-    }
+    "mcp": {"$ref": "#/$defs/mcp"},
+    "skill": {"$ref": "#/$defs/skill"},
+    "seed": {"$ref": "#/$defs/seed"}
   },
   "allOf": [
     {
-      "if": {
-        "properties": {
-          "kind": {
-            "const": "mcp"
-          }
-        },
-        "required": [
-          "kind"
-        ]
-      },
-      "then": {
-        "required": [
-          "mcp"
-        ]
-      }
+      "if": {"properties": {"kind": {"const": "mcp"}}, "required": ["kind"]},
+      "then": {"required": ["mcp"]}
     },
     {
-      "if": {
-        "properties": {
-          "kind": {
-            "const": "skill"
-          }
-        },
-        "required": [
-          "kind"
-        ]
-      },
-      "then": {
-        "required": [
-          "skill"
-        ]
-      }
+      "if": {"properties": {"kind": {"const": "skill"}}, "required": ["kind"]},
+      "then": {"required": ["skill"]}
     }
   ],
   "$defs": {
     "environment-variable": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "owner"
-      ],
+      "required": ["owner"],
       "properties": {
-        "owner": {
-          "enum": [
-            "droplive",
-            "user"
-          ]
-        },
-        "format": {
-          "enum": [
-            "hex",
-            "url-safe",
-            "alphanumeric",
-            "password",
-            "base64",
-            "laravel-base64"
-          ]
-        },
-        "length": {
-          "type": "integer",
-          "minimum": 8,
-          "maximum": 256
-        },
-        "pattern": {
-          "type": "string",
-          "minLength": 2,
-          "maxLength": 256,
-          "pattern": "^\\^.*\\$$"
-        },
+        "owner": {"enum": ["droplive", "user"]},
+        "format": {"enum": ["hex", "url-safe", "alphanumeric", "password", "base64", "laravel-base64"]},
+        "length": {"type": "integer", "minimum": 8, "maximum": 256},
+        "pattern": {"type": "string", "minLength": 2, "maxLength": 256, "pattern": "^\\^.*\\$$"},
         "login": {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "username"
-          ],
+          "required": ["username"],
           "properties": {
-            "username": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 128
-            }
+            "username": {"type": "string", "minLength": 1, "maxLength": 128}
           }
         }
       },
       "allOf": [
         {
-          "if": {
-            "properties": {
-              "owner": {
-                "const": "user"
-              }
-            },
-            "required": [
-              "owner"
-            ]
-          },
-          "then": {
-            "not": {
-              "anyOf": [
-                {
-                  "required": [
-                    "format"
-                  ]
-                },
-                {
-                  "required": [
-                    "length"
-                  ]
-                },
-                {
-                  "required": [
-                    "pattern"
-                  ]
-                },
-                {
-                  "required": [
-                    "login"
-                  ]
-                }
-              ]
-            }
-          }
+          "if": {"properties": {"owner": {"const": "user"}}, "required": ["owner"]},
+          "then": {"not": {"anyOf": [{"required": ["format"]}, {"required": ["length"]}, {"required": ["pattern"]}, {"required": ["login"]}]}}
         },
         {
-          "if": {
-            "properties": {
-              "format": {
-                "const": "laravel-base64"
-              }
-            },
-            "required": [
-              "format"
-            ]
-          },
-          "then": {
-            "not": {
-              "anyOf": [
-                {
-                  "required": [
-                    "length"
-                  ]
-                },
-                {
-                  "required": [
-                    "pattern"
-                  ]
-                }
-              ]
-            }
-          }
+          "if": {"properties": {"format": {"const": "laravel-base64"}}, "required": ["format"]},
+          "then": {"not": {"anyOf": [{"required": ["length"]}, {"required": ["pattern"]}]}}
         },
         {
-          "if": {
-            "properties": {
-              "format": {
-                "const": "hex"
-              }
-            },
-            "required": [
-              "format"
-            ]
-          },
-          "then": {
-            "properties": {
-              "length": {
-                "multipleOf": 2
-              }
-            }
-          }
+          "if": {"properties": {"format": {"const": "hex"}}, "required": ["format"]},
+          "then": {"properties": {"length": {"multipleOf": 2}}}
         },
         {
-          "if": {
-            "properties": {
-              "format": {
-                "const": "base64"
-              }
-            },
-            "required": [
-              "format"
-            ]
-          },
-          "then": {
-            "properties": {
-              "length": {
-                "multipleOf": 4
-              }
-            }
-          }
+          "if": {"properties": {"format": {"const": "base64"}}, "required": ["format"]},
+          "then": {"properties": {"length": {"multipleOf": 4}}}
         }
       ]
     },
@@ -416,30 +125,18 @@
     "health": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "path"
-      ],
+      "required": ["path"],
       "properties": {
-        "path": {
-          "type": "string",
-          "pattern": "^/"
-        },
+        "path": {"type": "string", "pattern": "^/"},
         "status": {
           "type": "array",
-          "items": {
-            "type": "integer",
-            "minimum": 100,
-            "maximum": 599
-          },
+          "items": {"type": "integer", "minimum": 100, "maximum": 599},
           "minItems": 1,
           "uniqueItems": true
         },
         "contains": {
           "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 1
-          },
+          "items": {"type": "string", "minLength": 1},
           "minItems": 1
         }
       }
@@ -447,74 +144,33 @@
     "emulator": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "capability",
-        "bindings"
-      ],
+      "required": ["capability", "bindings"],
       "properties": {
-        "capability": {
-          "type": "string",
-          "pattern": "^[a-z][a-z0-9_.-]*\\.v[0-9]+$"
-        },
-        "access": {
-          "enum": [
-            "server",
-            "browser",
-            "server-and-browser"
-          ]
-        },
-        "dataset": {
-          "type": "string",
-          "pattern": "^[a-z][a-z0-9_.-]*\\.v[0-9]+$"
-        },
+        "capability": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*\\.v[0-9]+$"},
+        "access": {"enum": ["server", "browser", "server-and-browser"]},
+        "dataset": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*\\.v[0-9]+$"},
         "seed": {
           "type": "object",
           "minProperties": 1,
           "propertyNames": {
-            "not": {
-              "enum": [
-                "users",
-                "tokens",
-                "oauth_clients",
-                "oauth_apps",
-                "oauth_applications",
-                "api_keys",
-                "account",
-                "integrations",
-                "database_users",
-                "iam"
-              ]
-            }
+            "not": {"enum": ["users", "tokens", "oauth_clients", "oauth_apps", "oauth_applications", "api_keys", "account", "integrations", "database_users", "iam"]}
           }
         },
         "bindings": {
           "type": "object",
           "minProperties": 1,
-          "propertyNames": {
-            "pattern": "^[A-Z_][A-Z0-9_]*$"
-          },
-          "additionalProperties": {
-            "type": "string",
-            "pattern": "^[a-z][a-z0-9_]*$"
-          }
+          "propertyNames": {"pattern": "^[A-Z_][A-Z0-9_]*$"},
+          "additionalProperties": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}
         },
         "callbacks": {
           "type": "array",
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": [
-              "path"
-            ],
+            "required": ["path"],
             "properties": {
-              "path": {
-                "type": "string",
-                "pattern": "^/(?!/)(?!.*(?:\\.\\.|%2[fF]|%5[cC]))[^?#]*$"
-              },
-              "verification-environment": {
-                "type": "string",
-                "pattern": "^[A-Z_][A-Z0-9_]*$"
-              }
+              "path": {"type": "string", "pattern": "^/(?!/)(?!.*(?:\\.\\.|%2[fF]|%5[cC]))[^?#]*$"},
+              "verification-environment": {"type": "string", "pattern": "^[A-Z_][A-Z0-9_]*$"}
             }
           }
         }
@@ -523,93 +179,42 @@
     "mcp": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "transport"
-      ],
+      "required": ["transport"],
       "properties": {
-        "transport": {
-          "enum": [
-            "stdio",
-            "streamable-http"
-          ]
-        },
+        "transport": {"enum": ["stdio", "streamable-http"]},
         "command": {
           "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 1
-          },
+          "items": {"type": "string", "minLength": 1},
           "minItems": 1
         },
-        "path": {
-          "type": "string",
-          "pattern": "^/"
-        }
+        "path": {"type": "string", "pattern": "^/"}
       },
       "allOf": [
         {
-          "if": {
-            "properties": {
-              "transport": {
-                "const": "stdio"
-              }
-            },
-            "required": [
-              "transport"
-            ]
-          },
-          "then": {
-            "required": [
-              "command"
-            ]
-          }
+          "if": {"properties": {"transport": {"const": "stdio"}}, "required": ["transport"]},
+          "then": {"required": ["command"]}
         },
         {
-          "if": {
-            "properties": {
-              "transport": {
-                "const": "streamable-http"
-              }
-            },
-            "required": [
-              "transport"
-            ]
-          },
-          "then": {
-            "required": [
-              "path"
-            ]
-          }
+          "if": {"properties": {"transport": {"const": "streamable-http"}}, "required": ["transport"]},
+          "then": {"required": ["path"]}
         }
       ]
     },
     "skill": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "entrypoint"
-      ],
+      "required": ["entrypoint"],
       "properties": {
-        "entrypoint": {
-          "$ref": "#/$defs/relativePath"
-        }
+        "entrypoint": {"$ref": "#/$defs/relativePath"}
       }
     },
     "seed": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "archive",
-        "target"
-      ],
+      "required": ["archive", "target"],
       "properties": {
-        "archive": {
-          "$ref": "#/$defs/relativePath"
-        },
-        "target": {
-          "type": "string",
-          "pattern": "^/"
-        }
+        "archive": {"$ref": "#/$defs/relativePath"},
+        "target": {"type": "string", "pattern": "^/"}
       }
     }
   }
