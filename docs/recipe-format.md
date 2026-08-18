@@ -147,12 +147,9 @@ environment:
 | `hex` | Lowercase `0-9` and `a-f` | 64 |
 | `url-safe` | Letters, digits, `_`, and `-` | 32 |
 | `alphanumeric` | Letters and digits | 32 |
-| `password` | Letters, digits, and `!@#$%^&*_- ` without the trailing space | 24 |
+| `password` | Letters, digits, and `!@#$%^&*_-` | 24 |
 | `base64` | Standard Base64 | 44 |
 | `laravel-base64` | `base64:` followed by a Base64-encoded 32-byte key | Fixed |
-
-The `password` character set does not contain a space. The space in the table
-keeps the closing code mark separate from the punctuation.
 
 Set `length` only when the application requires another final character
 count:
