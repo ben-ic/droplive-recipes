@@ -253,9 +253,10 @@ A capability may offer a reviewed `dataset`, and a recipe may layer its own cont
 over one with `seed`. See [seeding](seeding.md); identities and credentials always
 come from the dataset.
 
-`access: browser` means a visitor's browser reaches the emulator at its own session
-hostname, which is what an OAuth redirect needs. `access: server` is reachable only
-by the application.
+`access: server` is reachable only by the application. Use
+`access: server-and-browser` when the application and the visitor's browser must
+reach the emulator, such as during OAuth. Use `access: browser` only when the
+capability lists a browser-only surface. The capability file is authoritative.
 
 An unsupported capability fails clearly. It never sends traffic to a real
 vendor as a fallback.
