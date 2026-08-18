@@ -162,6 +162,7 @@ GitHub URL or a repository on your computer.
 - [Complete recipe reference](docs/recipe-format.md)
 - [Troubleshooting](docs/troubleshooting.md)
 - [Add realistic sample data](docs/seeding.md)
+- [Handle and test MCP servers and skills](docs/mcp-and-skills.md)
 - [Contribution checklist](CONTRIBUTING.md)
 
 This repository uses the [MIT License](LICENSE).

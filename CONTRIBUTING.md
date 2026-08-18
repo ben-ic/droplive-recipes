@@ -5,8 +5,9 @@
 You need:
 
 - A public GitHub repository or a local checkout of one
-- Docker with Docker Compose
 - Python 3
+
+For an app, API, or MCP server, you also need Docker with Docker Compose.
 
 You do not need to be the upstream maintainer. Maintainers and community members
 use the same recipe format.
@@ -21,33 +22,47 @@ use the same recipe format.
 
 Do not copy upstream files only to make the recipe look complete.
 
-## Test it
+## Test an app, API, or MCP server
 
-The application must:
+The runtime must:
 
 - build for `linux/amd64`;
 - start without privileged mode or host networking;
 - run with a read-only root filesystem;
 - write temporary files only to declared `tmpfs` paths;
 - write persistent files only to declared volumes;
-- expose one main port for an app or API;
-- have a health check that proves it is ready;
 - contain no committed secret.
+
+An app, API, or Streamable HTTP MCP server must expose one main port and have an
+HTTP health check that proves it is ready. A `stdio` MCP server needs neither.
+Its MCP handshake and a successful operation prove readiness.
+
+An MCP test must also complete the protocol checks in
+[MCP servers and skills](docs/mcp-and-skills.md).
+
+## Test a skill
+
+A skill does not need a container port or health check. Validate the complete
+skill package, then run fixed scenarios in an agent sandbox with an explicit
+tool allowlist. Check fixture changes instead of trusting the final answer.
 
 Then run:
 
 ```bash
 python3 tools/lint_recipes.py
+python3 tools/test_kind_schema.py
 ```
 
 ## Pull request checklist
 
 - [ ] `kind` is correct.
+- [ ] An MCP or skill follows its separate sandbox and evidence rules.
 - [ ] The recipe is as small as possible.
 - [ ] Every recipe-owned `FROM` image is pinned by digest.
-- [ ] `docker-compose.yaml` sets `read_only: true` on the main service.
-- [ ] The main service has a port and health check.
-- [ ] Writable paths use `tmpfs` or a volume.
+- [ ] For a runtime recipe, `docker-compose.yaml` sets `read_only: true` on the main service.
+- [ ] An app, API, or Streamable HTTP MCP service has its required port and HTTP health check.
+- [ ] A `stdio` MCP service proves readiness with its MCP handshake and an operation.
+- [ ] For a runtime recipe, writable paths use `tmpfs` or a volume.
 - [ ] Docker Compose supplies public defaults and marks optional values.
 - [ ] `droplive.yaml` declares only `owner: droplive` or `owner: user` values.
 - [ ] Generated values use a supported format, length, and safe pattern.

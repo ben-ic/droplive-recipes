@@ -263,6 +263,9 @@ vendor as a fallback.
 
 ## MCP servers
 
+See [MCP servers and skills](mcp-and-skills.md) for the classification rule,
+sandbox boundary, protocol checks, fixture use, and admission evidence.
+
 For a standard-input and standard-output MCP server:
 
 ```yaml
@@ -285,7 +288,17 @@ mcp:
 
 Build discovery works the same way as it does for apps.
 
+`command` and `path` are mutually exclusive. A `stdio` server requires
+`command`. A `streamable-http` server requires `path`.
+
+A `stdio` server does not need a container port or HTTP health check. The MCP
+handshake and operation are its readiness test. A Streamable HTTP server needs
+the normal port and health check in addition to its MCP test.
+
 ## Skills
+
+See [MCP servers and skills](mcp-and-skills.md) before you classify or test a
+skill.
 
 ```yaml
 version: 1

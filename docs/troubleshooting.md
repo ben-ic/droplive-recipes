@@ -81,6 +81,38 @@ Check [`capabilities/v1.yaml`](../capabilities/v1.yaml). If the capability is
 present, declare an emulator binding. If it is absent, state the missing
 capability in the pull request. Do not point the recipe at your own server.
 
+## The repository contains both an MCP server and a skill
+
+Create two recipe folders for the same source: one under `recipes/mcp/` and one
+under `recipes/skill/`. Each recipe has its own entrypoint, sandbox, evidence,
+and admission result. Do not put both sections in one recipe.
+
+Use the behavior test in [MCP servers and skills](mcp-and-skills.md). A process
+that completes supported MCP protocol negotiation is an MCP server. A
+`SKILL.md` file that an agent loads as instructions is a skill.
+
+## An MCP server starts but the test cannot use it
+
+For `stdio`, confirm that the command writes only MCP messages to standard
+output. Send diagnostics to standard error. Do not wrap the command in a shell.
+
+For Streamable HTTP, confirm that `mcp.path` is the exact endpoint and that the
+service listens on the allocated container port. The endpoint is not made
+public during the test.
+
+The server must complete protocol negotiation, list its advertised primitives,
+and run at least one reviewed operation. For Streamable HTTP, a successful HTTP
+health check without an MCP operation is not a passing MCP test.
+
+## A skill asks for a tool or credential that the test does not provide
+
+Declare the needed fixture through a reviewed emulator capability or companion.
+The scenario must allow each tool that the skill needs. Do not expand the
+allowlist to every installed tool.
+
+If the dependency has no reviewed capability, report it as unsupported. Do not
+give the skill a real vendor credential or unrestricted network access.
+
 ## The emulator answers 401 for every call
 
 The `seed` introduced an identity the dataset's tokens do not know, or the capability
