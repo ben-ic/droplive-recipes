@@ -107,6 +107,13 @@
         "capability": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*\\.v[0-9]+$"},
         "access": {"enum": ["server", "browser", "server-and-browser"]},
         "dataset": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*\\.v[0-9]+$"},
+        "seed": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "not": {"enum": ["users", "tokens", "oauth_clients", "oauth_apps", "oauth_applications", "api_keys", "account", "integrations", "database_users", "iam"]}
+          }
+        },
         "bindings": {
           "type": "object",
           "minProperties": 1,

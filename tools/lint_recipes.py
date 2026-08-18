@@ -121,6 +121,48 @@ def capability_errors(recipe: dict[str, Any], capabilities: dict[str, Any]) -> l
         dataset = emulator.get("dataset")
         if dataset and dataset not in definition["datasets"]:
             errors.append(f"capability {capability_id} does not support dataset {dataset}")
+        errors.extend(seed_errors(name, emulator))
+    return errors
+
+
+# Keys that carry an identity or a credential. A recipe may layer CONTENT over a
+# dataset -- messages, files, repositories, customers -- but not the identities that
+# content belongs to.
+#
+# The reason is not policy, it is that a half-supplied identity does not fail loudly.
+# The emulator resolves a caller's token against the vendor's own store, so a user the
+# recipe invents has no token and every authenticated call answers 401. A recipe cannot
+# see the dataset's tokens to match one, so it cannot get this right even in principle.
+IDENTITY_KEYS = frozenset(
+    {
+        "users",
+        "tokens",
+        "oauth_clients",
+        "oauth_apps",
+        "oauth_applications",
+        "api_keys",
+        "account",
+        "integrations",
+        "database_users",
+        "iam",
+    }
+)
+
+
+def seed_errors(name: str, emulator: dict[str, Any]) -> list[str]:
+    seed = emulator.get("seed")
+    if not seed:
+        return []
+
+    errors = [
+        f"emulator {name} seed cannot declare {key}; identities and credentials come "
+        f"from the reviewed dataset"
+        for key in sorted(set(seed) & IDENTITY_KEYS)
+    ]
+
+    if not emulator.get("dataset"):
+        errors.append(f"emulator {name} declares seed without a dataset to layer it over")
+
     return errors
 
 

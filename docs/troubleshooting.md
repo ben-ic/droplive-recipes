@@ -72,6 +72,14 @@ Check [`capabilities/v1.yaml`](../capabilities/v1.yaml). If the capability is
 present, declare an emulator binding. If it is absent, state the missing
 capability in the pull request. Do not point the recipe at your own server.
 
+## The emulator answers 401 for every call
+
+The `seed` introduced an identity the dataset's tokens do not know, or the capability
+was given no dataset at all. The emulator log names the vendor at startup.
+
+A recipe cannot create identities; layer content over a reviewed `dataset` and let it
+own the users and tokens. See [seeding](seeding.md).
+
 ## The project needs a database or cache
 
 Declare a named companion:

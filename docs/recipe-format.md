@@ -136,6 +136,14 @@ emulators:
 Available capabilities and outputs are listed in
 [`capabilities/v1.yaml`](../capabilities/v1.yaml).
 
+A capability may offer a reviewed `dataset`, and a recipe may layer its own content
+over one with `seed`. See [seeding](seeding.md); identities and credentials always
+come from the dataset.
+
+`access: browser` means a visitor's browser reaches the emulator at its own session
+hostname, which is what an OAuth redirect needs. `access: server` is reachable only
+by the application.
+
 An unsupported capability fails clearly. It never sends traffic to a real
 vendor as a fallback.
 
