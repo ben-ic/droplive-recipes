@@ -83,6 +83,10 @@ python3 tools/test_kind_schema.py
 - [ ] Docker Compose supplies public defaults and marks optional values.
 - [ ] `droplive.yaml` declares only `owner: droplive` or `owner: user` values.
 - [ ] Generated values use a supported format, length, and safe pattern.
+- [ ] The entrypoint requires each runtime value with `: "${NAME:?message}"`.
+- [ ] A generated bootstrap credential carries its `# droplive:` annotation directly above that guard.
+- [ ] At most one annotation per script carries `capability=`.
+- [ ] No origin variable is declared as `owner: droplive`.
 - [ ] No password, token, private key, or API key is committed.
 - [ ] `seed.sh`, when present, is repeatable and contains only obvious sample data.
 - [ ] The validator passes.
