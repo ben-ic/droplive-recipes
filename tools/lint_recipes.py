@@ -26,6 +26,45 @@ EXPECTED_HOST = re.compile(
 )
 RUNTIME_VALUE = re.compile(r"\{\{([A-Z_][A-Z0-9_]*)\}\}")
 
+# A recipe entrypoint is a declaration surface, not only code, and until now
+# nothing checked it. Every rule below is a mistake that reached main and was
+# found by launching the application instead.
+REQUIRED_VALUE = re.compile(r"\$\{([A-Z_][A-Z0-9_]*):\?")
+BOOTSTRAP_ANNOTATION = re.compile(
+    r"(?mi)^[ \t]*#[ \t]*droplive:[ \t]*generate=hex(?:64|96)[ \t]+"
+    r"ownership=app[ \t]+purpose=(?P<purpose>owner|admin)-bootstrap[ \t]+"
+    r"lifecycle=stable[ \t]+rotation=(?:app|none)[ \t]+"
+    r"name=(?P<name>[A-Z_][A-Z0-9_]*)"
+    r"(?:[ \t]+capability=(?P<capability>(?:owner|admin)-login))?"
+    r"(?:[ \t]+username=[A-Za-z0-9_.@+-]{1,128})?"
+    r"[ \t]*$"
+)
+ANNOTATION_LINE = re.compile(r"(?mi)^[ \t]*#[ \t]*droplive:.*$")
+CREDENTIAL_WORD = re.compile(r"(?:^|_)(?:PASSWORD|PASS|SECRET|TOKEN)(?:_|$)")
+# An exact-length assertion on a generated value. The platform never promised a
+# length, so this rejects a longer and perfectly usable value -- and it exits
+# before the process binds a port, so it reads as a broken application.
+EXACT_LENGTH_TEST = re.compile(
+    r"(?m)(?:\[\[?[^\n]*|test[^\n]*)"
+    r"(?:\$\{#[A-Z_][A-Z0-9_]*\}|\$\{?#?[a-z_][a-z0-9_]*_length\}?)"
+    r"[^\n]*-ne[ \t]+[0-9]+"
+)
+DATA_LAYER_WORD = re.compile(
+    r"(?:^|_)(?:DB|DATABASE|POSTGRES|POSTGRESQL|MYSQL|MARIADB|MONGO|MONGODB|"
+    r"REDIS|VALKEY|UPSTASH)(?:_|$)"
+)
+ORIGIN_EXACT = frozenset({"APP_URL", "AUTH_URL", "NEXTAUTH_URL", "ROOT_URL"})
+ORIGIN_SUFFIX = re.compile(r"(?:^|_)(?:ROOT_URL|SITE_URL|BASE_URL|PUBLIC_URL)$")
+
+
+def is_public_origin_name(name: str) -> bool:
+    """Names DropLive fills with the session origin, so a recipe must not."""
+
+    upper = name.upper()
+    if DATA_LAYER_WORD.search(upper):
+        return False
+    return upper in ORIGIN_EXACT or bool(ORIGIN_SUFFIX.search(upper))
+
 
 def location(parts: list[Any]) -> str:
     return ".".join(str(part) for part in parts) or "root"
@@ -298,6 +337,93 @@ def mcp_errors(recipe: dict[str, Any], recipe_file: Path | None = None) -> list[
     return errors
 
 
+def entrypoint_errors(recipe_file: Path, recipe: dict[str, Any]) -> list[str]:
+    """Check what a recipe declares outside `droplive.yaml`.
+
+    The entrypoint states which values are required and which are generated
+    bootstrap credentials, so a mistake here is a mistake in the recipe's
+    contract -- it just used to surface as a container that never bound a port.
+    """
+
+    errors: list[str] = []
+    environment = recipe.get("environment") or {}
+
+    for name, spec in environment.items():
+        if not isinstance(spec, dict):
+            continue
+        if spec.get("owner") == "droplive" and is_public_origin_name(name):
+            errors.append(
+                f"{name} is an origin-shaped name, which DropLive already fills "
+                "with the session origin; owner: droplive generates a secret "
+                "instead and the application receives that in place of its URL"
+            )
+
+    for path in sorted(recipe_file.parent.iterdir()):
+        if not path.is_file() or path.name == "droplive.yaml":
+            continue
+        try:
+            text = path.read_text(errors="replace")
+        except OSError:
+            continue
+
+        annotations = list(BOOTSTRAP_ANNOTATION.finditer(text))
+        unparsed = len(ANNOTATION_LINE.findall(text)) - len(annotations)
+        if unparsed > 0:
+            errors.append(
+                f"{path.name}: {unparsed} `# droplive:` line(s) do not match the "
+                "annotation grammar, so nothing reads them"
+            )
+
+        # An annotation is read from the copied entrypoint script and nowhere
+        # else, so one in a Dockerfile or a Compose file does nothing at all.
+        if annotations and (
+            path.name == "Dockerfile"
+            or path.name.startswith("Dockerfile.")
+            or path.name in ("docker-compose.yaml", "docker-compose.yml")
+        ):
+            errors.append(
+                f"{path.name}: a `# droplive:` annotation is only read in the "
+                "copied entrypoint script, so this one does nothing"
+            )
+            continue
+
+        required = set(REQUIRED_VALUE.findall(text))
+        capabilities = 0
+        for match in annotations:
+            name = match.group("name")
+            if name not in required:
+                errors.append(
+                    f'{path.name}: {name} is annotated but never required; add '
+                    f': "${{{name}:?...}}" in the same script'
+                )
+            if not CREDENTIAL_WORD.search(name):
+                errors.append(
+                    f"{path.name}: {name} needs PASSWORD, PASS, SECRET or TOKEN "
+                    "as a whole word to be read as a bootstrap credential"
+                )
+            capability = match.group("capability")
+            if capability:
+                capabilities += 1
+                if capability != f"{match.group('purpose')}-login":
+                    errors.append(
+                        f"{path.name}: {name} has capability={capability} but "
+                        f"purpose={match.group('purpose')}-bootstrap; they must agree"
+                    )
+        if capabilities > 1:
+            errors.append(
+                f"{path.name}: {capabilities} annotations carry capability=; a "
+                "second one silently removes the sign-in card"
+            )
+
+        for match in EXACT_LENGTH_TEST.finditer(text):
+            errors.append(
+                f"{path.name}: exact-length check `{match.group(0).strip()[:72]}` "
+                "rejects a longer, usable value; compare with -lt instead"
+            )
+
+    return errors
+
+
 def path_errors(recipe_file: Path, recipe: dict[str, Any]) -> list[str]:
     relative = recipe_file.relative_to(RECIPES)
     product = recipe.get("product")
@@ -359,6 +485,7 @@ def main() -> int:
 
         checks = (
             path_errors(recipe_file, recipe)
+            + entrypoint_errors(recipe_file, recipe)
             + build_errors(recipe_file, recipe)
             + capability_errors(recipe, capabilities)
             + companion_errors(recipe, companions)

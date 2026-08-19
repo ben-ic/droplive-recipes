@@ -1,5 +1,4 @@
 # Homebox v0.26.2 official linux/amd64 hardened image, pinned immutably.
-# droplive: generate=hex96 ownership=app purpose=api-key-pepper lifecycle=stable rotation=app name=HBOX_AUTH_API_KEY_PEPPER
 FROM ghcr.io/sysadminsmedia/homebox@sha256:471074b72cd0dd825da47a0e8975675ee5e4b59d0c29b8702ea7d3e6ba204324
 
 ARG DROPLIVE_SOURCE_COMMIT

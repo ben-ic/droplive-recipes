@@ -63,8 +63,16 @@ Then run:
 
 ```bash
 python3 tools/lint_recipes.py
+python3 tools/test_environment_schema.py
 python3 tools/test_kind_schema.py
+python3 tools/test_entrypoint_rules.py
 ```
+
+`lint_recipes.py` reads your entrypoint as well as `droplive.yaml`. It rejects a
+`# droplive:` line that does not parse or that sits somewhere nothing reads it,
+an annotation with no matching `${NAME:?…}` guard, a second `capability=` in one
+script, an exact-length check on a generated value, and an origin variable
+declared as `owner: droplive`.
 
 ## Pull request checklist
 
