@@ -4,4 +4,5 @@ run:
   port: 8086
   health: /health
   data:
+  - /etc/influxdb2
   - /var/lib/influxdb2

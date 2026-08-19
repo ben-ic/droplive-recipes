@@ -4,4 +4,6 @@ run:
   port: 80
   health: /
   data:
+  - /etc/nginx/ssl
+  - /var/www/app/plugins
   - /var/www/app/data
