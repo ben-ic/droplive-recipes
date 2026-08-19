@@ -5,3 +5,11 @@ run:
   health: /api/health
   data:
   - /var/lib/grafana
+sign_in:
+  # Grafana's own default for a fresh install. A visitor met a sign-in page with
+  # a credential nobody had told them; stating it is what makes the demo usable.
+  #
+  # Grafana asks for a new password on first login, which a visitor can skip.
+  username: admin
+  password: admin
+  note: Upstream default. Grafana will offer to change it on first sign-in.
