@@ -62,14 +62,15 @@ services:
       GOOGLE_PUBSUB_TOPIC_NAME: projects/droplive-demo/topics/gmail
 
       # Microsoft sign-in is compiled in and validated at boot. A demo signs in with
-      # Google, so these satisfy validation and authenticate nothing.
+      # Google, so this satisfies validation and authenticates nothing. Its paired
+      # secret is generated per demo -- see MICROSOFT_CLIENT_SECRET in droplive.yaml.
       MICROSOFT_CLIENT_ID: droplive-demo
-      MICROSOFT_CLIENT_SECRET: droplive-demo-secret
 
-
-      # Upstash's HTTP client demands a token. The companion is a shim over the
-      # session's own Redis and does not check it.
-      UPSTASH_REDIS_TOKEN: droplive-demo-token
+      # UPSTASH_REDIS_TOKEN is deliberately absent, here and in droplive.yaml. The
+      # upstash companion mints it and starts its HTTP shim checking that same
+      # value, so the token is the companion's to supply. Naming it here -- as a
+      # literal or as a generated value -- overrides the companion with something
+      # the shim will reject.
 
 volumes:
   next-build:
