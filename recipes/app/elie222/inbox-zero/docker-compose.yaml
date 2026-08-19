@@ -64,12 +64,10 @@ services:
       # Microsoft sign-in is compiled in and validated at boot. A demo signs in with
       # Google, so these satisfy validation and authenticate nothing.
       MICROSOFT_CLIENT_ID: droplive-demo
-      MICROSOFT_CLIENT_SECRET: droplive-demo-secret
 
 
       # Upstash's HTTP client demands a token. The companion is a shim over the
       # session's own Redis and does not check it.
-      UPSTASH_REDIS_TOKEN: droplive-demo-token
 
 volumes:
   next-build:
