@@ -22,18 +22,22 @@ environment:
     length: 32
   INTERNAL_API_KEY:
     owner: droplive
-  # Required non-empty, never exercised by the demo: Microsoft sign-in is not
-  # offered and the Upstash token is not what the emulated cache authenticates
-  # with. They were literals in the compose file, which demoted this whole
-  # recipe off the declared path -- `environment.embedded_secret` refuses a
-  # literal for a secret-like name, so a deterministic build fell through to the
-  # planner and spent model calls deciding something the recipe already stated.
+  # Required non-empty, never exercised: a demo signs in with Google, so this
+  # only has to satisfy the boot-time schema. It was a literal in the compose
+  # file, which demoted this whole recipe off the declared path --
+  # `environment.embedded_secret` refuses a literal for a secret-like name, so a
+  # deterministic build fell through to the planner to decide something the
+  # recipe had already stated.
   #
-  # Generated is also simply better than the placeholder it replaces: no
-  # fake secret committed to a public repository, and a distinct value per demo.
+  # Generated also beats the placeholder it replaces: no fake secret committed
+  # to a public repository, and a distinct value per demo.
+  #
+  # UPSTASH_REDIS_TOKEN is NOT declared here on purpose. The upstash companion
+  # mints that token and starts its HTTP shim checking that same value, so it is
+  # the companion's to supply and DropLive already binds it. Declaring it
+  # `owner: droplive` would win over that binding and hand the application a
+  # random token the shim rejects.
   MICROSOFT_CLIENT_SECRET:
-    owner: droplive
-  UPSTASH_REDIS_TOKEN:
     owner: droplive
   API_KEY_SALT:
     owner: droplive
