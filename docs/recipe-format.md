@@ -104,6 +104,12 @@ run:
 Do not add a `data` path for temporary files. Put temporary paths in the
 `tmpfs` section of `docker-compose.yaml`.
 
+DropLive managed volumes start empty. Unlike Docker named volumes, they do not
+copy existing files from the image. Do not mount one over files that the
+application needs to start. If the application must change image files at
+runtime, keep a template copy in the image and use a small entrypoint to copy it
+into the empty writable mount before startup.
+
 ## `environment`
 
 Most recipes do not need this section. Add a variable only when DropLive must
@@ -202,14 +208,9 @@ environment:
       username: admin
 ```
 
-Docker Compose still passes the variable to the application:
-
-```yaml
-services:
-  app:
-    environment:
-      APP_ADMIN_PASSWORD: "${APP_ADMIN_PASSWORD:?DropLive supplies this value}"
-```
+DropLive injects values declared in `environment` when it starts the service.
+Do not repeat them in Docker Compose. A plain `docker compose up` does not
+generate these values; the DropLive recipe test supplies them.
 
 Never put the generated value in Docker Compose, a Dockerfile, a script, or
 `droplive.yaml`.

@@ -33,6 +33,10 @@ The runtime must:
 - write persistent files only to declared volumes;
 - contain no committed secret.
 
+DropLive managed volumes start empty. They do not copy existing files from the
+image. Test with empty volumes and confirm that no mount hides files needed at
+startup.
+
 An app, API, or Streamable HTTP MCP server must expose one main port and have an
 HTTP health check that proves it is ready. A `stdio` MCP server needs neither.
 Its MCP handshake and a successful operation prove readiness.
@@ -63,6 +67,7 @@ python3 tools/test_kind_schema.py
 - [ ] An app, API, or Streamable HTTP MCP service has its required port and HTTP health check.
 - [ ] A `stdio` MCP service proves readiness with its MCP handshake and an operation.
 - [ ] For a runtime recipe, writable paths use `tmpfs` or a volume.
+- [ ] The runtime does not depend on Docker named-volume copy-up.
 - [ ] Docker Compose supplies public defaults and marks optional values.
 - [ ] `droplive.yaml` declares only `owner: droplive` or `owner: user` values.
 - [ ] Generated values use a supported format, length, and safe pattern.
