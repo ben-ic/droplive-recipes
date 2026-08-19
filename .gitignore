@@ -2,3 +2,5 @@
 *.swp
 *.tmp
 vendor/
+__pycache__/
+*.py[cod]
