@@ -4,6 +4,8 @@ set -eu
 # The first administrator is created once from the generated password and the
 # recipe-defaulted `owner` username. Existing accounts are never overwritten.
 # droplive: generate=hex64 ownership=app purpose=owner-bootstrap lifecycle=stable rotation=app name=GITEA_ADMIN_PASSWORD capability=owner-login username=owner
+# (the hex64 above is what the annotation grammar accepts; the platform mints a
+#  *_PASSWORD as 16 URL-safe characters by name, which is the value that arrives)
 
 : "${APP_BASE_URL:?DropLive must derive APP_BASE_URL from the public origin}"
 : "${GITEA_ADMIN_EMAIL:?The owner must supply GITEA_ADMIN_EMAIL}"
@@ -54,7 +56,13 @@ validate_lowerhex_secret() {
   unset secret_name secret_value secret_length secret_charset
 }
 
-validate_lowerhex_secret GITEA_ADMIN_PASSWORD
+# GITEA_ADMIN_PASSWORD is deliberately NOT checked for 64-lowerhex. It carries
+# capability=owner-login, so a person copies it out and types it into a sign-in
+# screen, and DropLive mints exactly that shape for a *_PASSWORD: 96 bits of
+# entropy as 16 URL-safe characters (Winch.Vault). Demanding 64 hex characters
+# rejected a value the platform is right to produce -- and 64 hex characters
+# would be far worse to type. The machine-owned keys below keep the check,
+# because those genuinely are 64-lowerhex.
 validate_lowerhex_secret GITEA_SECRET_KEY
 validate_lowerhex_secret GITEA_INTERNAL_TOKEN
 
