@@ -62,8 +62,8 @@ Rules:
    base64, or laravel-base64. Add length or a safe RE2 pattern only when the
    application requires it. DropLive injects these declared values when it
    starts the service. Do not repeat them in Docker Compose. Never commit a
-   secret. DropLive does not read format, length, pattern, or login yet, so do
-   not depend on them to shape a value.
+   secret. Nothing reads login, so it cannot produce the sign-in card; use the
+   entrypoint annotation in rule 9 for that.
 9. Declare required runtime values in the recipe entrypoint with
    : "${NAME:?message}". DropLive reads those guards, so most recipes need no
    environment section at all. For a credential the application owns and
@@ -75,7 +75,11 @@ Rules:
    sign-in. Add capability= only to the one credential a person signs in with,
    and never twice in the same script, because a second one removes the sign-in
    card. The annotated name needs PASSWORD, PASS, SECRET, or TOKEN as a whole
-   word, and cannot be a connection or third-party credential.
+   word, and cannot be a connection or third-party credential. If the entrypoint
+   checks the shape of a value it was given, check a MINIMUM length and the
+   character set. Never assert an exact length: a longer value is still usable,
+   and the check exits before the application ever binds a port, so the failure
+   reads as a broken application rather than a recipe asserting a shape.
 10. Never declare the demo's own URL. DropLive supplies the session origin to a
     name shaped like an origin: exactly APP_URL, AUTH_URL, NEXTAUTH_URL, or
     ROOT_URL, or any name ending in _ROOT_URL, _SITE_URL, _BASE_URL, or

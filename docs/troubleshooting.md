@@ -72,8 +72,8 @@ A recipe entrypoint declares required values too. `: "${NAME:?message}"` marks
 For a generated value, `format` defaults to `url-safe`. Supported formats are
 `hex`, `url-safe`, `alphanumeric`, `password`, `base64`, and
 `laravel-base64`. See [the recipe reference](recipe-format.md) for length and
-pattern rules. DropLive does not read `format`, `length`, `pattern`, or `login`
-yet, so they document intent rather than change the generated value.
+pattern rules. `login` is the exception: it validates and nothing reads it, so
+the sign-in card comes from the entrypoint annotation instead.
 
 Never add a real secret to Git.
 
