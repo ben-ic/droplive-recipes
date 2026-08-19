@@ -258,9 +258,19 @@ def mcp_errors(recipe: dict[str, Any], recipe_file: Path | None = None) -> list[
             if isinstance(dependency, dict):
                 declared_values.update(dependency.get("bindings") or {})
         for argument in command:
-            for value in RUNTIME_VALUE.findall(argument):
-                if value not in declared_values:
-                    errors.append(f"MCP command uses undeclared runtime value {value}")
+            runtime_value = RUNTIME_VALUE.fullmatch(argument)
+            if "{{" in argument or "}}" in argument:
+                if runtime_value is None:
+                    errors.append(
+                        "MCP runtime value must be one complete command argument: "
+                        f"{argument}"
+                    )
+                    continue
+                if runtime_value.group(1) not in declared_values:
+                    errors.append(
+                        "MCP command uses undeclared runtime value "
+                        f"{runtime_value.group(1)}"
+                    )
 
     if mcp.get("package") and not mcp.get("command"):
         errors.append("MCP package build path requires a resolved command")

@@ -108,6 +108,22 @@ assert mcp_errors(mcp(command=["server", "{{MISSING_VALUE}}"])) == [
     "MCP command uses undeclared runtime value MISSING_VALUE"
 ]
 
+declared_runtime_value = mcp(command=["server", "{{ENDPOINT}}"])
+declared_runtime_value["environment"] = {"ENDPOINT": {"owner": "user"}}
+assert mcp_errors(declared_runtime_value) == []
+
+embedded_runtime_value = mcp(command=["server", "--endpoint={{ENDPOINT}}"])
+embedded_runtime_value["environment"] = {"ENDPOINT": {"owner": "user"}}
+assert mcp_errors(embedded_runtime_value) == [
+    "MCP runtime value must be one complete command argument: --endpoint={{ENDPOINT}}"
+]
+
+incomplete_runtime_value = mcp(command=["server", "{{ENDPOINT}"])
+incomplete_runtime_value["environment"] = {"ENDPOINT": {"owner": "user"}}
+assert mcp_errors(incomplete_runtime_value) == [
+    "MCP runtime value must be one complete command argument: {{ENDPOINT}"
+]
+
 with tempfile.TemporaryDirectory() as directory:
     folder = Path(directory)
     dockerfile = folder / "Dockerfile"
