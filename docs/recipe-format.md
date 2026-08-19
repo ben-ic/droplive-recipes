@@ -196,17 +196,14 @@ against `pattern`. If the selected format cannot satisfy the pattern, the
 recipe check fails and names the variable. A pattern is a constraint, not a
 second generator. `laravel-base64` does not accept `pattern`.
 
-For the credential shown on the demo sign-in card, add its fixed username:
+> **Not yet read.** `format`, `length`, `pattern`, and `login` are accepted by
+> the schema and validated by the linter, but DropLive does not read them yet.
+> Only `owner` changes what DropLive does today. Declaring them is harmless and
+> documents your intent; do not rely on them to change the generated value.
 
-```yaml
-environment:
-  APP_ADMIN_PASSWORD:
-    owner: droplive
-    format: password
-    length: 24
-    login:
-      username: admin
-```
+To show a credential on the demo sign-in card, annotate the recipe entrypoint.
+See [entrypoint declarations](#entrypoint-declarations) below. `login` in this
+section does not do it.
 
 DropLive injects values declared in `environment` when it starts the service.
 Do not repeat them in Docker Compose. A plain `docker compose up` does not
@@ -217,6 +214,106 @@ Never put the generated value in Docker Compose, a Dockerfile, a script, or
 
 Vendor credentials and vendor base URLs do not belong in `environment`. Use a
 reviewed emulator capability and map its outputs through `emulators.bindings`.
+
+## The public origin
+
+Do not declare the demo's own URL. DropLive recognises an origin-shaped variable
+name and supplies the session origin automatically. These names are recognised:
+
+- exactly `APP_URL`, `AUTH_URL`, `NEXTAUTH_URL`, or `ROOT_URL`; and
+- any name ending in `_ROOT_URL`, `_SITE_URL`, `_BASE_URL`, or `_PUBLIC_URL`.
+
+So `WAKAPI_PUBLIC_URL`, `APP_BASE_URL`, and `NTFY_BASE_URL` all resolve without
+a declaration. Require the name where the application reads it and stop there:
+
+```sh
+: "${APP_BASE_URL:?DropLive supplies the public origin}"
+```
+
+A name that no file requires is never supplied. Requiring it is what asks for
+it.
+
+> **Do not declare an origin variable as `owner: droplive`.** That marks it as a
+> value to generate, which wins over the origin rule, and the application
+> receives a random secret where its URL should be. The application then starts
+> and fails in confusing ways instead of failing at boot.
+
+A name carrying a database or cache word is never treated as an origin, so a
+connection URL still comes from its companion.
+
+## Entrypoint declarations
+
+A recipe-owned entrypoint script is a declaration surface, not only code.
+DropLive reads the script that the image's `ENTRYPOINT` or `CMD` names, when
+that script is `COPY`ed from the recipe folder.
+
+### Requiring a value
+
+The POSIX "fail if unset" form declares a required runtime value:
+
+```sh
+: "${SESSION_SECRET:?DropLive must generate SESSION_SECRET}"
+```
+
+DropLive collects every `${NAME:?message}` in that script and treats each name
+as required. This is why most recipes need no `environment` section: the
+entrypoint already says what the application cannot start without.
+
+### Declaring a generated bootstrap credential
+
+A credential the application owns and DropLive mints per demo needs a
+machine-readable line in the same script, directly above its guard:
+
+```sh
+# droplive: generate=hex96 ownership=app purpose=owner-bootstrap lifecycle=stable rotation=none name=ADMIN_PASSWORD capability=owner-login username=admin
+: "${ADMIN_PASSWORD:?DropLive must generate the initial owner password}"
+```
+
+The fields are fixed and ordered:
+
+| Field | Accepted values |
+|---|---|
+| `generate` | `hex64` or `hex96` |
+| `ownership` | `app` |
+| `purpose` | `owner-bootstrap` or `admin-bootstrap` |
+| `lifecycle` | `stable` |
+| `rotation` | `app` if the application can change it after sign-in, else `none` |
+| `name` | The variable name |
+| `capability` | Optional. `owner-login` or `admin-login` |
+| `username` | Optional. The fixed username shown beside the password |
+
+Rules that decide whether the line counts:
+
+- The same script must also require `name` with a `${NAME:?…}` guard. An
+  annotation alone declares nothing.
+- `name` must read as a credential: it needs `PASSWORD`, `PASS`, `SECRET`, or
+  `TOKEN` as a whole word. A connection password and a recognised third-party
+  credential are refused even when annotated.
+- `capability` must agree with `purpose`: `owner-bootstrap` pairs with
+  `owner-login`.
+- **At most one `capability=` line per script.** A second one silently removes
+  the sign-in card. Annotate other generated secrets without `capability`.
+
+`capability` is what puts the credential on the visitor's sign-in card, so add
+it only for the credential a person actually signs in with. Omit it for machine
+keys:
+
+```sh
+# droplive: generate=hex96 ownership=app purpose=owner-bootstrap lifecycle=stable rotation=none name=SESSION_SECRET
+: "${SESSION_SECRET:?DropLive must generate SESSION_SECRET}"
+```
+
+### Where DropLive looks
+
+Only the first statically resolvable absolute path in the image's `ENTRYPOINT`
+or `CMD` is read, and only when a `COPY` in the recipe Dockerfile maps it back
+into the recipe folder. Arbitrary scripts are not scanned, so a build helper
+cannot become a runtime requirement.
+
+DropLive reads that script relative to the recipe folder root. If a recipe
+Compose file points its build at another directory or another Dockerfile name,
+the entrypoint is not found there and its declarations are missed. Keep the
+Dockerfile and the entrypoint at the recipe root.
 
 ## `companions`
 
@@ -244,6 +341,12 @@ companions:
 Allowed companion datasets and outputs are registered in
 [`companions/v1.yaml`](../companions/v1.yaml). A type, dataset, or binding that
 is not in this registry fails validation.
+
+> **Not yet read.** When DropLive runs an app or API recipe today it reads only
+> the short form, so an expanded companion validates but attaches nothing. Use
+> the short form for a runtime recipe. The expanded form stays correct for an
+> MCP recipe, whose test contract is still
+> [planned](mcp-and-skills.md), and for recording a reviewed dataset.
 
 ## `emulators`
 

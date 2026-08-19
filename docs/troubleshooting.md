@@ -65,15 +65,43 @@ First decide who supplies it:
 - Use a companion for a database or cache connection.
 - Use an emulator binding for a supported external service.
 
-Do not add the old `# droplive:` entrypoint annotation. The public contract is
-the `environment` section in `droplive.yaml`.
+A recipe entrypoint declares required values too. `: "${NAME:?message}"` marks
+`NAME` as required, and DropLive reads those guards. Most recipes need no
+`environment` section for that reason.
 
 For a generated value, `format` defaults to `url-safe`. Supported formats are
 `hex`, `url-safe`, `alphanumeric`, `password`, `base64`, and
 `laravel-base64`. See [the recipe reference](recipe-format.md) for length and
-pattern rules.
+pattern rules. DropLive does not read `format`, `length`, `pattern`, or `login`
+yet, so they document intent rather than change the generated value.
 
 Never add a real secret to Git.
+
+## The demo shows no sign-in credential
+
+The sign-in card comes from a `# droplive:` annotation on the recipe entrypoint,
+not from `environment` in `droplive.yaml`. Check, in order:
+
+- the annotated variable is also required in the same script with
+  `${NAME:?…}`;
+- the line carries `capability=owner-login` or `capability=admin-login`, and
+  that value agrees with its `purpose`;
+- **only one** line in that script carries `capability=`, because a second one
+  removes the card; and
+- the variable name contains `PASSWORD`, `PASS`, `SECRET`, or `TOKEN` as a whole
+  word, and is not a connection or third-party credential.
+
+See [entrypoint declarations](recipe-format.md#entrypoint-declarations).
+
+## The application got a random string instead of its URL
+
+The recipe declared an origin variable as `owner: droplive`. That asks DropLive
+to generate a value, and generating wins over the rule that supplies the session
+origin.
+
+Remove it from `environment`. Require the name in the entrypoint instead and let
+DropLive recognise its shape. See
+[the public origin](recipe-format.md#the-public-origin).
 
 ## An external API is required
 
