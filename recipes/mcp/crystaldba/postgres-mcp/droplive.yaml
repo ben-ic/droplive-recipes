@@ -1,0 +1,26 @@
+version: 1
+kind: mcp
+companions:
+  database:
+    type: postgres
+    dataset: postgres.store.v1
+    bindings:
+      DATABASE_URI: url
+mcp:
+  transport: stdio
+  package:
+    manager: pypi
+    name: "postgres-mcp"
+    version: "0.3.0"
+    artifact: "postgres_mcp-0.3.0-py3-none-any.whl"
+    integrity: "sha256:455dd71ed8deab77a67af2468e6f059dd0f114e05c0031ab47306a7048dc30bf"
+  command: ["postgres-mcp", "--access-mode=restricted"]
+  network: {mode: none, destinations: []}
+  tools:
+    examples:
+      list_schemas: {}
+      list_objects: {schema_name: "public", object_type: "table"}
+      execute_sql: {sql: "SELECT id, name, email FROM customers ORDER BY id"}
+    smoke:
+      - tool: execute_sql
+        arguments: {sql: "SELECT id, name, email FROM customers ORDER BY id"}

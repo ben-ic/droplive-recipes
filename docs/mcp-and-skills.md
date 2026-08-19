@@ -43,7 +43,8 @@ Each test gets a new sandbox with:
 - a read-only root filesystem and declared temporary writable paths;
 - fixed CPU, memory, process, file, output, and time limits;
 - no real vendor credential;
-- denied network access except for reviewed emulator capabilities; and
+- declared network access that DropLive observes and records, with reviewed
+  fixture services used in place of real vendor credentials; and
 - new fixture credentials that expire with the test.
 
 DropLive records process output, network destinations, MCP messages, tool calls,
@@ -66,6 +67,15 @@ For `streamable-http`, DropLive starts the built service on an allocated port.
 Only the declared MCP path is given to the test client. The listener stays
 inside the sandbox.
 
+A public recipe cannot provide a remote MCP endpoint. DropLive derives the
+internal endpoint from the locally started service and the declared path.
+
+An MCP server can use the same source, Dockerfile, Compose, and pinned-image
+build paths as an app. A registry package is one optional build path. For a
+package build, DropLive verifies the declared top-level archive, resolves and
+hashes the full dependency closure, and attaches that closure to the tested
+artifact identity before the user session starts.
+
 ### Check the protocol
 
 The planned test client performs this sequence:
@@ -78,13 +88,17 @@ The planned test client performs this sequence:
    templates.
 4. Reject malformed JSON-RPC, duplicate names, invalid schemas, and responses
    that do not match the advertised capability.
-5. Invoke reviewed test cases with fixed fixture input.
+5. Invoke the small set of reviewed smoke calls with fixed fixture input.
 6. Close the client and confirm that the server exits or becomes idle cleanly.
 
 Listing is not sufficient evidence. At least one advertised operation must run.
 An operation that can change data runs only against a disposable fixture. A
 server with no safe deterministic operation needs a reviewed test case before
 it can pass.
+
+Recipes can provide a small set of useful tool examples. They do not repeat
+arguments for every advertised tool. The user interface reads each live tool's
+`tools/list` JSON Schema to help create arguments that are not in the recipe.
 
 ### Test data and authentication
 

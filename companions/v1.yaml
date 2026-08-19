@@ -1,0 +1,18 @@
+schema: droplive.companions/v1
+
+companions:
+  postgres:
+    outputs: [url, host, port, database, username, password]
+    datasets: [postgres.store.v1]
+
+  redis-stack:
+    outputs: [url, host, port, username, password]
+    datasets: [redis.store.v1]
+
+  s3:
+    outputs: [endpoint, region, bucket, access_key, secret_key]
+    datasets: [s3.objects.v1]
+
+  chromium:
+    outputs: [cdp_endpoint, browser_url]
+    datasets: []

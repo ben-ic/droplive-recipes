@@ -1,0 +1,19 @@
+version: 1
+kind: mcp
+mcp:
+  transport: stdio
+  package:
+    manager: npm
+    name: "@playwright/mcp"
+    version: "0.0.79"
+    integrity: "sha512-VpqD4a3vFyGQMY9sh3UJiO6wjcurggkljKfAyCHL0QWGY5m6Ehr3MNsAAHPDHO//n13g0PCjpHatAOiulrqdZQ=="
+  command: ["playwright-mcp", "--headless", "--isolated", "--sandbox", "--block-service-workers"]
+  network: {mode: observed, destinations: ["*"]}
+  tools:
+    examples:
+      browser_navigate: {url: "https://example.com/"}
+      browser_snapshot: {}
+      browser_tabs: {action: "list"}
+    smoke:
+      - tool: browser_navigate
+        arguments: {url: "https://example.com/"}

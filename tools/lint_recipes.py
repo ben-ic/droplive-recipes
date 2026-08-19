@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RECIPES = ROOT / "recipes"
 SCHEMA = ROOT / "schema/droplive.recipe.v1.schema.json"
 CAPABILITIES = ROOT / "capabilities/v1.yaml"
+COMPANIONS = ROOT / "companions/v1.yaml"
 
 
 def location(parts: list[Any]) -> str:
@@ -143,6 +144,27 @@ def capability_errors(recipe: dict[str, Any], capabilities: dict[str, Any]) -> l
     return errors
 
 
+def companion_errors(recipe: dict[str, Any], companions: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    for name, companion in (recipe.get("companions") or {}).items():
+        if isinstance(companion, str):
+            continue
+        companion_type = companion["type"]
+        definition = companions.get(companion_type)
+        if definition is None:
+            errors.append(f"companion {name} uses unknown type {companion_type}")
+            continue
+        dataset = companion.get("dataset")
+        if dataset and dataset not in definition["datasets"]:
+            errors.append(f"companion {companion_type} does not support dataset {dataset}")
+        for environment_name, output in companion["bindings"].items():
+            if output not in definition["outputs"]:
+                errors.append(
+                    f"companion {companion_type} has no output {output} for {environment_name}"
+                )
+    return errors
+
+
 # Keys that carry an identity or a credential. A recipe may layer CONTENT over a
 # dataset -- messages, files, repositories, customers -- but not the identities that
 # content belongs to.
@@ -184,10 +206,52 @@ def seed_errors(name: str, emulator: dict[str, Any]) -> list[str]:
     return errors
 
 
+def mcp_errors(recipe: dict[str, Any]) -> list[str]:
+    if recipe.get("kind") != "mcp":
+        return []
+
+    mcp = recipe["mcp"]
+    tools = mcp.get("tools") or {}
+    smoke = tools.get("smoke") or []
+    errors: list[str] = []
+
+    destinations = (mcp.get("network") or {}).get("destinations") or []
+    if "*" in destinations and destinations != ["*"]:
+        errors.append("MCP network destination * must be the only destination")
+
+    if mcp["transport"] == "stdio" and mcp.get("command"):
+        command = mcp["command"]
+        forbidden = {"bash", "curl", "env", "npx", "pip", "sh", "sudo", "uvx", "wget"}
+        executable = Path(command[0]).name.lower()
+        if executable in forbidden:
+            errors.append(
+                f"MCP command must run the resolved package executable directly, not {executable}"
+            )
+        if any("\x00" in argument for argument in command):
+            errors.append("MCP command arguments cannot contain NUL")
+
+    if mcp.get("package") and not mcp.get("command"):
+        errors.append("MCP package build path requires a resolved command")
+
+    if mcp.get("tools") and not smoke:
+        errors.append("MCP tools must include at least one smoke call")
+
+    return errors
+
+
 def path_errors(recipe_file: Path, recipe: dict[str, Any]) -> list[str]:
     relative = recipe_file.relative_to(RECIPES)
-    if len(relative.parts) != 4:
+    product = recipe.get("product")
+    if recipe.get("kind") == "mcp" and product:
+        if len(relative.parts) != 5 or relative.parts[3] != product:
+            return [
+                "MCP product recipe path must be "
+                "recipes/mcp/<github-owner>/<github-repository>/<product>/droplive.yaml"
+            ]
+    elif len(relative.parts) != 4:
         return ["recipe path must be recipes/<kind>/<github-owner>/<github-repository>/droplive.yaml"]
+    elif product:
+        return ["product is only valid for a nested MCP product recipe"]
     folder_kind = relative.parts[0]
     if recipe.get("kind") != folder_kind:
         return [f"kind {recipe.get('kind')} does not match folder {folder_kind}"]
@@ -212,6 +276,8 @@ def main() -> int:
     validator = Draft202012Validator(schema)
     capability_document = yaml.safe_load(CAPABILITIES.read_text())
     capabilities = capability_document["capabilities"]
+    companion_document = yaml.safe_load(COMPANIONS.read_text())
+    companions = companion_document["companions"]
     recipe_files = sorted(RECIPES.glob("**/droplive.yaml"))
     errors: list[str] = []
 
@@ -236,6 +302,8 @@ def main() -> int:
             path_errors(recipe_file, recipe)
             + build_errors(recipe_file, recipe)
             + capability_errors(recipe, capabilities)
+            + companion_errors(recipe, companions)
+            + mcp_errors(recipe)
         )
         errors.extend(f"{relative}: {message}" for message in checks)
 

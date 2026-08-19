@@ -227,8 +227,22 @@ companions:
   cache: redis
 ```
 
-Supported values are `postgres`, `mysql`, `mariadb`, `mongodb`, `redis`, and
-`upstash`.
+The short form supports `postgres`, `mysql`, `mariadb`, `mongodb`, `redis`, and
+`upstash`. Use the expanded form when the recipe needs a reviewed dataset and
+environment bindings:
+
+```yaml
+companions:
+  database:
+    type: postgres
+    dataset: postgres.store.v1
+    bindings:
+      DATABASE_URI: url
+```
+
+Allowed companion datasets and outputs are registered in
+[`companions/v1.yaml`](../companions/v1.yaml). A type, dataset, or binding that
+is not in this registry fails validation.
 
 ## `emulators`
 
@@ -273,7 +287,18 @@ version: 1
 kind: mcp
 mcp:
   transport: stdio
-  command: ["node", "dist/index.js"]
+  package:
+    manager: npm
+    name: "@example/server"
+    version: "1.2.3"
+    integrity: "sha512-..."
+  command: ["example-server"]
+  tools:
+    examples:
+      read_item: {id: "example-1"}
+    smoke:
+      - tool: read_item
+        arguments: {id: "example-1"}
 ```
 
 For Streamable HTTP:
@@ -288,8 +313,35 @@ mcp:
 
 Build discovery works the same way as it does for apps.
 
-`command` and `path` are mutually exclusive. A `stdio` server requires
-`command`. A `streamable-http` server requires `path`.
+`package` is one optional build path. An MCP recipe can instead use upstream
+source, a recipe Dockerfile, Compose, or a pinned image. When `package` is
+present, `command` names its resolved executable without a shell or downloader.
+For a source build, the selected image can provide the standard-input and
+standard-output command.
+
+A Streamable HTTP recipe declares only its local `path`. It must start the
+server in the DropLive sandbox and use an internally derived endpoint. A public
+recipe cannot supply a remote endpoint.
+
+When one repository contains several MCP products, add a product folder and a
+matching slug:
+
+```text
+recipes/mcp/modelcontextprotocol/servers/filesystem/droplive.yaml
+```
+
+```yaml
+product: filesystem
+```
+
+Tool `examples` are optional and should include only useful starting arguments.
+DropLive uses each live tool's `tools/list` JSON Schema to help the user create
+other arguments. `smoke` contains the small reviewed set that qualification runs.
+
+The package integrity value pins the top-level archive. During qualification,
+DropLive resolves and hashes the complete dependency closure and attaches that
+closure to the tested artifact identity. A later dependency resolution produces
+a different artifact identity even when the top-level package version is the same.
 
 A `stdio` server does not need a container port or HTTP health check. The MCP
 handshake and operation are its readiness test. A Streamable HTTP server needs

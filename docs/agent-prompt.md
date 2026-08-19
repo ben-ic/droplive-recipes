@@ -14,6 +14,8 @@ edit files. For an MCP server or skill, also read docs/mcp-and-skills.md.
 
 Goal:
 - Add one recipe under recipes/<kind>/<github-owner>/<github-repository>/.
+  For several MCP products in one repository, add a product subfolder and the
+  matching product slug.
 - For an app, API, or MCP server, make the project build and start with a
   read-only root filesystem.
 - For a skill, identify the complete instruction package and its entrypoint.
@@ -65,6 +67,8 @@ Rules:
     against disposable fixtures. For a skill, verify observable effects with a
     fixed prompt and an explicit tool allowlist. Never use a real vendor
     credential for either test.
+15. For an MCP package build, resolve and hash the complete dependency closure.
+    Treat that closure as part of the tested artifact identity.
 
 For an app, API, or MCP server, test the selected Docker or Compose path. Confirm:
 - it builds for linux/amd64;

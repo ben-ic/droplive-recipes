@@ -61,3 +61,12 @@ capabilities:
       access_key: generated_session_secret
       secret_key: generated_session_secret
     datasets: []
+
+  github.api.v1:
+    access:
+      - server
+    outputs:
+      base_url: server_url
+      non_authenticating_token: public_value
+    datasets:
+      - github.collaboration.v1

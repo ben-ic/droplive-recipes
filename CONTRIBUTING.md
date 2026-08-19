@@ -40,6 +40,10 @@ Its MCP handshake and a successful operation prove readiness.
 An MCP test must also complete the protocol checks in
 [MCP servers and skills](docs/mcp-and-skills.md).
 
+For a package build, the qualification result must include the resolved and
+hashed dependency closure. The top-level package hash alone is not the tested
+artifact identity.
+
 ## Test a skill
 
 A skill does not need a container port or health check. Validate the complete
@@ -62,6 +66,7 @@ python3 tools/test_kind_schema.py
 - [ ] For a runtime recipe, `docker-compose.yaml` sets `read_only: true` on the main service.
 - [ ] An app, API, or Streamable HTTP MCP service has its required port and HTTP health check.
 - [ ] A `stdio` MCP service proves readiness with its MCP handshake and an operation.
+- [ ] An MCP package build records the complete resolved dependency closure.
 - [ ] For a runtime recipe, writable paths use `tmpfs` or a volume.
 - [ ] Docker Compose supplies public defaults and marks optional values.
 - [ ] `droplive.yaml` declares only `owner: droplive` or `owner: user` values.

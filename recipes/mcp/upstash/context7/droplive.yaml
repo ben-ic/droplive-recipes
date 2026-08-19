@@ -1,0 +1,18 @@
+version: 1
+kind: mcp
+mcp:
+  transport: stdio
+  package:
+    manager: npm
+    name: "@upstash/context7-mcp"
+    version: "4.0.2"
+    integrity: "sha512-PdNL3hFK7tFe4oDzTa10nH8M+Ue82ShZXrsKnY0OY29TXhazeb9qZp2B/BwrxHfKua3ywu7FlqQ8HG6uyQHdaw=="
+  command: ["context7-mcp"]
+  network: {mode: observed, destinations: [context7.com]}
+  tools:
+    examples:
+      resolve-library-id: {query: "How do I create a route?", libraryName: "Phoenix"}
+      query-docs: {libraryId: "/phoenixframework/phoenix", query: "How do I create a JSON route?"}
+    smoke:
+      - tool: resolve-library-id
+        arguments: {query: "How do I create a route?", libraryName: "Phoenix"}

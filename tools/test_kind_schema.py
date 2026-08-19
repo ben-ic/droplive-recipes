@@ -35,6 +35,17 @@ valid({
 })
 valid({
     "version": 1,
+    "kind": "mcp",
+    "mcp": {"transport": "streamable-http", "path": "/mcp", "command": ["server"]},
+})
+valid({
+    "version": 1,
+    "kind": "mcp",
+    "mcp": {"transport": "stdio"},
+    "build": {"dockerfile": "Dockerfile"},
+})
+valid({
+    "version": 1,
     "kind": "skill",
     "skill": {"entrypoint": "SKILL.md"},
 })
@@ -65,7 +76,7 @@ invalid({
 invalid({
     "version": 1,
     "kind": "mcp",
-    "mcp": {"transport": "streamable-http", "path": "/mcp", "command": ["server"]},
+    "mcp": {"transport": "streamable-http", "path": "/mcp", "endpoint": "https://example.com/mcp"},
 })
 
 with tempfile.TemporaryDirectory() as directory:

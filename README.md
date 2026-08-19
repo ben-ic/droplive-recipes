@@ -157,12 +157,23 @@ version. Change the recipe only when the way the project runs changes.
 Copy the prompt in [docs/agent-prompt.md](docs/agent-prompt.md). It works with a
 GitHub URL or a repository on your computer.
 
+## MCP test recipes
+
+An MCP recipe can use a pinned registry package, source, Dockerfile, Compose, or
+a pinned image. It declares the local transport, useful tool examples, smoke
+calls, and observed network access. A standard-input and standard-output server
+uses the MCP handshake for readiness. DropLive applies its 15-minute session
+policy without repeating that value in each recipe.
+
+The runtime behavior is the planned DropLive test contract. See the
+[complete recipe reference](docs/recipe-format.md) for its exact limits.
+
 ## More help
 
 - [Complete recipe reference](docs/recipe-format.md)
+- [Planned MCP and skills test contract](docs/mcp-and-skills.md)
 - [Troubleshooting](docs/troubleshooting.md)
 - [Add realistic sample data](docs/seeding.md)
-- [Handle and test MCP servers and skills](docs/mcp-and-skills.md)
 - [Contribution checklist](CONTRIBUTING.md)
 
 This repository uses the [MIT License](LICENSE).

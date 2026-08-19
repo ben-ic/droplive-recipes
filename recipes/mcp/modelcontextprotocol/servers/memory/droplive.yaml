@@ -1,0 +1,21 @@
+version: 1
+kind: mcp
+product: memory
+mcp:
+  transport: stdio
+  package:
+    manager: npm
+    name: "@modelcontextprotocol/server-memory"
+    version: "2026.7.4"
+    integrity: "sha512-D+NNzChsOHN72y58ngDmO+TzjJijGi/sSY/gBydhB3TJCcm1XQEozVWwEpruHeXt/HSkMV3Z/BpHDhdt1MLD5w=="
+  command: ["mcp-server-memory"]
+  network: {mode: none, destinations: []}
+  tools:
+    examples:
+      create_entities:
+        entities: [{name: "Ada Example", entityType: "person", observations: ["Uses fictional data"]}]
+      read_graph: {}
+      search_nodes: {query: "Ada Example"}
+    smoke:
+      - tool: read_graph
+        arguments: {}
