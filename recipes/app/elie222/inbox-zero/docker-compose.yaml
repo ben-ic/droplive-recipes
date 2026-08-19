@@ -1,0 +1,84 @@
+# Upstream publishes a working image but no Compose file, and the application
+# refuses to start unless its whole environment validates at boot. Everything below
+# is a public default or a value DropLive supplies; nothing here is a secret.
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    read_only: true
+    tmpfs:
+      - /tmp
+    volumes:
+      # NOT persistence — writability.
+      #
+      # The image's own start script substitutes every NEXT_PUBLIC_* placeholder into
+      # the already-built bundles, so it rewrites files throughout `.next/server` and
+      # `.next/static` on every boot. Those values are per-session, so they cannot be
+      # baked at build time, and a read-only root filesystem refuses the rewrite:
+      #
+      #   sed: can't create temp file 'apps/web/.next/server/chunks/…XXXXXX':
+      #        Read-only file system
+      #
+      # A tmpfs cannot serve here — it would mount empty over the built application.
+      #
+      # `nocopy: true` is the important half. Docker seeds a named volume from the
+      # image on first mount; a DropLive volume STARTS EMPTY. Relying on copy-up would
+      # pass locally and fail in production, so it is turned off and the recipe's own
+      # entrypoint initializes the mount from a template baked at image build time.
+      - type: volume
+        source: next-build
+        target: /app/apps/web/.next
+        volume:
+          nocopy: true
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      HOSTNAME: 0.0.0.0
+
+      # The demo's own origin. The application reads it under three names and
+      # compares them against each other, so all three come from the one value.
+      NEXT_PUBLIC_BASE_URL: "${PUBLIC_URL:?DropLive supplies the public origin}"
+      INTERNAL_API_URL: "${PUBLIC_URL:?DropLive supplies the public origin}"
+      AUTH_URL: "${PUBLIC_URL:?DropLive supplies the public origin}"
+
+      # Prisma runs migrations on DIRECT_URL and queries on DATABASE_URL. A demo
+      # has one database, so both name it.
+      DATABASE_URL: "${DATABASE_URL:?DropLive supplies the postgres companion}"
+      DIRECT_URL: "${DATABASE_URL:?DropLive supplies the postgres companion}"
+
+      # In-process queue. The hosted product uses QStash, which a demo has no
+      # account for and does not need.
+      QUEUE_BACKEND: internal
+
+      # Billing is not part of a fifteen-minute demo, and the PWA service worker
+      # outlives the session it was installed from.
+      NEXT_PUBLIC_BYPASS_PREMIUM_CHECKS: "true"
+      NEXT_PUBLIC_DISABLE_PWA: "true"
+
+      # Required by the application's own schema (`z.string().min(1)`) even though a
+      # demo never receives a real Pub/Sub delivery. It names a topic that does not
+      # exist; the value has to be present, not real.
+      GOOGLE_PUBSUB_TOPIC_NAME: projects/droplive-demo/topics/gmail
+
+      # Microsoft sign-in is compiled in and validated at boot. A demo signs in with
+      # Google, so these satisfy validation and authenticate nothing.
+      MICROSOFT_CLIENT_ID: droplive-demo
+      MICROSOFT_CLIENT_SECRET: droplive-demo-secret
+
+      # DEFAULT_LLMS is REQUIRED — `z.string().min(1)` in the application's own env
+      # schema — and it is the modern form: an ordered `provider:model` chain whose
+      # first entry is primary. Setting `DEFAULT_LLM_PROVIDER` and `DEFAULT_LLM_MODEL`
+      # also satisfies it, because `buildLegacyLlmsEnv` converts them at startup, but
+      # those two are marked deprecated in the source and are a worse thing to depend
+      # on. The model half comes from the emulator so the name the application asks
+      # for is the name the fixture serves; `:?` rather than `:-` so a missing binding
+      # fails loudly instead of quietly disagreeing.
+      DEFAULT_LLMS: "openai-compatible:${OPENAI_COMPATIBLE_MODEL:?DropLive supplies the emulated model name}"
+
+      # Upstash's HTTP client demands a token. The companion is a shim over the
+      # session's own Redis and does not check it.
+      UPSTASH_REDIS_TOKEN: droplive-demo-token
+
+volumes:
+  next-build:
