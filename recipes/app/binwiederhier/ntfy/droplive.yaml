@@ -8,3 +8,10 @@ run:
     - '"healthy":true'
   data:
   - /var/lib/ntfy
+environment:
+  # ntfy's entrypoint measures this before it will start. Declaring the shape is
+  # the recipe's job; the entrypoint check is what proves it was honoured.
+  NTFY_ADMIN_PASSWORD:
+    owner: droplive
+    format: url-safe
+    length: 16
