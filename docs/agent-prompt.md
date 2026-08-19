@@ -37,21 +37,32 @@ Rules:
      kind: <kind>
 
 4. If several upstream build files exist, select the exact file in build.
-5. For a runtime recipe, if upstream does not work, add recipe-owned
-   docker-compose.yaml. Prefer Compose before a replacement Dockerfile.
+5. Use the smallest build path that works. Use an upstream Compose file or
+   Dockerfile when it meets the DropLive runtime rules. Otherwise, prefer a
+   published image pinned by digest. Add recipe-owned docker-compose.yaml for
+   runtime configuration. Add a small recipe-owned Dockerfile or entrypoint
+   only when the image itself needs adaptation. Preferring Compose does not
+   override correctness.
 6. Name the main Compose service app when practical. Set read_only: true. Use
    tmpfs for temporary writes and volumes for persistent data. Add an HTTP
    health check for an app, API, or Streamable HTTP MCP server. A stdio MCP
-   server does not need a port or HTTP health check.
-7. Add a recipe Dockerfile or entrypoint only when Compose cannot fix the
-   problem. Pin every FROM image by sha256 digest.
+   server does not need a port or HTTP health check. DropLive managed volumes
+   start empty. They do not copy existing files from the image. Never mount an
+   empty volume over files that the application needs to start. If the
+   application must modify image files at runtime, preserve those files at a
+   template path in a recipe-owned Dockerfile and copy them into the empty
+   writable mount from a recipe-owned entrypoint before the application starts.
+7. Pin every recipe-owned FROM image by sha256 digest. Do not copy a complete
+   upstream Dockerfile only to make a small runtime change. Extend a pinned
+   upstream image with the smallest required adaptation.
 8. Put normal public defaults and optional variables in Docker Compose. In
    droplive.yaml, declare only values that DropLive must generate or ask the
    visitor to supply. Use owner: droplive or owner: user. For generated values,
    use only the documented formats: hex, url-safe, alphanumeric, password,
    base64, or laravel-base64. Add length or a safe RE2 pattern only when the
-   application requires it. Never commit a secret or add a # droplive:
-   entrypoint annotation.
+   application requires it. DropLive injects these declared values when it
+   starts the service. Do not repeat them in Docker Compose. Never commit a
+   secret or add a # droplive: entrypoint annotation.
 9. Use companions for databases and caches. Use only listed emulator
    capabilities for external services. Never add an arbitrary external host.
 10. Do not put a repository URL, branch, tag, commit, measurement, artifact
@@ -103,7 +114,12 @@ For an app, API, or MCP server, test the selected Docker or Compose path. Confir
 - it builds for linux/amd64;
 - it starts without privileged mode or host networking;
 - it starts with a read-only root filesystem;
+- every writable volume starts empty;
+- the application does not depend on Docker named-volume copy-up;
+- files required at startup remain available after writable mounts are attached;
 - every write goes to tmpfs or declared persistent data;
+- values declared in droplive.yaml, companions, and emulators are injected only
+  at runtime; and
 - no secret is present in the committed files.
 
 For an app, API, or Streamable HTTP MCP server, confirm that its HTTP health
