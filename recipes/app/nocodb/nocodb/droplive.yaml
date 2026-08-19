@@ -2,6 +2,6 @@ version: 1
 kind: app
 run:
   port: 8080
-  health: /dashboard
+  health: /api/v1/health
   data:
   - /usr/app/data
