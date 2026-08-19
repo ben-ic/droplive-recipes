@@ -63,19 +63,41 @@ Rules:
     Keep seed data deterministic, repeatable, obviously fictional, and free of
     secrets. Skip seeding when the project has no stable seeding interface.
 13. Run python3 tools/lint_recipes.py before you finish.
-14. For MCP, verify initialize, capability listing, and at least one operation
-    against disposable fixtures. For a skill, verify observable effects with a
-    fixed prompt and an explicit tool allowlist. Never use a real vendor
-    credential for either test.
-15. For an MCP package build, resolve and hash the complete dependency closure.
+14. For every MCP recipe, select one network mode:
+    - Use `network: none` only when the server works without outbound network
+      access. DropLive blocks network access when it tests this claim.
+    - Use `network: observed` when the server needs network access. DropLive
+      allows the traffic and records the actual destinations in the receipt.
+    - Use optional `expected_hosts` only to document expected public hostnames.
+      It does not allow or block traffic. Do not put URLs, paths, ports,
+      credentials, or IP addresses in it.
+15. Give every MCP recipe one small, deterministic `tools.smoke` call. It must
+    be read-only, bounded, and independent of private user data. Use public or
+    disposable fixture data. Use `tools.examples` only for useful optional
+    starting arguments. Do not copy the full tool catalog into the recipe.
+16. Verify MCP initialize, capability listing, and the smoke call against
+    disposable fixtures. A process that stays alive without a successful MCP
+    operation does not pass. Never use a real vendor credential.
+17. Treat an MCP package recipe as one exact package release. Verify that the
+    package belongs to the source project. Do not replace a requested source
+    commit with an unrelated package release. Do not combine `mcp.package` with
+    a source build. A source recipe builds the exact requested Git commit.
+18. For an MCP package build, resolve and hash the complete dependency closure.
     Treat that closure as part of the tested artifact identity.
-16. For MCP, select `network: observed` or `network: none`. Use optional
-    `expected_hosts` only to document expected public hostnames. It must not
-    control traffic.
-17. Give every MCP recipe one bounded, read-only smoke call with public or
-    disposable fixture data.
-18. Treat an MCP package recipe as one exact package release. Do not combine it
-    with a source build. A source recipe builds the exact requested Git commit.
+19. Resolve every runtime dependency. A browser-control MCP server must use the
+    documented browser capability or include a pinned browser in its artifact.
+    Do not assume that Chrome, Chromium, a Playwright browser, a database, or
+    another service is installed. If the recipe cannot express the dependency,
+    stop and report it as unsupported.
+20. When an MCP command needs a runtime value, put the complete `{{NAME}}` token
+    in its own command argument and declare the matching environment, emulator,
+    or companion binding. Do not embed a token inside another argument.
+21. Use the documented capability for a vendor-like service. For example, use
+    `storage.s3.v1` for S3. Do not also declare an S3 companion. Use companions
+    only for dependency types listed in the repository. A recipe declares the
+    capability it needs, not private DropLive topology.
+22. For a skill, verify observable effects with a fixed prompt and an explicit
+    tool allowlist. Never use a real vendor credential.
 
 For an app, API, or MCP server, test the selected Docker or Compose path. Confirm:
 - it builds for linux/amd64;
