@@ -3,7 +3,9 @@
 # is a public default or a value DropLive supplies; nothing here is a secret.
 services:
   app:
-    image: ghcr.io/elie222/inbox-zero@sha256:b543689db188d252b7032327129f9f019c0d3257a4febff7a98005cd9318ec14
+    build:
+      context: .
+      dockerfile: Dockerfile
     read_only: true
     tmpfs:
       - /tmp
@@ -18,11 +20,17 @@ services:
       #   sed: can't create temp file 'apps/web/.next/server/chunks/…XXXXXX':
       #        Read-only file system
       #
-      # A tmpfs cannot serve here — it would mount empty over the built application. A
-      # named volume is seeded from the image on first mount, so the application starts
-      # from its own build output and can rewrite it. It is regenerated from the image
-      # for every session and holds nothing worth keeping.
-      - next-build:/app/apps/web/.next
+      # A tmpfs cannot serve here — it would mount empty over the built application.
+      #
+      # `nocopy: true` is the important half. Docker seeds a named volume from the
+      # image on first mount; a DropLive volume STARTS EMPTY. Relying on copy-up would
+      # pass locally and fail in production, so it is turned off and the recipe's own
+      # entrypoint initializes the mount from a template baked at image build time.
+      - type: volume
+        source: next-build
+        target: /app/apps/web/.next
+        volume:
+          nocopy: true
     environment:
       NODE_ENV: production
       PORT: "3000"
