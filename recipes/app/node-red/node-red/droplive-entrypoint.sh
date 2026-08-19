@@ -24,8 +24,8 @@ validate_lowerhex_64() {
   variable_length=${#variable_value}
   variable_charset=lowerhex
   test -z "$(printf '%s' "$variable_value" | tr -d '0-9a-f')" || variable_charset=other
-  if test "$variable_length" -ne 64 || test "$variable_charset" != lowerhex; then
-    echo "[node-red-init] $variable_name shape rejected: observed_length=$variable_length observed_charset=$variable_charset required=64-lowerhex." >&2
+  if test "$variable_length" -lt 64 || test "$variable_charset" != lowerhex; then
+    echo "[node-red-init] $variable_name shape rejected: observed_length=$variable_length observed_charset=$variable_charset required=64-or-more-lowerhex." >&2
     exit 64
   fi
   unset variable_name variable_value variable_length variable_charset

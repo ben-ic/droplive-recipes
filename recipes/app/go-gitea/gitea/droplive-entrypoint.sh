@@ -4,8 +4,6 @@ set -eu
 # The first administrator is created once from the generated password and the
 # recipe-defaulted `owner` username. Existing accounts are never overwritten.
 # droplive: generate=hex64 ownership=app purpose=owner-bootstrap lifecycle=stable rotation=app name=GITEA_ADMIN_PASSWORD capability=owner-login username=owner
-# (the hex64 above is what the annotation grammar accepts; the platform mints a
-#  *_PASSWORD as 16 URL-safe characters by name, which is the value that arrives)
 
 : "${APP_BASE_URL:?DropLive must derive APP_BASE_URL from the public origin}"
 : "${GITEA_ADMIN_EMAIL:?The recipe must provide the initial owner email address}"
@@ -49,8 +47,8 @@ validate_lowerhex_secret() {
   secret_length=${#secret_value}
   secret_charset=lowerhex
   test -z "$(printf '%s' "$secret_value" | tr -d '0-9a-f')" || secret_charset=other
-  if test "$secret_length" -ne 64 || test "$secret_charset" != lowerhex; then
-    echo "[gitea-init] $secret_name shape rejected: observed_length=$secret_length observed_charset=$secret_charset required=64-lowerhex." >&2
+  if test "$secret_length" -lt 64 || test "$secret_charset" != lowerhex; then
+    echo "[gitea-init] $secret_name shape rejected: observed_length=$secret_length observed_charset=$secret_charset required=64-or-more-lowerhex." >&2
     exit 64
   fi
   unset secret_name secret_value secret_length secret_charset
