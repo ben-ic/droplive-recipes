@@ -10,3 +10,14 @@ run:
   - /app/data
 companions:
   database: postgres
+environment:
+  # The one value the image cannot default and nothing else supplies.
+  #
+  # `packages/env/src/server.ts` validates with @t3-oss/env-core at boot and
+  # exits before listening if anything required is absent. Only three fields are
+  # required there: APP_URL (bound to the public origin), DATABASE_URL (from the
+  # declared postgres companion), and this. Everything else -- S3, Redis,
+  # ENCRYPTION_SECRET, SMTP, every OAuth provider -- is optional or defaulted, so
+  # no fixture is needed for the demo to start.
+  AUTH_SECRET:
+    owner: droplive
