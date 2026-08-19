@@ -12,7 +12,7 @@ mcp:
     name: "chrome-devtools-mcp"
     version: "1.7.0"
     integrity: "sha512-6xFW7oiUxTxZuHcfyYBkKQtmttjCbfifKZMSEk5CV8H2FucvKweYiJr8CblddYHtYjA4C14K9VAs1r49906RBA=="
-  command: ["chrome-devtools-mcp", "--browser-url={{BROWSER_CDP_ENDPOINT}}", "--no-usage-statistics", "--no-performance-crux"]
+  command: ["chrome-devtools-mcp", "--browser-url", "{{BROWSER_CDP_ENDPOINT}}", "--no-usage-statistics", "--no-performance-crux"]
   network: observed
   expected_hosts: [example.com]
   tools:

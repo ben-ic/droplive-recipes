@@ -12,7 +12,7 @@ mcp:
     name: "@playwright/mcp"
     version: "0.0.79"
     integrity: "sha512-VpqD4a3vFyGQMY9sh3UJiO6wjcurggkljKfAyCHL0QWGY5m6Ehr3MNsAAHPDHO//n13g0PCjpHatAOiulrqdZQ=="
-  command: ["playwright-mcp", "--cdp-endpoint={{BROWSER_CDP_ENDPOINT}}", "--isolated", "--block-service-workers"]
+  command: ["playwright-mcp", "--cdp-endpoint", "{{BROWSER_CDP_ENDPOINT}}", "--isolated", "--block-service-workers"]
   network: observed
   expected_hosts: [example.com]
   tools:
