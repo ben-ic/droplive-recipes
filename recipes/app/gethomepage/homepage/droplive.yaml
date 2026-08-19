@@ -3,6 +3,16 @@ kind: app
 run:
   port: 3000
   health: /
-  data:
-  - /app/config
+  # No persistent path.
+  #
+  # `/app/config` was declared here, and the image SHIPS that directory already
+  # populated with its default `settings.yaml`, `services.yaml` and friends.
+  # Declaring it mounts an empty volume over the top, so the first request read
+  # a directory the image had filled and found nothing:
+  #
+  #   Error: ENOENT: no such file or directory, open '/app/config/settings.yaml'
+  #
+  # Nothing a visitor does writes there either -- Homepage reads its dashboard
+  # definition from those files, it does not author them -- so a fifteen-minute
+  # demo needs no volume at all.
 
