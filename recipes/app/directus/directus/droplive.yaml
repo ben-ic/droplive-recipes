@@ -5,3 +5,19 @@ run:
   health: /server/health
   data:
   - /directus/database
+environment:
+  # Directus invents an admin password at first boot and prints it to its own
+  # log -- "No admin password provided. Defaulting to 13GV6H7oEgjg" -- so the
+  # demo served a sign-in page whose credential nobody could see. It uses the
+  # one it is given, so DropLive gives it one and shows it.
+  #
+  # The email is Directus's own default for a fresh install; only the password
+  # is ours to supply.
+  ADMIN_PASSWORD:
+    owner: droplive
+    login:
+      username: admin@example.com
+  # Without it Directus warns "Tokens will not persist between restarts" and
+  # signs sessions with a value it invented.
+  SECRET:
+    owner: droplive

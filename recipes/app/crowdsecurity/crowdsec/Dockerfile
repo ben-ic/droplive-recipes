@@ -22,4 +22,10 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
 # parsers, scenarios and the console all run without it.
 ENV DISABLE_ONLINE_API=true
 
+# Create the data directory the image's own startup script links into but never
+# creates. See droplive-entrypoint.sh for why it is absent on a demo and present
+# everywhere else. The image's own entrypoint still runs; this only precedes it.
+COPY --chmod=0755 droplive-entrypoint.sh /usr/local/bin/droplive-entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/droplive-entrypoint.sh"]
+
 EXPOSE 8080
