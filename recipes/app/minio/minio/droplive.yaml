@@ -5,15 +5,16 @@ run:
   health: /
   data:
   - /data
-sign_in:
-  # MinIO falls back to these when MINIO_ROOT_USER and MINIO_ROOT_PASSWORD are
-  # unset, and the console is unusable without them -- a visitor met a login page
-  # with nothing to type. Stating the upstream default is what makes the demo
-  # work today.
+environment:
+  # The console is a login page, so the demo has to hand the visitor something.
+  # Left alone, MinIO uses minioadmin/minioadmin and warns about it in its own
+  # log -- a credential every reader of its documentation already knows, live on
+  # a reachable demo.
   #
-  # Minting a password per demo would be stronger, but MinIO requires the user
-  # and the password to be set together, and a generated username cannot be shown
-  # on the sign-in card: `login.username` has to be a literal the visitor reads.
-  username: minioadmin
-  password: minioadmin
-  note: Upstream default for an unconfigured server.
+  # Only the password needs minting. MinIO requires the root user and password
+  # to be set together, but the username is not a secret: it is a literal in the
+  # Dockerfile, and the same literal here so the card can show it.
+  MINIO_ROOT_PASSWORD:
+    owner: droplive
+    login:
+      username: minioadmin
