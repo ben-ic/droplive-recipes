@@ -28,8 +28,8 @@ fi
 password_length=${#DAGU_AUTH_BUILTIN_INITIAL_ADMIN_PASSWORD}
 password_charset=url-safe
 test -z "$(printf '%s' "$DAGU_AUTH_BUILTIN_INITIAL_ADMIN_PASSWORD" | LC_ALL=C tr -d 'A-Za-z0-9_-')" || password_charset=other
-if test "$password_length" -ne 16 || test "$password_charset" != url-safe; then
-  echo "[dagu-init] Owner password shape rejected: observed_length=$password_length observed_charset=$password_charset required=16-url-safe." >&2
+if test "$password_length" -lt 16 || test "$password_charset" != url-safe; then
+  echo "[dagu-init] Owner password shape rejected: observed_length=$password_length observed_charset=$password_charset required=16-or-more-url-safe." >&2
   exit 64
 fi
 unset password_length password_charset

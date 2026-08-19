@@ -37,8 +37,8 @@ validate_human_password_16() {
   variable_length=${#variable_value}
   variable_charset=url-safe
   test -z "$(printf '%s' "$variable_value" | LC_ALL=C tr -d 'A-Za-z0-9_-')" || variable_charset=other
-  if test "$variable_length" -ne 16 || test "$variable_charset" != url-safe; then
-    echo "[node-red-init] $variable_name shape rejected: observed_length=$variable_length observed_charset=$variable_charset required=16-url-safe." >&2
+  if test "$variable_length" -lt 16 || test "$variable_charset" != url-safe; then
+    echo "[node-red-init] $variable_name shape rejected: observed_length=$variable_length observed_charset=$variable_charset required=16-or-more-url-safe." >&2
     exit 64
   fi
   unset variable_name variable_value variable_length variable_charset

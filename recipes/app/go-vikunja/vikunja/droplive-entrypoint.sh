@@ -12,13 +12,13 @@ set -eu
 validate_human_password_16() {
   value=$1
   name=$2
-  if test "${#value}" -ne 16; then
-    echo "$name must contain exactly 16 URL-safe characters" >&2
+  if test "${#value}" -lt 16; then
+    echo "$name must contain at least 16 URL-safe characters" >&2
     exit 64
   fi
   case "$value" in
     *[!A-Za-z0-9_-]*)
-      echo "$name must contain exactly 16 URL-safe characters" >&2
+      echo "$name must contain at least 16 URL-safe characters" >&2
       exit 64
       ;;
   esac
