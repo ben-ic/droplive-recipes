@@ -196,14 +196,18 @@ against `pattern`. If the selected format cannot satisfy the pattern, the
 recipe check fails and names the variable. A pattern is a constraint, not a
 second generator. `laravel-base64` does not accept `pattern`.
 
-> **Not yet read.** `format`, `length`, `pattern`, and `login` are accepted by
-> the schema and validated by the linter, but DropLive does not read them yet.
-> Only `owner` changes what DropLive does today. Declaring them is harmless and
-> documents your intent; do not rely on them to change the generated value.
+`format`, `length`, and `pattern` are the recipe stating the shape its
+application requires. Declare them when the application genuinely constrains the
+value, and leave them out otherwise so the default applies.
 
-To show a credential on the demo sign-in card, annotate the recipe entrypoint.
-See [entrypoint declarations](#entrypoint-declarations) below. `login` in this
-section does not do it.
+> **`login` is not read.** It validates, and nothing acts on it. To show a
+> credential on the demo sign-in card, annotate the recipe entrypoint instead —
+> see [entrypoint declarations](#entrypoint-declarations) below.
+
+An entrypoint that checks the shape of a value it was given should check what it
+actually needs. Asserting an exact length is the common mistake: it fails on any
+value that is longer and still perfectly usable. Check a minimum length and the
+character set.
 
 DropLive injects values declared in `environment` when it starts the service.
 Do not repeat them in Docker Compose. A plain `docker compose up` does not
