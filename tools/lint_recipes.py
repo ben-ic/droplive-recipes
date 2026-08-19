@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import ipaddress
 import json
 import re
 import sys
@@ -18,6 +19,12 @@ RECIPES = ROOT / "recipes"
 SCHEMA = ROOT / "schema/droplive.recipe.v1.schema.json"
 CAPABILITIES = ROOT / "capabilities/v1.yaml"
 COMPANIONS = ROOT / "companions/v1.yaml"
+
+EXPECTED_HOST = re.compile(
+    r"^(?:\*\.)?(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+"
+    r"[a-z](?:[a-z0-9-]{0,61}[a-z0-9])?$"
+)
+RUNTIME_VALUE = re.compile(r"\{\{([A-Z_][A-Z0-9_]*)\}\}")
 
 
 def location(parts: list[Any]) -> str:
@@ -206,18 +213,32 @@ def seed_errors(name: str, emulator: dict[str, Any]) -> list[str]:
     return errors
 
 
-def mcp_errors(recipe: dict[str, Any]) -> list[str]:
+def mcp_errors(recipe: dict[str, Any], recipe_file: Path | None = None) -> list[str]:
     if recipe.get("kind") != "mcp":
         return []
 
     mcp = recipe["mcp"]
     tools = mcp.get("tools") or {}
-    smoke = tools.get("smoke") or []
+    smoke = tools.get("smoke") or {}
     errors: list[str] = []
 
-    destinations = (mcp.get("network") or {}).get("destinations") or []
-    if "*" in destinations and destinations != ["*"]:
-        errors.append("MCP network destination * must be the only destination")
+    expected_hosts = mcp.get("expected_hosts") or []
+    if mcp["network"] == "none" and expected_hosts:
+        errors.append("MCP expected_hosts is not allowed when network is none")
+    for host in expected_hosts:
+        candidate = host.removeprefix("*.")
+        try:
+            ipaddress.ip_address(candidate)
+        except ValueError:
+            pass
+        else:
+            errors.append(f"MCP expected host must not be an IP address: {host}")
+            continue
+        if not EXPECTED_HOST.fullmatch(host):
+            errors.append(
+                "MCP expected host must be a hostname or wildcard hostname, "
+                f"not a URL, address, port, path, or credential: {host}"
+            )
 
     if mcp["transport"] == "stdio" and mcp.get("command"):
         command = mcp["command"]
@@ -230,11 +251,39 @@ def mcp_errors(recipe: dict[str, Any]) -> list[str]:
         if any("\x00" in argument for argument in command):
             errors.append("MCP command arguments cannot contain NUL")
 
+        declared_values = set((recipe.get("environment") or {}).keys())
+        for dependency in (recipe.get("emulators") or {}).values():
+            declared_values.update(dependency.get("bindings") or {})
+        for dependency in (recipe.get("companions") or {}).values():
+            if isinstance(dependency, dict):
+                declared_values.update(dependency.get("bindings") or {})
+        for argument in command:
+            for value in RUNTIME_VALUE.findall(argument):
+                if value not in declared_values:
+                    errors.append(f"MCP command uses undeclared runtime value {value}")
+
     if mcp.get("package") and not mcp.get("command"):
         errors.append("MCP package build path requires a resolved command")
 
-    if mcp.get("tools") and not smoke:
-        errors.append("MCP tools must include at least one smoke call")
+    if not smoke:
+        errors.append("MCP tools must include one smoke call")
+    elif len(json.dumps(smoke["arguments"], separators=(",", ":")).encode()) > 16384:
+        errors.append("MCP smoke arguments must be at most 16384 encoded bytes")
+
+    if mcp.get("package") and recipe.get("build"):
+        errors.append("MCP package and source build paths cannot be mixed")
+    if mcp.get("package") and recipe_file:
+        folder = recipe_file.parent
+        local_build_files = [
+            name
+            for name in ("Dockerfile", "docker-compose.yaml")
+            if (folder / name).is_file()
+        ]
+        if local_build_files:
+            errors.append(
+                "MCP package and recipe-owned source build paths cannot be mixed: "
+                + ", ".join(local_build_files)
+            )
 
     return errors
 
@@ -303,7 +352,7 @@ def main() -> int:
             + build_errors(recipe_file, recipe)
             + capability_errors(recipe, capabilities)
             + companion_errors(recipe, companions)
-            + mcp_errors(recipe)
+            + mcp_errors(recipe, recipe_file)
         )
         errors.extend(f"{relative}: {message}" for message in checks)
 

@@ -69,6 +69,13 @@ Rules:
     credential for either test.
 15. For an MCP package build, resolve and hash the complete dependency closure.
     Treat that closure as part of the tested artifact identity.
+16. For MCP, select `network: observed` or `network: none`. Use optional
+    `expected_hosts` only to document expected public hostnames. It must not
+    control traffic.
+17. Give every MCP recipe one bounded, read-only smoke call with public or
+    disposable fixture data.
+18. Treat an MCP package recipe as one exact package release. Do not combine it
+    with a source build. A source recipe builds the exact requested Git commit.
 
 For an app, API, or MCP server, test the selected Docker or Compose path. Confirm:
 - it builds for linux/amd64;

@@ -9,12 +9,12 @@ mcp:
     version: "2026.7.10"
     integrity: "sha512-Mmjg4anFBD5OzbPnGJOA0jPPN8645ERhQk38HQLpSenx1ox9bfdPkmAzUnNjeQtqQGFLtKe13J20RtLBmUKMZA=="
   command: ["mcp-server-filesystem", "/workspace"]
-  network: {mode: none, destinations: []}
+  network: none
   tools:
     examples:
       read_text_file: {path: "/workspace/README.md", head: 20}
       write_file: {path: "/workspace/output.txt", content: "DropLive fixture output\n"}
       list_directory: {path: "/workspace"}
     smoke:
-      - tool: list_allowed_directories
-        arguments: {}
+      name: list_allowed_directories
+      arguments: {}

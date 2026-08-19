@@ -91,6 +91,16 @@
         "not": {"required": ["mcp"]}
       },
       "else": {"not": {"required": ["skill"]}}
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {"const": "mcp"},
+          "mcp": {"required": ["package"]}
+        },
+        "required": ["kind", "mcp"]
+      },
+      "then": {"not": {"required": ["build"]}}
     }
   ],
   "$defs": {
@@ -208,7 +218,7 @@
     "mcp": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["transport"],
+      "required": ["transport", "network", "tools"],
       "properties": {
         "transport": {"enum": ["stdio", "streamable-http"]},
         "package": {"$ref": "#/$defs/mcpPackage"},
@@ -218,13 +228,22 @@
           "minItems": 1
         },
         "path": {"type": "string", "pattern": "^/"},
-        "network": {"$ref": "#/$defs/mcpNetwork"},
+        "network": {"enum": ["observed", "none"]},
+        "expected_hosts": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/expectedHost"},
+          "minItems": 1,
+          "uniqueItems": true
+        },
         "tools": {"$ref": "#/$defs/mcpTools"}
       },
       "allOf": [
         {
           "if": {"properties": {"transport": {"const": "stdio"}}, "required": ["transport"]},
-          "then": {"not": {"required": ["path"]}}
+          "then": {
+            "required": ["command"],
+            "not": {"required": ["path"]}
+          }
         },
         {
           "if": {"properties": {"transport": {"const": "streamable-http"}}, "required": ["transport"]},
@@ -233,6 +252,13 @@
         {
           "if": {"required": ["package"]},
           "then": {"required": ["command"]}
+        },
+        {
+          "if": {
+            "properties": {"network": {"const": "none"}},
+            "required": ["network"]
+          },
+          "then": {"not": {"required": ["expected_hosts"]}}
         }
       ]
     },
@@ -254,18 +280,10 @@
         }
       ]
     },
-    "mcpNetwork": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["mode", "destinations"],
-      "properties": {
-        "mode": {"enum": ["none", "observed"]},
-        "destinations": {
-          "type": "array",
-          "items": {"type": "string", "minLength": 1},
-          "uniqueItems": true
-        }
-      }
+    "expectedHost": {
+      "type": "string",
+      "maxLength": 253,
+      "pattern": "^(?:\\*\\.)?(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z](?:[a-z0-9-]{0,61}[a-z0-9])?$"
     },
     "mcpTools": {
       "type": "object",
@@ -273,20 +291,16 @@
       "required": ["smoke"],
       "properties": {
         "examples": {"type": "object", "additionalProperties": {"type": "object"}},
-        "smoke": {
-          "type": "array",
-          "minItems": 1,
-          "items": {"$ref": "#/$defs/mcpCall"}
-        }
+        "smoke": {"$ref": "#/$defs/mcpCall"}
       }
     },
     "mcpCall": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["tool", "arguments"],
+      "required": ["name", "arguments"],
       "properties": {
-        "tool": {"type": "string", "minLength": 1},
-        "arguments": {"type": "object"}
+        "name": {"type": "string", "minLength": 1, "maxLength": 128},
+        "arguments": {"type": "object", "maxProperties": 32}
       }
     },
     "skill": {

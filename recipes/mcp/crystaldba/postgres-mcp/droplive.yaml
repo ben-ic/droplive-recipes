@@ -15,12 +15,12 @@ mcp:
     artifact: "postgres_mcp-0.3.0-py3-none-any.whl"
     integrity: "sha256:455dd71ed8deab77a67af2468e6f059dd0f114e05c0031ab47306a7048dc30bf"
   command: ["postgres-mcp", "--access-mode=restricted"]
-  network: {mode: none, destinations: []}
+  network: observed
   tools:
     examples:
       list_schemas: {}
       list_objects: {schema_name: "public", object_type: "table"}
-      execute_sql: {sql: "SELECT id, name, email FROM customers ORDER BY id"}
+      execute_sql: {sql: "SELECT id, name, email FROM customers ORDER BY id LIMIT 20"}
     smoke:
-      - tool: execute_sql
-        arguments: {sql: "SELECT id, name, email FROM customers ORDER BY id"}
+      name: execute_sql
+      arguments: {sql: "SELECT id, name, email FROM customers ORDER BY id LIMIT 20"}

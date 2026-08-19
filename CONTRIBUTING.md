@@ -44,6 +44,11 @@ For a package build, the qualification result must include the resolved and
 hashed dependency closure. The top-level package hash alone is not the tested
 artifact identity.
 
+An MCP package recipe identifies one exact package release. It cannot also
+select a source build. A source recipe builds the exact requested Git commit.
+Every MCP recipe must select `network: observed` or `network: none` and must
+include one safe, bounded, read-only smoke call.
+
 ## Test a skill
 
 A skill does not need a container port or health check. Validate the complete
@@ -67,6 +72,8 @@ python3 tools/test_kind_schema.py
 - [ ] An app, API, or Streamable HTTP MCP service has its required port and HTTP health check.
 - [ ] A `stdio` MCP service proves readiness with its MCP handshake and an operation.
 - [ ] An MCP package build records the complete resolved dependency closure.
+- [ ] An MCP recipe declares its network mode and one safe smoke call.
+- [ ] An MCP package recipe does not also declare a source build.
 - [ ] For a runtime recipe, writable paths use `tmpfs` or a volume.
 - [ ] Docker Compose supplies public defaults and marks optional values.
 - [ ] `droplive.yaml` declares only `owner: droplive` or `owner: user` values.

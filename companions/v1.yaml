@@ -8,11 +8,3 @@ companions:
   redis-stack:
     outputs: [url, host, port, username, password]
     datasets: [redis.store.v1]
-
-  s3:
-    outputs: [endpoint, region, bucket, access_key, secret_key]
-    datasets: [s3.objects.v1]
-
-  chromium:
-    outputs: [cdp_endpoint, browser_url]
-    datasets: []

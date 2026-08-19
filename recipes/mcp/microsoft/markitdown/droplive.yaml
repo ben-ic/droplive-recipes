@@ -9,10 +9,10 @@ mcp:
     artifact: "markitdown_mcp-0.0.1a4-py3-none-any.whl"
     integrity: "sha256:7fb06fff7d722ec108d08752704dc8f313f7fd267e00dff546131ec229645230"
   command: ["markitdown-mcp"]
-  network: {mode: observed, destinations: ["*"]}
+  network: none
   tools:
     examples:
       convert_to_markdown: {uri: "data:text/plain,DropLive%20fixture"}
     smoke:
-      - tool: convert_to_markdown
-        arguments: {uri: "data:text/plain,DropLive%20fixture"}
+      name: convert_to_markdown
+      arguments: {uri: "data:text/plain,DropLive%20fixture"}

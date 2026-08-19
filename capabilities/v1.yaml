@@ -62,6 +62,13 @@ capabilities:
       secret_key: generated_session_secret
     datasets: []
 
+  browser.chromium.v1:
+    access:
+      - server
+    outputs:
+      cdp_endpoint: server_url
+    datasets: []
+
   github.api.v1:
     access:
       - server

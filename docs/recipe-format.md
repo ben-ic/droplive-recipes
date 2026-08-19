@@ -293,12 +293,15 @@ mcp:
     version: "1.2.3"
     integrity: "sha512-..."
   command: ["example-server"]
+  network: observed
+  expected_hosts:
+    - api.example.com
   tools:
     examples:
       read_item: {id: "example-1"}
     smoke:
-      - tool: read_item
-        arguments: {id: "example-1"}
+      name: read_item
+      arguments: {id: "example-1"}
 ```
 
 For Streamable HTTP:
@@ -309,15 +312,22 @@ kind: mcp
 mcp:
   transport: streamable-http
   path: /mcp
+  network: none
+  tools:
+    smoke:
+      name: read_status
+      arguments: {}
 ```
 
 Build discovery works the same way as it does for apps.
 
-`package` is one optional build path. An MCP recipe can instead use upstream
-source, a recipe Dockerfile, Compose, or a pinned image. When `package` is
-present, `command` names its resolved executable without a shell or downloader.
-For a source build, the selected image can provide the standard-input and
-standard-output command.
+`package` is one optional build path. It identifies one exact package release.
+An MCP recipe can instead use upstream source, a recipe Dockerfile, Compose, or
+a pinned image. A source recipe builds the exact Git commit that the user
+requests. A recipe cannot contain both `mcp.package` and `build`. When `package`
+is present, `command` names its resolved executable without a shell or
+downloader. For a source build, the selected image provides the declared
+standard-input and standard-output command.
 
 A Streamable HTTP recipe declares only its local `path`. It must start the
 server in the DropLive sandbox and use an internally derived endpoint. A public
@@ -334,9 +344,21 @@ recipes/mcp/modelcontextprotocol/servers/filesystem/droplive.yaml
 product: filesystem
 ```
 
+Every MCP recipe declares `network: observed` or `network: none`. Observed mode
+allows traffic and records actual destinations. None mode blocks traffic and
+tests that the server does not need it. `expected_hosts` is optional review
+documentation for observed mode. It accepts hostnames and wildcard hostnames.
+It does not control traffic.
+
 Tool `examples` are optional and should include only useful starting arguments.
 DropLive uses each live tool's `tools/list` JSON Schema to help the user create
-other arguments. `smoke` contains the small reviewed set that qualification runs.
+other arguments. `smoke` is required. It is one read-only, bounded call that
+qualification runs with public or disposable fixture data.
+
+Command arguments can contain a complete `{{NAME}}` runtime-value token when
+`NAME` is declared by `environment`, an emulator binding, or a companion
+binding. DropLive replaces the token without a shell before it starts the
+command.
 
 The package integrity value pins the top-level archive. During qualification,
 DropLive resolves and hashes the complete dependency closure and attaches that
