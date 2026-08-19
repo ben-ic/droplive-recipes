@@ -87,7 +87,7 @@ python3 tools/test_kind_schema.py
 - [ ] A generated bootstrap credential carries its `# droplive:` annotation directly above that guard.
 - [ ] At most one annotation per script carries `capability=`.
 - [ ] No origin variable is declared as `owner: droplive`.
-- [ ] No password, token, private key, or API key is committed.
+- [ ] No password, token, private key, or API key is committed. A published upstream default in `sign_in` is the one exception; it is public already, and a generated value never belongs there.
 - [ ] `seed.sh`, when present, is repeatable and contains only obvious sample data.
 - [ ] The validator passes.
 
