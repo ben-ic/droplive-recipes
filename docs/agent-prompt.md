@@ -63,41 +63,12 @@ Rules:
     Keep seed data deterministic, repeatable, obviously fictional, and free of
     secrets. Skip seeding when the project has no stable seeding interface.
 13. Run python3 tools/lint_recipes.py before you finish.
-14. For every MCP recipe, declare one network mode:
-    - Use `network: {mode: none, destinations: []}` only when the server works
-      without outbound network access.
-    - Use `network: {mode: observed, destinations: ["*"]}` when the server must
-      reach the internet or a visitor can select the destination. DropLive
-      allows the traffic and records the actual destinations in the receipt.
-    - Replace `"*"` with fixed expected hostnames only when the server always
-      uses that complete set. Do not put URLs, paths, ports, credentials, or
-      private IP addresses in `destinations`.
-15. For every MCP recipe, add at least one small, deterministic `tools.smoke`
-    call. It must be read-only unless it uses a disposable fixture. It must not
-    use private data, a real vendor credential, an unbounded query, or a
-    destructive operation. Use `tools.examples` only for useful optional
-    starting arguments. Do not copy the full tool catalog into the recipe.
-16. Verify MCP initialize, capability listing, and every smoke call against
-    disposable fixtures. A process that stays alive without a successful MCP
-    operation does not pass.
-17. Use a registry package only when the recipe represents that exact package
-    release. Verify that it belongs to the source project. Do not replace a
-    requested source commit with an unrelated package release. Do not combine a
-    package release and a source build unless their relationship is explicit
-    and verified. For a package build, resolve and hash the complete dependency
-    closure. Treat that closure as part of the tested artifact identity.
-18. Resolve every runtime dependency. For example, a browser-control MCP server
-    must have a pinned browser binary in its artifact or use a documented
-    browser capability or companion. Do not assume that Chrome, Chromium, a
-    Playwright browser, a database, or another service is already installed. If
-    the repository cannot express the dependency, stop and report it as
-    unsupported.
-19. Use the documented capability for a vendor-like service. For example, use
-    `storage.s3.v1` for S3. Do not also declare an S3 companion. Use companions
-    only for the dependency types listed in the repository. A recipe declares
-    the capability it needs, not private DropLive topology.
-20. For a skill, verify observable effects with a fixed prompt and an explicit
-    tool allowlist. Never use a real vendor credential for an MCP or skill test.
+14. For MCP, verify initialize, capability listing, and at least one operation
+    against disposable fixtures. For a skill, verify observable effects with a
+    fixed prompt and an explicit tool allowlist. Never use a real vendor
+    credential for either test.
+15. For an MCP package build, resolve and hash the complete dependency closure.
+    Treat that closure as part of the tested artifact identity.
 
 For an app, API, or MCP server, test the selected Docker or Compose path. Confirm:
 - it builds for linux/amd64;
