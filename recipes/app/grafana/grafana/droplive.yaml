@@ -5,3 +5,14 @@ run:
   health: /api/health
   data:
   - /var/lib/grafana
+environment:
+  # Grafana falls back to admin/admin and then demands a password change on first
+  # login, so a visitor met a sign-in page with a credential nobody had told them
+  # and a prompt to replace it. It uses the password it is given, so DropLive
+  # mints one per demo and shows it. The username stays Grafana's own default.
+  GF_SECURITY_ADMIN_PASSWORD:
+    owner: droplive
+    format: password
+    length: 24
+    login:
+      username: admin
