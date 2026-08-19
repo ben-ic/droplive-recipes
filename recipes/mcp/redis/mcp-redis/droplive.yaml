@@ -1,0 +1,30 @@
+version: 1
+kind: mcp
+companions:
+  database:
+    type: redis-stack
+    dataset: redis.store.v1
+    bindings:
+      REDIS_HOST: host
+      REDIS_PORT: port
+      REDIS_USERNAME: username
+      REDIS_PWD: password
+mcp:
+  transport: stdio
+  package:
+    manager: pypi
+    name: "redis-mcp-server"
+    version: "0.5.1"
+    artifact: "redis_mcp_server-0.5.1-py3-none-any.whl"
+    integrity: "sha256:335d9089d4c87a055b362effa7fd718334ccd88b2545d93c4ed9bc2b738b3ed8"
+  command: ["redis-mcp-server"]
+  network: observed
+  tools:
+    examples:
+      hgetall: {name: "customer:1"}
+      json_get: {name: "cart:1", path: "$"}
+      scan_keys: {cursor: 0, pattern: "customer:*", count: 20}
+      get_indexes: {}
+    smoke:
+      name: hgetall
+      arguments: {name: "customer:1"}

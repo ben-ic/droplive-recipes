@@ -43,7 +43,8 @@ Each test gets a new sandbox with:
 - a read-only root filesystem and declared temporary writable paths;
 - fixed CPU, memory, process, file, output, and time limits;
 - no real vendor credential;
-- denied network access except for reviewed emulator capabilities; and
+- the network mode declared by the recipe, with all allowed traffic observed
+  and reviewed fixture services used in place of real vendor credentials; and
 - new fixture credentials that expire with the test.
 
 DropLive records process output, network destinations, MCP messages, tool calls,
@@ -66,6 +67,39 @@ For `streamable-http`, DropLive starts the built service on an allocated port.
 Only the declared MCP path is given to the test client. The listener stays
 inside the sandbox.
 
+A public recipe cannot provide a remote MCP endpoint. DropLive derives the
+internal endpoint from the locally started service and the declared path.
+
+An MCP server can use the same source, Dockerfile, Compose, and pinned-image
+build paths as an app. A registry package is one optional build path. For a
+package build, DropLive verifies the declared top-level archive, resolves and
+hashes the full dependency closure, and attaches that closure to the tested
+artifact identity before the user session starts.
+
+A package recipe identifies one exact package release. It does not build server
+code from the requested Git commit. A source recipe builds the exact requested
+Git commit. A recipe cannot combine `mcp.package` with `build`. A future format
+can permit both only when qualification can verify their exact relationship.
+
+The repository path still identifies the product for review. For a package
+recipe, a source commit is repository context only. It is not part of the MCP
+server artifact. The user interface must not present another source commit as a
+different server version for that package recipe.
+
+### Network mode
+
+Every MCP recipe selects one mode:
+
+- `network: observed` allows network access. DropLive records the actual
+  destinations in the receipt.
+- `network: none` states that the server works without network access. DropLive
+  blocks network access to test this statement.
+
+An observed recipe can add `expected_hosts`. These names help review and can
+explain expected public traffic. They never permit or block traffic. Each item
+must be a hostname or a wildcard hostname such as `*.githubusercontent.com`.
+URLs, IP addresses, ports, paths, and credentials are not valid items.
+
 ### Check the protocol
 
 The planned test client performs this sequence:
@@ -78,13 +112,17 @@ The planned test client performs this sequence:
    templates.
 4. Reject malformed JSON-RPC, duplicate names, invalid schemas, and responses
    that do not match the advertised capability.
-5. Invoke reviewed test cases with fixed fixture input.
+5. Invoke the one reviewed smoke call with fixed fixture input.
 6. Close the client and confirm that the server exits or becomes idle cleanly.
 
-Listing is not sufficient evidence. At least one advertised operation must run.
-An operation that can change data runs only against a disposable fixture. A
-server with no safe deterministic operation needs a reviewed test case before
-it can pass.
+Listing is not sufficient evidence. The smoke call must run. It must be
+read-only, bounded, deterministic, independent of private user data, and valid
+for the declared fixture values. A server with no such operation needs a
+reviewed test case before it can pass.
+
+Recipes can provide a small set of useful tool examples. They do not repeat
+arguments for every advertised tool. The user interface reads each live tool's
+`tools/list` JSON Schema to help create arguments that are not in the recipe.
 
 ### Test data and authentication
 
@@ -96,11 +134,16 @@ Recipes use the same emulator and companion declarations as applications:
 - S3 uses `storage.s3.v1`. Its dependency is a DropLive-provided S3-compatible
   fixture service. DropLive owns the fixture topology, bucket, and per-test
   credentials.
+- Chromium uses `browser.chromium.v1`. DropLive provides a reviewed, pinned
+  browser artifact and a CDP endpoint. A recipe does not declare the browser
+  service topology.
 - PostgreSQL, MySQL, MariaDB, MongoDB, Redis, and Upstash use companions.
 - Other vendor sign-in and API calls use reviewed emulator capabilities.
 
 The recipe maps capability outputs to the environment names that the server
-expects. DropLive never sends a real vendor credential. If no capability or
+expects. A command can use a declared runtime value as `{{NAME}}`; DropLive
+replaces the complete token before it starts the command directly. DropLive
+never sends a real vendor credential. If no capability or
 companion can satisfy a required dependency, the result is `unsupported`, not
 a test against the real service.
 

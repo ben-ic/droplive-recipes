@@ -1,0 +1,20 @@
+version: 1
+kind: mcp
+product: fetch
+mcp:
+  transport: stdio
+  package:
+    manager: pypi
+    name: "mcp-server-fetch"
+    version: "2026.8.18"
+    artifact: "mcp_server_fetch-2026.8.18-py3-none-any.whl"
+    integrity: "sha256:6642df733a1032e7f37d0f13849af8a944d46c02420d2c070cc14e0948f8fcc2"
+  command: ["mcp-server-fetch"]
+  network: observed
+  expected_hosts: [example.com]
+  tools:
+    examples:
+      fetch: {url: "https://example.com/", max_length: 5000, start_index: 0, raw: false}
+    smoke:
+      name: fetch
+      arguments: {url: "https://example.com/", max_length: 5000, start_index: 0, raw: false}

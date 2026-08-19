@@ -1,0 +1,25 @@
+version: 1
+kind: mcp
+emulators:
+  browser:
+    capability: browser.chromium.v1
+    bindings:
+      BROWSER_CDP_ENDPOINT: cdp_endpoint
+mcp:
+  transport: stdio
+  package:
+    manager: npm
+    name: "@playwright/mcp"
+    version: "0.0.79"
+    integrity: "sha512-VpqD4a3vFyGQMY9sh3UJiO6wjcurggkljKfAyCHL0QWGY5m6Ehr3MNsAAHPDHO//n13g0PCjpHatAOiulrqdZQ=="
+  command: ["playwright-mcp", "--cdp-endpoint", "{{BROWSER_CDP_ENDPOINT}}", "--isolated", "--block-service-workers"]
+  network: observed
+  expected_hosts: [example.com]
+  tools:
+    examples:
+      browser_navigate: {url: "https://example.com/"}
+      browser_snapshot: {}
+      browser_tabs: {action: "list"}
+    smoke:
+      name: browser_navigate
+      arguments: {url: "https://example.com/"}

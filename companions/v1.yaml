@@ -1,0 +1,10 @@
+schema: droplive.companions/v1
+
+companions:
+  postgres:
+    outputs: [url, host, port, database, username, password]
+    datasets: [postgres.store.v1]
+
+  redis-stack:
+    outputs: [url, host, port, username, password]
+    datasets: [redis.store.v1]

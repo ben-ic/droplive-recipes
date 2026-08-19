@@ -1,0 +1,25 @@
+version: 1
+kind: mcp
+emulators:
+  browser:
+    capability: browser.chromium.v1
+    bindings:
+      BROWSER_CDP_ENDPOINT: cdp_endpoint
+mcp:
+  transport: stdio
+  package:
+    manager: npm
+    name: "chrome-devtools-mcp"
+    version: "1.7.0"
+    integrity: "sha512-6xFW7oiUxTxZuHcfyYBkKQtmttjCbfifKZMSEk5CV8H2FucvKweYiJr8CblddYHtYjA4C14K9VAs1r49906RBA=="
+  command: ["chrome-devtools-mcp", "--browser-url", "{{BROWSER_CDP_ENDPOINT}}", "--no-usage-statistics", "--no-performance-crux"]
+  network: observed
+  expected_hosts: [example.com]
+  tools:
+    examples:
+      list_pages: {}
+      new_page: {url: "https://example.com/", background: false, isolatedContext: "droplive-fixture", timeout: 10000}
+      take_snapshot: {verbose: false}
+    smoke:
+      name: new_page
+      arguments: {url: "https://example.com/", background: false, isolatedContext: "droplive-fixture", timeout: 10000}

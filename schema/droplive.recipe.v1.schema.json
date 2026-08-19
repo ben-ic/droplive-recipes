@@ -8,6 +8,7 @@
   "properties": {
     "version": {"const": 1},
     "kind": {"enum": ["app", "api", "mcp", "skill"]},
+    "product": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
     "interfaces": {
       "type": "array",
       "items": {"enum": ["web", "api"]},
@@ -58,7 +59,12 @@
     "companions": {
       "type": "object",
       "propertyNames": {"pattern": "^[a-z][a-z0-9_-]*$"},
-      "additionalProperties": {"enum": ["postgres", "mysql", "mariadb", "mongodb", "redis", "upstash"]}
+      "additionalProperties": {
+        "oneOf": [
+          {"enum": ["postgres", "mysql", "mariadb", "mongodb", "redis", "upstash"]},
+          {"$ref": "#/$defs/companion"}
+        ]
+      }
     },
     "emulators": {
       "type": "object",
@@ -85,6 +91,16 @@
         "not": {"required": ["mcp"]}
       },
       "else": {"not": {"required": ["skill"]}}
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {"const": "mcp"},
+          "mcp": {"required": ["package"]}
+        },
+        "required": ["kind", "mcp"]
+      },
+      "then": {"not": {"required": ["build"]}}
     }
   ],
   "$defs": {
@@ -184,18 +200,42 @@
         }
       }
     },
+    "companion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "bindings"],
+      "properties": {
+        "type": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+        "dataset": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*\\.v[0-9]+$"},
+        "bindings": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {"pattern": "^[A-Z_][A-Z0-9_]*$"},
+          "additionalProperties": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}
+        }
+      }
+    },
     "mcp": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["transport"],
+      "required": ["transport", "network", "tools"],
       "properties": {
         "transport": {"enum": ["stdio", "streamable-http"]},
+        "package": {"$ref": "#/$defs/mcpPackage"},
         "command": {
           "type": "array",
           "items": {"type": "string", "minLength": 1},
           "minItems": 1
         },
-        "path": {"type": "string", "pattern": "^/"}
+        "path": {"type": "string", "pattern": "^/"},
+        "network": {"enum": ["observed", "none"]},
+        "expected_hosts": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/expectedHost"},
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "tools": {"$ref": "#/$defs/mcpTools"}
       },
       "allOf": [
         {
@@ -207,12 +247,61 @@
         },
         {
           "if": {"properties": {"transport": {"const": "streamable-http"}}, "required": ["transport"]},
-          "then": {
-            "required": ["path"],
-            "not": {"required": ["command"]}
-          }
+          "then": {"required": ["path"]}
+        },
+        {
+          "if": {"required": ["package"]},
+          "then": {"required": ["command"]}
+        },
+        {
+          "if": {
+            "properties": {"network": {"const": "none"}},
+            "required": ["network"]
+          },
+          "then": {"not": {"required": ["expected_hosts"]}}
         }
       ]
+    },
+    "mcpPackage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["manager", "name", "version", "integrity"],
+      "properties": {
+        "manager": {"enum": ["npm", "pypi", "github-release"]},
+        "name": {"type": "string", "minLength": 1, "pattern": "^(?!.*(?:latest|main|master)$).+$"},
+        "version": {"type": "string", "minLength": 1, "pattern": "^(?![vV]?(?:latest|main|master)$)[0-9][0-9A-Za-z.+_-]*$"},
+        "artifact": {"type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$"},
+        "integrity": {"type": "string", "pattern": "^(?:sha256:[0-9a-f]{64}|sha512-[A-Za-z0-9+/]+={0,2})$"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"manager": {"enum": ["pypi", "github-release"]}}, "required": ["manager"]},
+          "then": {"required": ["artifact"]}
+        }
+      ]
+    },
+    "expectedHost": {
+      "type": "string",
+      "maxLength": 253,
+      "pattern": "^(?:\\*\\.)?(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z](?:[a-z0-9-]{0,61}[a-z0-9])?$"
+    },
+    "mcpTools": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["smoke"],
+      "properties": {
+        "examples": {"type": "object", "additionalProperties": {"type": "object"}},
+        "smoke": {"$ref": "#/$defs/mcpCall"}
+      }
+    },
+    "mcpCall": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "arguments"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1, "maxLength": 128},
+        "arguments": {"type": "object", "maxProperties": 32}
+      }
     },
     "skill": {
       "type": "object",

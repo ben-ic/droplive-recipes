@@ -1,0 +1,18 @@
+version: 1
+kind: mcp
+mcp:
+  transport: stdio
+  package:
+    manager: pypi
+    name: "markitdown-mcp"
+    version: "0.0.1a4"
+    artifact: "markitdown_mcp-0.0.1a4-py3-none-any.whl"
+    integrity: "sha256:7fb06fff7d722ec108d08752704dc8f313f7fd267e00dff546131ec229645230"
+  command: ["markitdown-mcp"]
+  network: none
+  tools:
+    examples:
+      convert_to_markdown: {uri: "data:text/plain,DropLive%20fixture"}
+    smoke:
+      name: convert_to_markdown
+      arguments: {uri: "data:text/plain,DropLive%20fixture"}

@@ -149,20 +149,35 @@ Never commit the value itself.
 
 ## Versions
 
-One recipe supports many releases and commits. Do not copy the recipe for each
-version. Change the recipe only when the way the project runs changes.
+One source recipe supports many releases and commits. Do not copy the recipe for
+each version. Change the recipe only when the way the project runs changes. An
+MCP package recipe is different: it identifies the one exact package release in
+`mcp.package` and does not build server code from the requested Git commit.
 
 ## Use a coding agent
 
 Copy the prompt in [docs/agent-prompt.md](docs/agent-prompt.md). It works with a
 GitHub URL or a repository on your computer.
 
+## MCP test recipes
+
+An MCP recipe can use a pinned registry package, source, Dockerfile, Compose, or
+a pinned image. It declares the local transport, one safe smoke call, and a
+network mode. `observed` allows traffic and records its actual destinations.
+`none` blocks traffic to test that the server does not need it. A
+standard-input and standard-output server
+uses the MCP handshake for readiness. DropLive applies its 15-minute session
+policy without repeating that value in each recipe.
+
+The runtime behavior is the planned DropLive test contract. See the
+[complete recipe reference](docs/recipe-format.md) for its exact limits.
+
 ## More help
 
 - [Complete recipe reference](docs/recipe-format.md)
+- [Planned MCP and skills test contract](docs/mcp-and-skills.md)
 - [Troubleshooting](docs/troubleshooting.md)
 - [Add realistic sample data](docs/seeding.md)
-- [Handle and test MCP servers and skills](docs/mcp-and-skills.md)
 - [Contribution checklist](CONTRIBUTING.md)
 
 This repository uses the [MIT License](LICENSE).
