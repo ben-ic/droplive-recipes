@@ -8,13 +8,13 @@ set -eu
 
 case "${MEALIE_BOOTSTRAP_PASSWORD}" in
   *[!A-Za-z0-9_-]*|'')
-    echo "MEALIE_BOOTSTRAP_PASSWORD must contain exactly 16 URL-safe characters" >&2
+    echo "MEALIE_BOOTSTRAP_PASSWORD must contain at least 16 URL-safe characters" >&2
     exit 1
     ;;
 esac
 
-if [ "${#MEALIE_BOOTSTRAP_PASSWORD}" -ne 16 ]; then
-  echo "MEALIE_BOOTSTRAP_PASSWORD must contain exactly 16 URL-safe characters" >&2
+if [ "${#MEALIE_BOOTSTRAP_PASSWORD}" -lt 16 ]; then
+  echo "MEALIE_BOOTSTRAP_PASSWORD must contain at least 16 URL-safe characters" >&2
   exit 1
 fi
 

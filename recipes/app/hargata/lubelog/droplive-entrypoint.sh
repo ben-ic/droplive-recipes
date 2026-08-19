@@ -7,8 +7,8 @@ set -eu
 password_length=${#LUBELOGGER_BOOTSTRAP_PASSWORD}
 password_charset=url-safe
 test -z "$(printf '%s' "$LUBELOGGER_BOOTSTRAP_PASSWORD" | LC_ALL=C tr -d 'A-Za-z0-9_-')" || password_charset=other
-if [ "$password_length" -ne 16 ] || [ "$password_charset" != url-safe ]; then
-  echo "LUBELOGGER_BOOTSTRAP_PASSWORD must contain exactly 16 URL-safe characters" >&2
+if [ "$password_length" -lt 16 ] || [ "$password_charset" != url-safe ]; then
+  echo "LUBELOGGER_BOOTSTRAP_PASSWORD must contain at least 16 URL-safe characters" >&2
   exit 1
 fi
 unset password_length password_charset
