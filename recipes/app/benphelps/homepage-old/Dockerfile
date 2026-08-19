@@ -1,0 +1,10 @@
+FROM ghcr.io/gethomepage/homepage@sha256:b6d732817572f9af99ec168b10641b8f7820f30cfa5a5cc5c68f1e291804bec8
+
+ARG DROPLIVE_SOURCE_COMMIT
+ARG DROPLIVE_SOURCE_TREE_SHA256
+ARG DROPLIVE_RUNTIME_CONTRACT_SHA256
+LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
+      org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
+      org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
+
+EXPOSE 3000

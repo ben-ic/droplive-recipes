@@ -1,0 +1,7 @@
+version: 1
+kind: app
+run:
+  port: 8384
+  health: /rest/noauth/health
+  data:
+  - /var/syncthing

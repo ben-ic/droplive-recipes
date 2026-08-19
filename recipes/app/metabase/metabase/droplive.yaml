@@ -1,0 +1,7 @@
+version: 1
+kind: app
+run:
+  port: 3000
+  health: /api/health
+  data:
+  - /data
