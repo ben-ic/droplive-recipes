@@ -7,4 +7,19 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
       org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
       org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
 
+# A demo does not enrol with the vendor.
+#
+# `build/docker/docker_start.sh` runs `cscli capi register` against
+# https://api.crowdsec.net/ during startup unless this is set, and the container
+# exits when that call fails:
+#
+#   Error: api client register ('https://api.crowdsec.net/'):
+#     Post "https://api.crowdsec.net/v3/watchers": dial tcp: lookup ...
+#
+# Central API enrolment links an installation to a CrowdSec account and shares
+# signals with it. That is an account feature, not the thing being demonstrated,
+# and a fifteen-minute disposable µVM has no account to link. Local API,
+# parsers, scenarios and the console all run without it.
+ENV DISABLE_ONLINE_API=true
+
 EXPOSE 8080
