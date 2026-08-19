@@ -5,3 +5,15 @@ run:
   health: /
   data:
   - /data
+sign_in:
+  # MinIO falls back to these when MINIO_ROOT_USER and MINIO_ROOT_PASSWORD are
+  # unset, and the console is unusable without them -- a visitor met a login page
+  # with nothing to type. Stating the upstream default is what makes the demo
+  # work today.
+  #
+  # Minting a password per demo would be stronger, but MinIO requires the user
+  # and the password to be set together, and a generated username cannot be shown
+  # on the sign-in card: `login.username` has to be a literal the visitor reads.
+  username: minioadmin
+  password: minioadmin
+  note: Upstream default for an unconfigured server.
