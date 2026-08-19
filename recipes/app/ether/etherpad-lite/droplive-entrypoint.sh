@@ -45,10 +45,36 @@ if [ ! -e /opt/etherpad-lite/var/installed_plugins.json ]; then
   printf '%s\n' '{"plugins":[]}' > /opt/etherpad-lite/var/installed_plugins.json
 fi
 
-# Etherpad's Docker settings accept a single PostgreSQL connection string as
-# DB_URL. Keep the generic DropLive binding runtime-only and do not bake it into
-# the image or leave an unused alias for application code to misinterpret.
-export DB_URL="$DATABASE_URL"
+# Etherpad's settings.json exposes both a `url` and discrete host/port/user/
+# password/database fields, but ueberdb2's postgres driver ignores `url` and
+# dials the discrete ones -- so DB_URL alone leaves host undefined, Etherpad
+# connects to localhost, and it exits with ECONNREFUSED before ever listening.
+# Verified against etherpad 3.3.3: DB_URL alone fails, the discrete fields work.
+#
+# Decompose the DropLive binding here. Keep it runtime-only: nothing is baked
+# into the image, and no unused alias is left for application code to
+# misinterpret.
+db_url="$DATABASE_URL"
 unset DATABASE_URL
+
+db_rest="${db_url#*://}"                 # user:pass@host:port/name
+db_creds="${db_rest%%@*}"
+db_hostpath="${db_rest#*@}"
+db_hostport="${db_hostpath%%/*}"
+
+DB_USER="${db_creds%%:*}"
+DB_PASS="${db_creds#*:}"
+[ "$DB_PASS" = "$db_creds" ] && DB_PASS=""
+DB_HOST="${db_hostport%%:*}"
+DB_PORT="${db_hostport#*:}"
+[ "$DB_PORT" = "$db_hostport" ] && DB_PORT=5432
+DB_NAME="${db_hostpath#*/}"
+DB_NAME="${DB_NAME%%\?*}"               # drop any ?sslmode=... query
+
+: "${DB_HOST:?DATABASE_URL must carry a host}"
+: "${DB_NAME:?DATABASE_URL must carry a database name}"
+
+export DB_HOST DB_PORT DB_NAME DB_USER DB_PASS
+unset db_url db_rest db_creds db_hostpath db_hostport
 
 exec "$@"
