@@ -5,3 +5,7 @@ run:
   health: /health
   data:
   - /srv
+sign_in:
+  username: admin
+  password: admin
+  note: Upstream default for a fresh database. Change it from Settings.

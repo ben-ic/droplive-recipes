@@ -319,6 +319,39 @@ Compose file points its build at another directory or another Dockerfile name,
 the entrypoint is not found there and its declarations are missed. Keep the
 Dockerfile and the entrypoint at the recipe root.
 
+## `sign_in`
+
+Some images arrive with a sign-in already set. File Browser writes `admin` /
+`admin` into a fresh database and prints nothing, so a demo of it starts
+perfectly and the visitor cannot get past the login page. DropLive can neither
+mint that credential nor discover it — the recipe is the only thing that knows.
+
+```yaml
+sign_in:
+  username: admin
+  password: admin
+  note: Upstream default for a fresh database. Change it from Settings.
+```
+
+DropLive shows this on the demo's sign-in card, the same place it shows a
+credential it generated.
+
+| Key | Meaning |
+|---|---|
+| `username` | Required. The username the image already accepts |
+| `password` | Required. The password the image already accepts |
+| `note` | Optional. One line of context shown with it |
+
+Use this **only** for a credential the published image genuinely ships with.
+A published default is public already, and writing it here tells the visitor
+what the image would have told them if it printed anything.
+
+Never record a value DropLive generates. A generated credential belongs to one
+demo, and committing it would publish it. If the application lets an entrypoint
+set the owner password, prefer that: a value minted per demo beats a default
+everyone knows, and `sign_in` exists for the images that give you no such hook.
+See [entrypoint declarations](#entrypoint-declarations).
+
 ## `companions`
 
 Optional. A companion is a reviewed service that runs with the project.

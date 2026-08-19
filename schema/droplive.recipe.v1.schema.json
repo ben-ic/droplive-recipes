@@ -73,7 +73,8 @@
     },
     "mcp": {"$ref": "#/$defs/mcp"},
     "skill": {"$ref": "#/$defs/skill"},
-    "seed": {"$ref": "#/$defs/seed"}
+    "seed": {"$ref": "#/$defs/seed"},
+    "sign_in": {"$ref": "#/$defs/signIn"}
   },
   "allOf": [
     {
@@ -309,6 +310,16 @@
       "required": ["entrypoint"],
       "properties": {
         "entrypoint": {"$ref": "#/$defs/relativePath"}
+      }
+    },
+    "signIn": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["username", "password"],
+      "properties": {
+        "username": {"type": "string", "minLength": 1, "maxLength": 128},
+        "password": {"type": "string", "minLength": 1, "maxLength": 256},
+        "note": {"type": "string", "minLength": 1, "maxLength": 200}
       }
     },
     "seed": {
