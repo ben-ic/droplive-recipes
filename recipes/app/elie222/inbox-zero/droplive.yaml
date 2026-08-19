@@ -6,8 +6,9 @@ run:
     path: /api/health
     contains:
     - '"status":"ok"'
-  data:
-  - /app/data
+companions:
+  database: postgres
+  cache: upstash
 environment:
   AUTH_SECRET:
     owner: droplive
@@ -15,12 +16,14 @@ environment:
   EMAIL_ENCRYPT_SECRET:
     owner: droplive
     format: hex
-  INTERNAL_API_KEY:
+  EMAIL_ENCRYPT_SALT:
     owner: droplive
     format: hex
-companions:
-  database: postgres
-  cache: upstash
+    length: 32
+  INTERNAL_API_KEY:
+    owner: droplive
+  API_KEY_SALT:
+    owner: droplive
 emulators:
   google:
     capability: google.oauth2.v1
@@ -30,11 +33,10 @@ emulators:
       GOOGLE_BASE_URL: unified_origin
       GOOGLE_CLIENT_ID: client_id
       GOOGLE_CLIENT_SECRET: non_authenticating_client_secret
-  gmail:
-    capability: google.gmail.v1
-    dataset: google.productivity_mailbox.v1
-    bindings:
-      GOOGLE_API_BASE_URL: api_base_url
+      GOOGLE_PUBSUB_VERIFICATION_TOKEN: gmail_push_verification_token
+    callbacks:
+    - path: /api/google/webhook
+      verification-environment: GOOGLE_PUBSUB_VERIFICATION_TOKEN
   llm:
     capability: llm.openai_chat.v1
     bindings:
