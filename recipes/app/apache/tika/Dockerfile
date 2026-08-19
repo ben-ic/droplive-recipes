@@ -1,0 +1,10 @@
+FROM docker.io/apache/tika@sha256:6e262f5b11168dbeec75217e5560d26b18f99d940d5c0fc078da66cbbe3e01cf
+
+ARG DROPLIVE_SOURCE_COMMIT
+ARG DROPLIVE_SOURCE_TREE_SHA256
+ARG DROPLIVE_RUNTIME_CONTRACT_SHA256
+LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
+      org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
+      org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
+
+EXPOSE 9998

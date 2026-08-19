@@ -1,0 +1,10 @@
+FROM docker.io/prom/prometheus@sha256:6559acbd5d770b15bb3c954629ce190ac3cbbdb2b7f1c30f0385c4e05104e218
+
+ARG DROPLIVE_SOURCE_COMMIT
+ARG DROPLIVE_SOURCE_TREE_SHA256
+ARG DROPLIVE_RUNTIME_CONTRACT_SHA256
+LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
+      org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
+      org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
+
+EXPOSE 9090

@@ -1,0 +1,10 @@
+FROM docker.io/zadam/trilium@sha256:a0b5a6a5fd7a64391ae6039bbcd5493151a77a1d5470ef5911923c64d0c232c0
+
+ARG DROPLIVE_SOURCE_COMMIT
+ARG DROPLIVE_SOURCE_TREE_SHA256
+ARG DROPLIVE_RUNTIME_CONTRACT_SHA256
+LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
+      org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
+      org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
+
+EXPOSE 8080

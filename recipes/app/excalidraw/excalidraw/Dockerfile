@@ -1,0 +1,10 @@
+FROM docker.io/excalidraw/excalidraw@sha256:f7ee194addd607bf831d2af0f0a34463dd4225e426cf35199ef0b12a803398e9
+
+ARG DROPLIVE_SOURCE_COMMIT
+ARG DROPLIVE_SOURCE_TREE_SHA256
+ARG DROPLIVE_RUNTIME_CONTRACT_SHA256
+LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
+      org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
+      org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
+
+EXPOSE 80

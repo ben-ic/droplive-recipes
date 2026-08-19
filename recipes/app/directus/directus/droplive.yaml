@@ -1,0 +1,7 @@
+version: 1
+kind: app
+run:
+  port: 8055
+  health: /server/health
+  data:
+  - /directus/database
