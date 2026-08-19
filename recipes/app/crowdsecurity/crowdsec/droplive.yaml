@@ -5,3 +5,4 @@ run:
   health: /health
   data:
   - /var/lib/crowdsec
+  - /etc/crowdsec

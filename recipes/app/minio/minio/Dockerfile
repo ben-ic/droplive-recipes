@@ -8,3 +8,9 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
       org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
 
 EXPOSE 9001
+
+# The image has no default command: started bare it prints its usage banner and
+# exits, which is exactly what the build reported. Serve /data, and put the
+# console on the port the recipe declares.
+CMD ["server", "/data", "--console-address", ":9001"]
+

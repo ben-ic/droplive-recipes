@@ -1,7 +1,0 @@
-version: 1
-kind: app
-run:
-  port: 8000
-  health: /api/health
-  data:
-  - /var/lib/plausible
