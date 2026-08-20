@@ -2,8 +2,24 @@ version: 1
 kind: app
 run:
   port: 80
-  health: /
+  health: /health
   data:
-  - /config
+  # The image's own VOLUME. Snipe-IT writes uploads, backups and its generated
+  # .env here; nothing it needs at startup is shipped inside it.
+  - /var/lib/snipeit
+  # Writability, not persistence: apache creates its lock file here and exits
+  # without it -- "mktemp: failed to create directory via template
+  # '/var/lock/apache2.XXXXXXXXXX'".
+  - /var/lock
+  # Laravel's own scratch space: compiled views, sessions, cache and its log.
+  # Restored from a build-time template by the entrypoint, because it needs the
+  # shipped directory tree as well as write access.
+  - /var/www/html/storage
 companions:
   database: mariadb
+environment:
+  # Laravel refuses to boot without a key, and requires this exact shape:
+  # "base64:" followed by a base64-encoded 32-byte value.
+  APP_KEY:
+    owner: droplive
+    format: laravel-base64
