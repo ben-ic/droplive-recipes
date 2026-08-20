@@ -3,5 +3,3 @@ kind: app
 run:
   port: 3001
   health: /
-  data:
-  - /app/server/storage

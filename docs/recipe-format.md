@@ -83,25 +83,16 @@ refused, whatever the Dockerfile says.
 run:
   port: 3000
   health: /health
-  data:
-    - /app/data
 ```
 
 - `port` is the main container port. **Required.**
 - `health` is an HTTP path. HTTP 200 means ready by default.
-- `data` lists the directories the application writes at runtime. The root
-  filesystem is read-only, so an unlisted path is not writable.
 - `working-directory` overrides a broken image working directory.
 
-`data` is about writability first and persistence second. A demo lasts fifteen
-minutes and keeps nothing afterwards, so list a directory because the
-application writes to it, not because the data matters.
-
-Each listed path is mounted **empty**. Nothing is copied from the image, so a
-directory the image ships is hidden rather than extended, and a directory the
-image merely expects to exist will not. If startup needs files there, restore
-them from a template in an entrypoint — see
-[entrypoint declarations](#entrypoint-declarations).
+> **`data` is not needed.** The demo runs on the image's own filesystem and it
+> is writable, so the application starts with the files it shipped with and can
+> write where it normally writes. Nothing survives the session either, so there
+> is nothing to persist. The field still validates; declaring it does no good.
 
 A health check can also require response text:
 
@@ -113,15 +104,6 @@ run:
     contains:
       - '"ready":true'
 ```
-
-Do not add a `data` path for temporary files. Put temporary paths in the
-`tmpfs` section of `docker-compose.yaml`.
-
-DropLive managed volumes start empty. Unlike Docker named volumes, they do not
-copy existing files from the image. Do not mount one over files that the
-application needs to start. If the application must change image files at
-runtime, keep a template copy in the image and use a small entrypoint to copy it
-into the empty writable mount before startup.
 
 ## `environment`
 

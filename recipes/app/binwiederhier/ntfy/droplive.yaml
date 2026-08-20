@@ -6,8 +6,6 @@ run:
     path: /v1/health
     contains:
     - '"healthy":true'
-  data:
-  - /var/lib/ntfy
 environment:
   # A person reads this off the demo card and types it, so mint a length that is
   # pleasant to type instead of the long default. Sixteen url-safe characters is

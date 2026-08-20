@@ -3,5 +3,3 @@ kind: app
 run:
   port: 8090
   health: /_/
-  data:
-  - /pb_data

@@ -3,5 +3,3 @@ kind: app
 run:
   port: 80
   health: /health
-  data:
-  - /app/data

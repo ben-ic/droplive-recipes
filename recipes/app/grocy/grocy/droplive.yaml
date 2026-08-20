@@ -7,5 +7,3 @@ run:
     status:
     - 200
     - 302
-  data:
-  - /var/www/grocy-data

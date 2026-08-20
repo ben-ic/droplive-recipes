@@ -3,5 +3,3 @@ kind: app
 run:
   port: 2368
   health: /
-  data:
-  - /var/lib/ghost/content

@@ -3,5 +3,3 @@ kind: app
 run:
   port: 5678
   health: /healthz
-  data:
-  - /home/node/.n8n

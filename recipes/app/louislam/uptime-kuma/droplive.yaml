@@ -6,5 +6,3 @@ run:
     path: /dashboard
     contains:
     - Uptime Kuma
-  data:
-  - /app/data

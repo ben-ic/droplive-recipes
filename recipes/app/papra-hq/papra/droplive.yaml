@@ -8,8 +8,6 @@ run:
     - '"status":"ok"'
     - '"isDatabaseHealthy":true'
     - '"isEverythingOk":true'
-  data:
-  - /app/app-data
 emulators:
   mail:
     capability: mail.smtp.v1

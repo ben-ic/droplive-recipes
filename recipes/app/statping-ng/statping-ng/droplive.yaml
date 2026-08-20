@@ -3,7 +3,5 @@ kind: app
 run:
   port: 8080
   health: /
-  data:
-  - /app
 companions:
   database: postgres

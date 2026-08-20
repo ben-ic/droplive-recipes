@@ -3,5 +3,3 @@ kind: app
 run:
   port: 8334
   health: /
-  data:
-  - /app/data/state

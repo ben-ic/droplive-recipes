@@ -3,5 +3,3 @@ kind: app
 run:
   port: 8025
   health: /
-  data:
-  - /data

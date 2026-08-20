@@ -3,6 +3,3 @@ kind: app
 run:
   port: 8096
   health: /health
-  data:
-  - /cache
-  - /config

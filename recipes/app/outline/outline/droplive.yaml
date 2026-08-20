@@ -3,8 +3,6 @@ kind: app
 run:
   port: 3000
   health: /_health
-  data:
-  - /var/lib/outline/data
 companions:
   database: postgres
   cache: redis

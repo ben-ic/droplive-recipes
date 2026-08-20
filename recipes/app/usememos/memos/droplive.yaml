@@ -3,5 +3,3 @@ kind: app
 run:
   port: 5230
   health: /healthz
-  data:
-  - /var/opt/memos

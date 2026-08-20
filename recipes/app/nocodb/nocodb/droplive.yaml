@@ -3,5 +3,3 @@ kind: app
 run:
   port: 8080
   health: /api/v1/health
-  data:
-  - /usr/app/data

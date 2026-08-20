@@ -3,7 +3,5 @@ kind: app
 run:
   port: 9000
   health: /
-  data:
-  - /opt/sonarqube/data
 companions:
   database: postgres

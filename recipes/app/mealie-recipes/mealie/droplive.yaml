@@ -3,5 +3,3 @@ kind: app
 run:
   port: 9000
   health: /api/app/about
-  data:
-  - /app/data

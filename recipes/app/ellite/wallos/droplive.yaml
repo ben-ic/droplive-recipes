@@ -6,6 +6,3 @@ run:
     path: /health.php
     contains:
     - OK
-  data:
-  - /var/www/html/db
-  - /var/www/html/images/uploads/logos

@@ -6,5 +6,3 @@ run:
     path: /api/v1/health
     contains:
     - '"status":"healthy"'
-  data:
-  - /var/lib/dagu

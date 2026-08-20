@@ -3,5 +3,3 @@ kind: app
 run:
   port: 2342
   health: /
-  data:
-  - /photoprism/storage

@@ -3,9 +3,3 @@ kind: app
 run:
   port: 8080
   health: /
-  # Every path the image declares as an OCI VOLUME. The launch preflight
-  # refuses a plan that omits one, and each of these is created by the app
-  # at runtime -- a declared data dir is a fresh mkfs.ext4, so a path the
-  # image already populates would be blanked by declaring it.
-  data:
-  - /tmp/jetty

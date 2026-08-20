@@ -3,12 +3,5 @@ kind: app
 run:
   port: 1337
   health: /
-  # Every path the image declares as an OCI VOLUME. The launch preflight
-  # refuses a plan that omits one, and each of these is a directory the
-  # app fills at runtime -- a declared data dir is a fresh mkfs.ext4, so
-  # only a path the image does not already populate is safe to declare.
-  data:
-  - /app/data
-  - /app/public/user-avatars
 companions:
   database: postgres

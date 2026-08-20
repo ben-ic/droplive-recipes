@@ -3,8 +3,6 @@ kind: app
 run:
   port: 8080
   health: /
-  data:
-  - /var/www/html/storage/upload
 # Laravel reads its connection in parts and defaults the user to 'app'. With only
 # DATABASE_URL bound it reached the companion and was refused:
 # "SQLSTATE[HY000] [1045] Access denied for user 'app'@'172.18.x.x'".

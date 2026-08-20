@@ -3,7 +3,5 @@ kind: app
 run:
   port: 80
   health: /
-  data:
-  - /var/www/wallabag/data
 companions:
   database: mariadb

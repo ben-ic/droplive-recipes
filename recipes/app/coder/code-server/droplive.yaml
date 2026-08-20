@@ -3,5 +3,3 @@ kind: app
 run:
   port: 8080
   health: /
-  data:
-  - /home/coder

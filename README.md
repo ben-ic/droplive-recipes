@@ -15,7 +15,7 @@ recipes/app/<github-owner>/<github-repository>/
 └── Dockerfile
 ```
 
-`droplive.yaml` says how to reach the application and what it writes:
+`droplive.yaml` says how to reach the application:
 
 ```yaml
 version: 1
@@ -23,8 +23,6 @@ kind: app
 run:
   port: 3000
   health: /health
-  data:
-  - /app/data
 ```
 
 `Dockerfile` names the published image, pinned by digest:
@@ -38,12 +36,18 @@ EXPOSE 3000
 That is the whole recipe, and it is what most of the ones here look like. The
 large majority of the applications in this repository need nothing more.
 
-Three things matter:
+Two things matter:
 
 - `run.port` is required.
 - `health` must return 200 only when the application is ready.
-- `data` lists every directory the application writes at runtime. The root
-  filesystem is read-only, so a path you do not list is not writable.
+
+The demo runs on the image's own filesystem, and it is writable. The
+application already has the files it shipped with, and can write wherever it
+normally writes. You do not declare writable paths, and you do not need to make
+the application avoid writing.
+
+Nothing is kept. A demo lasts fifteen minutes and is destroyed, so there is no
+persistence to arrange either.
 
 Run the validator:
 
@@ -99,8 +103,6 @@ kind: app
 run:
   port: 3000
   health: /health
-  data:
-    - /app/data
 ```
 
 The recipe does not contain a GitHub URL, branch, tag, commit, license result,

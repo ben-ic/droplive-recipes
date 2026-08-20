@@ -3,5 +3,3 @@ kind: app
 run:
   port: 8181
   health: /
-  data:
-  - /config

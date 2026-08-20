@@ -3,8 +3,6 @@ kind: app
 run:
   port: 9001
   health: /
-  data:
-  - /data
 environment:
   # The console is a login page, so the demo has to hand the visitor something.
   # Left alone, MinIO uses minioadmin/minioadmin and warns about it in its own

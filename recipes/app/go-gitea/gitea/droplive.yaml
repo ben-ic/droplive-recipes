@@ -3,11 +3,8 @@ kind: app
 run:
   port: 3000
   health: /api/healthz
-  data:
-  - /data
 environment:
   GITEA_ADMIN_PASSWORD:
     owner: droplive
     format: hex
     length: 64
-

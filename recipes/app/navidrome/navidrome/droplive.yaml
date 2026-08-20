@@ -3,6 +3,3 @@ kind: app
 run:
   port: 4533
   health: /ping
-  data:
-  - /music
-  - /data

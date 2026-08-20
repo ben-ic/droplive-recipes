@@ -6,7 +6,5 @@ run:
     path: /health
     contains:
     - '"status":"pass"'
-  data:
-  - /opt/etherpad-lite/var
 companions:
   database: postgres

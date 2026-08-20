@@ -15,24 +15,13 @@ build:
 
 ## The image builds but the application does not start
 
-Run it with a read-only root filesystem. This is the most common failure.
+Read the container's own output first. The demo runs the image on a writable
+copy of its own filesystem, so the usual causes are the ordinary ones: a missing
+command, a required environment variable, or a dependency the recipe has not
+declared.
 
-```yaml
-services:
-  app:
-    read_only: true
-    tmpfs:
-      - /tmp
-      - /app/cache
-    volumes:
-      - data:/app/data
-```
-
-If startup writes a configuration file, generate it during the image build or
-write it to a `tmpfs` path. If startup changes users, ownership, or files under
-`/etc`, replace the entrypoint and perform that work during the build.
-
-Do not disable the read-only root.
+The application does not need to avoid writing, and you do not need to declare
+where it writes.
 
 ## The application starts but never becomes ready
 

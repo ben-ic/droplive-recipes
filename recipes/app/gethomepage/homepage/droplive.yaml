@@ -3,6 +3,3 @@ kind: app
 run:
   port: 3000
   health: /
-  data:
-  - /app/config
-
