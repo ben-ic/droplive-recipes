@@ -1,0 +1,9 @@
+version: 1
+kind: app
+run:
+  port: 1337
+  health: /
+  data:
+  - /app/public/user-avatars
+companions:
+  database: postgres
