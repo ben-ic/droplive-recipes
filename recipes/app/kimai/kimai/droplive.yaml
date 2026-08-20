@@ -3,5 +3,10 @@ kind: app
 run:
   port: 8001
   health: /
+  # The image declares this an OCI VOLUME. The launch preflight refuses a plan
+  # that omits one, and Kimai creates this at runtime -- a declared data dir is a
+  # fresh mkfs.ext4, so a path the image already populates would be blanked.
+  data:
+  - /opt/kimai/var
 companions:
   database: mariadb
