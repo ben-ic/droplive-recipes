@@ -8,3 +8,30 @@ companions:
   redis-stack:
     outputs: [url, host, port, username, password]
     datasets: [redis.store.v1]
+
+  # The engines the short form has always accepted. Only `postgres` and
+  # `redis-stack` were registered, so an expanded companion naming any of these
+  # failed validation as an unknown type -- which left an application that reads
+  # its connection in parts, like Joomla, with no way to say so.
+  #
+  # Outputs are the parts of the connection DropLive can resolve. They are the
+  # same for every engine because they are the parts of a URL.
+  mysql:
+    outputs: [url, host, port, database, username, password]
+    datasets: []
+
+  mariadb:
+    outputs: [url, host, port, database, username, password]
+    datasets: []
+
+  mongodb:
+    outputs: [url, host, port, database, username, password]
+    datasets: []
+
+  redis:
+    outputs: [url, host, port, username, password]
+    datasets: []
+
+  upstash:
+    outputs: [url, host, port, username, password]
+    datasets: []

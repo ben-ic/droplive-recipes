@@ -5,5 +5,15 @@ run:
   health: /
   data:
   - /var/www/html
+# Joomla cannot read a single DATABASE_URL. Its entrypoint wants the connection
+# in parts and says so before halting: "Missing JOOMLA_DB_HOST and
+# MYSQL_PORT_3306_TCP environment variables."
 companions:
-  database: mysql
+  database:
+    type: mysql
+    bindings:
+      JOOMLA_DB_HOST: host
+      JOOMLA_DB_PORT: port
+      JOOMLA_DB_USER: username
+      JOOMLA_DB_PASSWORD: password
+      JOOMLA_DB_NAME: database
