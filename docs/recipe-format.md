@@ -213,9 +213,20 @@ second generator. `laravel-base64` does not accept `pattern`.
 application requires. Declare them when the application genuinely constrains the
 value, and leave them out otherwise so the default applies.
 
-> **`login` is not read.** It validates, and nothing acts on it. To show a
-> credential on the demo sign-in card, annotate the recipe entrypoint instead —
-> see [entrypoint declarations](#entrypoint-declarations) below.
+`login` names the username shown beside a generated password on the demo's
+sign-in card. The username has to be a literal the visitor can read, so only the
+password is generated:
+
+```yaml
+environment:
+  APP_ADMIN_PASSWORD:
+    owner: droplive
+    login:
+      username: admin
+```
+
+An entrypoint annotation does the same job for a credential the application
+itself bootstraps — see [entrypoint declarations](#entrypoint-declarations).
 
 An entrypoint that checks the shape of a value it was given should check what it
 actually needs. Asserting an exact length is the common mistake: it fails on any
