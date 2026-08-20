@@ -15,3 +15,8 @@ EXPOSE 4873
 # what lets this image run as an arbitrary UID, and the CMD it is given stays the
 # image's own.
 ENTRYPOINT ["/usr/local/bin/droplive-entrypoint"]
+
+# Declaring ENTRYPOINT resets CMD to empty, so the image's own command has to be
+# restated or `uid_entrypoint` is handed no program at all and dumb-init prints
+# its usage instead of starting anything. Copied verbatim from the pinned image.
+CMD ["/bin/sh", "-c", "verdaccio --config /verdaccio/conf/config.yaml --listen $VERDACCIO_PROTOCOL://0.0.0.0:$VERDACCIO_PORT"]
