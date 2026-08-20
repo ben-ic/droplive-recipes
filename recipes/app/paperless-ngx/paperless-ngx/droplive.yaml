@@ -1,0 +1,10 @@
+version: 1
+kind: app
+run:
+  port: 8000
+  health: /
+  data:
+  - /usr/src/paperless/media
+companions:
+  database: postgres
+  cache: redis

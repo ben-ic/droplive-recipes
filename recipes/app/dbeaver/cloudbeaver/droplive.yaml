@@ -1,0 +1,9 @@
+version: 1
+kind: app
+run:
+  port: 8978
+  health: /
+  data:
+  - /opt/cloudbeaver/workspace
+companions:
+  database: postgres

@@ -1,0 +1,10 @@
+version: 1
+kind: app
+run:
+  port: 8088
+  health: /health
+  data:
+  - /app/superset_home
+companions:
+  database: postgres
+  cache: redis
