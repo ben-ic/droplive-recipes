@@ -3,5 +3,9 @@ kind: app
 run:
   port: 8080
   health: /
+# Wekan reads MONGO_URL, not DATABASE_URL.
 companions:
-  database: mongodb
+  database:
+    type: mongodb
+    bindings:
+      MONGO_URL: url

@@ -9,3 +9,9 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
       org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
 
 EXPOSE 8080
+
+COPY --chmod=0755 droplive-entrypoint.sh /usr/local/bin/droplive-entrypoint.sh
+
+# The image's own command is unchanged and still runs; this only precedes it.
+ENTRYPOINT ["/usr/local/bin/droplive-entrypoint.sh"]
+CMD ["bash", "/build/wekan-entrypoint.sh"]

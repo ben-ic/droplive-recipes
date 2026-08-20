@@ -13,5 +13,11 @@ run:
   - /mattermost/data
   - /mattermost/logs
   - /mattermost/plugins
+# Mattermost names its own connection and, without it, keeps the built-in default
+# of a database on its own host: "cannot create store: error setting up
+# connections: dial tcp [::1]:5432: connect: connection refused".
 companions:
-  database: postgres
+  database:
+    type: postgres
+    bindings:
+      MM_SQLSETTINGS_DATASOURCE: url
