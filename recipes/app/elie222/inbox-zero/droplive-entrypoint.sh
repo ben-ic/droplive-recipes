@@ -45,7 +45,7 @@ MARKER="$TARGET/.droplive-initialized"
 if [ ! -f "$MARKER" ]; then
   echo "[droplive-init] initializing $TARGET from $TEMPLATE"
   # Clear anything a previous failed attempt left, or the move lands beside it.
-  rm -rf "${TARGET:?}"/* "${TARGET:?}"/.[!.]* 2>/dev/null || true
+  rm -rf "$TARGET"/* "$TARGET"/.[!.]* 2>/dev/null || true
   if ! mv "$TEMPLATE"/* "$TARGET"/ 2>/dev/null; then
     # A different filesystem: fall back to copying, and fail LOUDLY if it cannot
     # finish rather than leaving a half-written build to start against.
