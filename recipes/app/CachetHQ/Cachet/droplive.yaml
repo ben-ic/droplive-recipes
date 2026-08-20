@@ -5,3 +5,10 @@ run:
   health: /
 companions:
   database: postgres
+environment:
+  # Cachet's entrypoint stops with "ERROR: Please set the 'APP_KEY=base64:...'"
+  # and helpfully prints a freshly generated one. It is Laravel's encryption key,
+  # so it is minted per demo in exactly the shape Laravel parses.
+  APP_KEY:
+    owner: droplive
+    format: laravel-base64

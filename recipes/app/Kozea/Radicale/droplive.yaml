@@ -3,5 +3,9 @@ kind: app
 run:
   port: 5232
   health: /
+  # Every path the image declares as an OCI VOLUME. The launch preflight
+  # refuses a plan that omits one rather than hand the app an anonymous
+  # volume that dies with the container.
   data:
+  - /config
   - /data

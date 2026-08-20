@@ -4,4 +4,6 @@ run:
   port: 3000
   health: /api/health
   data:
-  - /data
+  - /metabase-data
+companions:
+  database: postgres
