@@ -8,4 +8,13 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
       org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
       org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
 
+# linkding has no default account: it creates the superuser at boot from these
+# two, and creates nobody without them. A visitor met a sign-in page with a
+# credential nobody had told them and no way to make one.
+#
+# Only the password is a secret, and DropLive mints it per demo (see
+# droplive.yaml). The username is not: it is this literal, and the same literal
+# in the recipe so the demo card can show the visitor what to type.
+ENV LD_SUPERUSER_NAME=admin
+
 EXPOSE 9090
