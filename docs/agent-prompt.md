@@ -30,28 +30,35 @@ Rules:
      does not provide an MCP transport.
    - If the source contains both, create one recipe for each product. Do not mix
      mcp and skill in one recipe.
-3. For an app or API, if one upstream Docker Compose file or Dockerfile already
-   works, do not copy it. Start with only:
+3. For an app or API, write two files and nothing else to begin with:
 
-     version: 1
-     kind: <kind>
+     recipes/app/<owner>/<repo>/droplive.yaml
+       version: 1
+       kind: <kind>
+       run:
+         port: <container port>
+         health: <path returning 200 only when ready>
+         data: [<every directory written at runtime>]
 
-4. If several upstream build files exist, select the exact file in build.
-5. Use the smallest build path that works. Use an upstream Compose file or
-   Dockerfile when it meets the DropLive runtime rules. Otherwise, prefer a
-   published image pinned by digest. Add recipe-owned docker-compose.yaml for
-   runtime configuration. Add a small recipe-owned Dockerfile or entrypoint
-   only when the image itself needs adaptation. Preferring Compose does not
-   override correctness.
-6. Name the main Compose service app when practical. Set read_only: true. Use
-   tmpfs for temporary writes and volumes for persistent data. Add an HTTP
-   health check for an app, API, or Streamable HTTP MCP server. A stdio MCP
-   server does not need a port or HTTP health check. DropLive managed volumes
-   start empty. They do not copy existing files from the image. Never mount an
-   empty volume over files that the application needs to start. If the
-   application must modify image files at runtime, preserve those files at a
-   template path in a recipe-owned Dockerfile and copy them into the empty
-   writable mount from a recipe-owned entrypoint before the application starts.
+     recipes/app/<owner>/<repo>/Dockerfile
+       FROM <published image>@sha256:<digest>
+       EXPOSE <container port>
+
+   run.port is required. Do not use the build field; nothing reads it.
+4. Find the published image the project itself publishes, and resolve its digest
+   from the registry. Do not copy an upstream Dockerfile or Compose file.
+5. Run it before adding anything. Extend the pinned image in the Dockerfile when
+   it needs a command or an environment default. Add an entrypoint script only
+   when startup itself must do something first, and say in a comment which
+   failure caused it. A recipe-owned docker-compose.yaml is supported but rarely
+   the right answer for one container.
+6. Every path in run.data is mounted EMPTY. Nothing is copied from the image, so
+   a directory the image ships is hidden rather than extended, and a directory
+   the image only expects to exist will not. List a path because the application
+   writes there, not because the data matters. If startup needs files at that
+   path, bake a template elsewhere in the image and restore it from an entrypoint
+   before the application starts. Test with empty, non-seeded volumes: an
+   ordinary Docker named volume is seeded from the image and will hide this.
 7. Pin every recipe-owned FROM image by sha256 digest. Do not copy a complete
    upstream Dockerfile only to make a small runtime change. Extend a pinned
    upstream image with the smallest required adaptation.

@@ -2,27 +2,48 @@
 
 This repository tells DropLive how to run open-source software.
 
-Start with one small file. If the upstream project needs help, you can
-also add `docker-compose.yaml`, a `Dockerfile`, and helper scripts. You do not
-need to change the upstream repository.
+Start with two small files. Add a script only when the application needs one.
+You do not need to change the upstream repository.
 
 ## Add a project in five minutes
 
-Create this file:
+A recipe is a folder with two files:
 
 ```text
-recipes/app/<github-owner>/<github-repository>/droplive.yaml
+recipes/app/<github-owner>/<github-repository>/
+├── droplive.yaml
+└── Dockerfile
 ```
 
-Start with:
+`droplive.yaml` says how to reach the application and what it writes:
 
 ```yaml
 version: 1
 kind: app
+run:
+  port: 3000
+  health: /health
+  data:
+  - /app/data
 ```
 
-That is enough when DropLive can find one usable upstream Docker Compose file or
-Dockerfile and can discover how to start and check the project.
+`Dockerfile` names the published image, pinned by digest:
+
+```dockerfile
+FROM ghcr.io/example/project@sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+
+EXPOSE 3000
+```
+
+That is the whole recipe, and it is what most of the ones here look like. The
+large majority of the applications in this repository need nothing more.
+
+Three things matter:
+
+- `run.port` is required.
+- `health` must return 200 only when the application is ready.
+- `data` lists every directory the application writes at runtime. The root
+  filesystem is read-only, so a path you do not list is not writable.
 
 Run the validator:
 
@@ -31,7 +52,7 @@ python3 -m pip install -r requirements-dev.txt
 python3 tools/lint_recipes.py
 ```
 
-If the validator or build asks for more information, add only that information.
+Add anything else only when the application asks for it.
 
 ## Choose the kind
 
@@ -44,76 +65,33 @@ Every recipe states what it provides:
 | `mcp` | An MCP server |
 | `skill` | A skill with a `SKILL.md` entrypoint |
 
-An app can also declare more than one interface:
+## When the image needs help
 
-```yaml
-version: 1
-kind: app
-interfaces: [web, api]
+Extend the pinned image in the recipe `Dockerfile`. Most repairs are one or two
+lines — a missing command, an environment default the demo needs:
+
+```dockerfile
+FROM docker.io/example/project@sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+
+# Started bare this image prints its usage banner and exits.
+CMD ["server", "/data", "--console-address", ":9001"]
 ```
 
-## When upstream already works
+When startup itself has to do something first, add an entrypoint script beside
+`droplive.yaml`, copy it in, and hand over to the image's own command. A fair
+number of recipes here do this. Keep it short and say why in a comment — the
+next person reading it cannot see the failure that caused it.
 
-Do not copy the upstream Docker Compose file or Dockerfile. Keep the two-line
-recipe. DropLive applies it to the requested upstream commit.
+Do not copy a whole upstream Dockerfile in order to change one line, and pin
+every `FROM` by digest.
 
-If the repository has several build files, select one:
-
-```yaml
-version: 1
-kind: app
-build:
-  docker-compose: deploy/docker-compose.yml
-  service: web
-```
-
-Paths in `build` select files from the upstream repository.
-
-## When upstream needs help
-
-Add `docker-compose.yaml` beside `droplive.yaml`. This file belongs to the
-recipe. DropLive uses it with the upstream source checkout.
-
-```text
-recipes/app/example/example/
-├── droplive.yaml
-├── docker-compose.yaml
-├── Dockerfile             # optional
-└── entrypoint.sh           # optional
-```
-
-Use one service named `app` when possible:
-
-```yaml
-services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    read_only: true
-    tmpfs:
-      - /tmp
-      - /app/cache
-    volumes:
-      - data:/app/data
-    expose:
-      - "3000"
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/health"]
-
-volumes:
-  data:
-```
-
-Compose is the preferred repair tool. It can declare the command, environment,
-port, health check, read-only root, temporary paths, and persistent data.
-
-Use a recipe `Dockerfile` when you must change the image, entrypoint, installed
-files, user, or startup behavior. Pin every `FROM` image by digest.
+A recipe-owned `docker-compose.yaml` is also supported, and almost nothing here
+needs one. Reach for it only when a single container genuinely cannot express
+the runtime.
 
 ## What belongs in droplive.yaml
 
-Only add facts that DropLive cannot discover from the build files:
+Only add facts DropLive cannot get from the image:
 
 ```yaml
 version: 1
@@ -131,7 +109,7 @@ repository. DropLive records the requested commit separately.
 
 ## Environment ownership
 
-Most environment variables stay in Docker Compose. Add an `environment` entry
+Public defaults belong in the `Dockerfile` as `ENV`. Add an `environment` entry
 to `droplive.yaml` only when DropLive must generate a value or ask the visitor
 for it:
 
@@ -139,13 +117,19 @@ for it:
 environment:
   APP_SECRET:
     owner: droplive
-  ADMIN_EMAIL:
-    owner: user
+  APP_ADMIN_PASSWORD:
+    owner: droplive
+    login:
+      username: admin
 ```
 
-Generated values can select a documented `format`, `length`, and safe
-`pattern`. See the [recipe reference](docs/recipe-format.md#environment).
-Never commit the value itself.
+`login` puts the credential on the demo's sign-in card. Generated values can
+also select a `format`, `length`, and safe `pattern`. See the
+[recipe reference](docs/recipe-format.md#environment). Never commit the value
+itself.
+
+Few recipes need this section. Most need none of it — the entrypoint states
+what it requires with `: "${NAME:?…}"` and DropLive reads that directly.
 
 ## Versions
 
@@ -177,7 +161,7 @@ The runtime behavior is the planned DropLive test contract. See the
 - [Complete recipe reference](docs/recipe-format.md)
 - [Planned MCP and skills test contract](docs/mcp-and-skills.md)
 - [Troubleshooting](docs/troubleshooting.md)
-- [Add realistic sample data](docs/seeding.md)
+- [Planned sample-data design](docs/seeding.md)
 - [Contribution checklist](CONTRIBUTING.md)
 
 This repository uses the [MIT License](LICENSE).
