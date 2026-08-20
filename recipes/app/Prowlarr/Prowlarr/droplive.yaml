@@ -1,0 +1,7 @@
+version: 1
+kind: app
+run:
+  port: 9696
+  health: /
+  data:
+  - /config
