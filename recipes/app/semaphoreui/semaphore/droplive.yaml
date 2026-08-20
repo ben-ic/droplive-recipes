@@ -3,3 +3,16 @@ kind: app
 run:
   port: 3000
   health: /
+# Semaphore declared no companion at all and defaulted to a database on its own
+# host: "Pinging database on 0.0.0.0 port 3306" until the probe timed out. It
+# reads the connection in parts, and spells the password `PASS` and the database
+# name `SEMAPHORE_DB`.
+companions:
+  database:
+    type: mysql
+    bindings:
+      SEMAPHORE_DB_HOST: host
+      SEMAPHORE_DB_PORT: port
+      SEMAPHORE_DB_USER: username
+      SEMAPHORE_DB_PASS: password
+      SEMAPHORE_DB: database

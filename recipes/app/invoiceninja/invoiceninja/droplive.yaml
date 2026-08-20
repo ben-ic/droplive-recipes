@@ -5,5 +5,14 @@ run:
   health: /
   data:
   - /var/www/app/public
+# Laravel reads its connection in parts. With only DATABASE_URL bound it kept the
+# framework default of a local server: "SQLSTATE[HY000] [2002] Connection refused".
 companions:
-  database: mariadb
+  database:
+    type: mariadb
+    bindings:
+      DB_HOST: host
+      DB_PORT: port
+      DB_DATABASE: database
+      DB_USERNAME: username
+      DB_PASSWORD: password

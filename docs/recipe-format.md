@@ -379,11 +379,14 @@ Allowed companion datasets and outputs are registered in
 [`companions/v1.yaml`](../companions/v1.yaml). A type, dataset, or binding that
 is not in this registry fails validation.
 
-> **Not yet read.** When DropLive runs an app or API recipe today it reads only
-> the short form, so an expanded companion validates but attaches nothing. Use
-> the short form for a runtime recipe. The expanded form stays correct for an
-> MCP recipe, whose test contract is still
-> [planned](mcp-and-skills.md), and for recording a reviewed dataset.
+Use the short form whenever the application can read a single connection URL,
+which is most of them. Reach for the expanded form when it cannot: Joomla wants
+its connection in parts and halts with "Missing JOOMLA_DB_HOST and
+MYSQL_PORT_3306_TCP environment variables" if it does not get them.
+
+A declared binding is emitted alongside the usual `DATABASE_URL` or
+`REDIS_URL`, so an application reading either shape finds what it needs. A name something
+else already binds is left alone.
 
 ## `emulators`
 

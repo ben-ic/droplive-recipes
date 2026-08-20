@@ -3,5 +3,14 @@ kind: app
 run:
   port: 5000
   health: /
+# Redash names both connections itself, and without them fell back to localhost:
+# "ConnectionError: Error 111 connecting to localhost:6379."
 companions:
-  database: postgres
+  database:
+    type: postgres
+    bindings:
+      REDASH_DATABASE_URL: url
+  cache:
+    type: redis
+    bindings:
+      REDASH_REDIS_URL: url
