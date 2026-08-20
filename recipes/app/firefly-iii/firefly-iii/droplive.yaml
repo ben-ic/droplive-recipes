@@ -7,3 +7,13 @@ run:
   - /var/www/html/storage/upload
 companions:
   database: mariadb
+environment:
+  # Laravel refuses to boot without it, and mints nothing itself:
+  # "Uncaught Illuminate\\Encryption\\MissingAppKeyException: No application
+  # encryption key has been specified."
+  #
+  # The framework parses this as `base64:` followed by exactly 32 decoded bytes,
+  # which is what the `laravel-base64` format produces.
+  APP_KEY:
+    owner: droplive
+    format: laravel-base64

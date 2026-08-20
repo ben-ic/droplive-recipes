@@ -8,3 +8,14 @@ run:
 companions:
   database: postgres
   cache: redis
+environment:
+  # Outline checks both at boot and exits before listening. Each is read as 32
+  # bytes of hex, so the length is 64 characters and not the default.
+  SECRET_KEY:
+    owner: droplive
+    format: hex
+    length: 64
+  UTILS_SECRET:
+    owner: droplive
+    format: hex
+    length: 64
