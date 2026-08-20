@@ -326,6 +326,14 @@ Some images arrive with a sign-in already set. File Browser writes `admin` /
 perfectly and the visitor cannot get past the login page. DropLive can neither
 mint that credential nor discover it — the recipe is the only thing that knows.
 
+> **Check for an environment variable first.** Most applications take their
+> admin password from one, and then minting is the right answer: declare it
+> `owner: droplive` with `login.username` and the visitor gets a credential
+> belonging to their session alone. `sign_in` is for a credential DropLive
+> cannot change, not one nobody has changed yet. Stating a published default
+> because it is simpler puts a credential from the project's own documentation
+> on a live demo.
+
 ```yaml
 sign_in:
   username: admin

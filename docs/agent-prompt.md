@@ -94,14 +94,21 @@ Rules:
     still answered 200 and every probe called it healthy. Declaring an
     origin variable as owner: droplive is a bug: the application then receives a
     random secret where its URL should be.
-11. If the image ships a fixed sign-in of its own -- admin/admin and the like --
-    state it as sign_in: {username, password, note} in droplive.yaml. The
-    annotation in rule 9 covers only values DropLive generates, so without
-    this the demo serves a working login page that no visitor can pass. Prefer
-    stating the published default over minting a replacement: a fifteen-minute
-    disposable µVM does not need a stronger credential, and an application that
-    invents one at boot and prints it to its own log (Directus) should be given
-    one through rule 9 instead.
+11. When the demo serves a login page, ask one question first: does the
+    application take its password from the environment? Check before choosing.
+    - If it DOES, mint one. Declare the variable owner: droplive with
+      login: {username: <literal>}, and the card shows a credential belonging to
+      that one session. Grafana, MinIO, Directus and Langflow all work this way.
+      The username stays a literal, which is what makes login.username usable --
+      only the password is generated.
+    - Only if it does NOT, state the shipped credential as
+      sign_in: {username, password, note}. File Browser writes admin/admin into
+      a fresh database and offers no way to change it, so the recipe is the only
+      thing that can tell the visitor.
+    Do not state a published default merely because it is simpler. A credential
+    printed in the application's own documentation is one every reader already
+    knows, live on a reachable demo, and the fix costs one declaration. sign_in
+    is for credentials DropLive cannot change, not credentials nobody changed.
 12. Use companions for databases and caches. Use only listed emulator
     capabilities for external services. Never add an arbitrary external host.
     DropLive reads only the short companion form today.
