@@ -5,3 +5,10 @@ run:
   health: /login/
   data:
   - /etc/linkding/data
+environment:
+  # Minted per demo, and handed to the visitor on the demo card. linkding reads
+  # it once at boot to create `admin`; nothing else consumes it.
+  LD_SUPERUSER_PASSWORD:
+    owner: droplive
+    login:
+      username: admin

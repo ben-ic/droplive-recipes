@@ -17,11 +17,19 @@ LABEL org.droplive.source.commit="${DROPLIVE_SOURCE_COMMIT}" \
 # idempotently before handing control back to the official Node entrypoint.
 COPY --chmod=0555 droplive-entrypoint.sh /usr/local/bin/droplive-papra-entrypoint.sh
 
-# Keep password-reset links disabled until the owner explicitly configures a
-# real mail driver. The first registered user is the deterministic administrator.
+# The mail fixture IS the real mail driver these were waiting for. Every demo
+# gets its own Mailpit on the guest's loopback and `EMAILS_DRIVER` is bound to it
+# at launch, so the condition this comment used to defer on is now met.
+#
+# Left off, Papra had a mail fixture it never once used: registering returned
+# `emailVerified: false`, nothing was sent, and the inbox the demo page offers to
+# open stayed empty. Verification is the flow that proves the claim the receipt
+# makes -- the app really sent mail, over real SMTP, and it never left this µVM.
+#
+# The first registered user is the deterministic administrator.
 ENV AUTH_FIRST_USER_AS_ADMIN=true \
-    AUTH_IS_PASSWORD_RESET_ENABLED=false \
-    AUTH_IS_EMAIL_VERIFICATION_REQUIRED=false \
+    AUTH_IS_PASSWORD_RESET_ENABLED=true \
+    AUTH_IS_EMAIL_VERIFICATION_REQUIRED=true \
     EMAILS_DRIVER=logger \
     PROCESS_MODE=all
 
