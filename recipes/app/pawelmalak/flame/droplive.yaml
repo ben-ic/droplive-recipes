@@ -1,0 +1,7 @@
+version: 1
+kind: app
+run:
+  port: 5005
+  health: /
+  data:
+  - /app/data
