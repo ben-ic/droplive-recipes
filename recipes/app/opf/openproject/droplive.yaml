@@ -1,0 +1,9 @@
+version: 1
+kind: app
+run:
+  port: 8080
+  health: /
+  data:
+  - /var/openproject/assets
+companions:
+  database: postgres
