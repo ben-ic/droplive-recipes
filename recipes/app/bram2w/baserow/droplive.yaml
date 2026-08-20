@@ -1,0 +1,10 @@
+version: 1
+kind: app
+run:
+  port: 80
+  health: /api/_health/
+  data:
+  - /baserow/data
+companions:
+  database: postgres
+  cache: redis

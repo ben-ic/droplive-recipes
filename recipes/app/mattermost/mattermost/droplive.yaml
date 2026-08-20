@@ -1,0 +1,9 @@
+version: 1
+kind: app
+run:
+  port: 8065
+  health: /api/v4/system/ping
+  data:
+  - /mattermost/data
+companions:
+  database: postgres
