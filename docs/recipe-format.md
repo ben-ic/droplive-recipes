@@ -2,8 +2,9 @@
 
 The file name is always `droplive.yaml`.
 
-Unknown fields fail validation. Start with two fields and add optional fields
-only when you need them.
+Unknown fields fail validation. An app or API needs `version`, `kind`, and a
+`run` block with a port; add optional fields only when the application asks for
+them.
 
 ## `version`
 
@@ -26,7 +27,7 @@ Required. It must match the first folder below `recipes/`.
 
 ## `interfaces`
 
-Optional. Use it when an app has more than one public interface.
+> **Not read.** The schema accepts it and nothing acts on it. No recipe uses it.
 
 ```yaml
 interfaces: [web, api]
@@ -34,14 +35,15 @@ interfaces: [web, api]
 
 ## Build discovery
 
-When `build` is absent, DropLive uses this order:
+A recipe builds the `Dockerfile` beside its `droplive.yaml`, or the
+recipe-owned `docker-compose.yaml` when there is one. That is the whole of it:
+every application in this repository is a recipe-owned `Dockerfile` extending a
+digest-pinned upstream image.
 
-1. Recipe-owned `docker-compose.yaml`
-2. Recipe-owned `Dockerfile`
-3. One unambiguous upstream Docker Compose file
-4. One unambiguous upstream Dockerfile
-
-If more than one upstream choice remains, select it with `build`.
+> **`build` is not read.** The schema accepts the field, the linter validates
+> it, and nothing acts on it — no recipe uses it. The subsections below describe
+> the intended selection syntax, not behaviour you can rely on today. Put the
+> Dockerfile at the recipe root instead.
 
 ### Select upstream Docker Compose
 
@@ -74,8 +76,8 @@ The image must be pinned by digest.
 
 ## `run`
 
-Optional. Use it only when the selected Docker Compose file or Dockerfile does
-not provide enough information.
+Required for an app or API. `run.port` in particular: a recipe without it is
+refused, whatever the Dockerfile says.
 
 ```yaml
 run:
@@ -85,10 +87,21 @@ run:
     - /app/data
 ```
 
-- `port` is the main container port.
+- `port` is the main container port. **Required.**
 - `health` is an HTTP path. HTTP 200 means ready by default.
-- `data` contains persistent writable paths.
+- `data` lists the directories the application writes at runtime. The root
+  filesystem is read-only, so an unlisted path is not writable.
 - `working-directory` overrides a broken image working directory.
+
+`data` is about writability first and persistence second. A demo lasts fifteen
+minutes and keeps nothing afterwards, so list a directory because the
+application writes to it, not because the data matters.
+
+Each listed path is mounted **empty**. Nothing is copied from the image, so a
+directory the image ships is hidden rather than extended, and a directory the
+image merely expects to exist will not. If startup needs files there, restore
+them from a template in an entrypoint — see
+[entrypoint declarations](#entrypoint-declarations).
 
 A health check can also require response text:
 
@@ -525,6 +538,9 @@ skill:
 `entrypoint` is relative to the upstream repository root.
 
 ## Application seed files
+
+> **Not in use.** No recipe seeds data yet, and `seed` is not read. Treat this
+> section and [seeding.md](seeding.md) as the intended design.
 
 Use `seed.sh` for realistic application data. See
 [seeding.md](seeding.md) before you add it.

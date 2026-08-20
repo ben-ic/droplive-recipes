@@ -1,5 +1,8 @@
 # Add realistic sample data
 
+> **Status: planned.** No recipe seeds data yet, and `seed` is not read. This
+> page describes the intended design, not behaviour to rely on today.
+
 Sample data helps a visitor understand an application immediately. It is
 optional. A reliable empty application is better than a fragile seeded one.
 

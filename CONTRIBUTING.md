@@ -14,13 +14,18 @@ use the same recipe format.
 
 ## Make the smallest recipe
 
-1. Create `recipes/<kind>/<owner>/<repository>/droplive.yaml`.
-2. Add `version: 1` and the correct `kind`.
-3. Use the upstream Docker Compose file or Dockerfile when it works.
-4. Add recipe files only when upstream needs a DropLive-specific change.
-5. Add only the missing values reported by validation.
+1. Create `recipes/<kind>/<owner>/<repository>/`.
+2. Add `droplive.yaml` with `version: 1`, the correct `kind`, and a `run` block
+   naming the port, the health path, and every directory written at runtime.
+3. Add a `Dockerfile` whose `FROM` is the published image, pinned by digest.
+4. Run it. Add nothing until the application asks for it.
 
-Do not copy upstream files only to make the recipe look complete.
+That is the whole recipe for most applications here. Extend the pinned image in
+the Dockerfile when it needs a command or a default; add an entrypoint script
+only when startup itself has to do something first.
+
+Do not copy a whole upstream Dockerfile or Compose file to make the recipe look
+complete.
 
 ## Test an app, API, or MCP server
 
