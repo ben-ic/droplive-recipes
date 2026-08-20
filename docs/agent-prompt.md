@@ -62,8 +62,10 @@ Rules:
    base64, or laravel-base64. Add length or a safe RE2 pattern only when the
    application requires it. DropLive injects these declared values when it
    starts the service. Do not repeat them in Docker Compose. Never commit a
-   secret. Nothing reads login, so it cannot produce the sign-in card; use the
-   entrypoint annotation in rule 9 for that.
+   secret. To name which generated value a visitor signs in with, add
+   login: {username: <literal>} to that variable; the username has to be a
+   literal the visitor can read, so a value whose username is also generated
+   cannot use it.
 9. Declare required runtime values in the recipe entrypoint with
    : "${NAME:?message}". DropLive reads those guards, so most recipes need no
    environment section at all. For a credential the application owns and
@@ -83,22 +85,36 @@ Rules:
 10. Never declare the demo's own URL. DropLive supplies the session origin to a
     name shaped like an origin: exactly APP_URL, AUTH_URL, NEXTAUTH_URL, or
     ROOT_URL, or any name ending in _ROOT_URL, _SITE_URL, _BASE_URL, or
-    _PUBLIC_URL. Require it in the entrypoint and stop there. Declaring an
+    _PUBLIC_URL. Require it in the entrypoint and stop there. Require it even when
+    upstream treats it as optional, if the application writes its own address
+    into the pages it serves: DropLive fills in what an application REQUIRES,
+    so a variable that merely asks politely is never bound, and the app then
+    emits its internal address. Verdaccio served a blank page that way -- its
+    <base href> pointed at a bridge IP no visitor can reach, while the root
+    still answered 200 and every probe called it healthy. Declaring an
     origin variable as owner: droplive is a bug: the application then receives a
     random secret where its URL should be.
-11. Use companions for databases and caches. Use only listed emulator
+11. If the image ships a fixed sign-in of its own -- admin/admin and the like --
+    state it as sign_in: {username, password, note} in droplive.yaml. The
+    annotation in rule 9 covers only values DropLive generates, so without
+    this the demo serves a working login page that no visitor can pass. Prefer
+    stating the published default over minting a replacement: a fifteen-minute
+    disposable µVM does not need a stronger credential, and an application that
+    invents one at boot and prints it to its own log (Directus) should be given
+    one through rule 9 instead.
+12. Use companions for databases and caches. Use only listed emulator
     capabilities for external services. Never add an arbitrary external host.
     DropLive reads only the short companion form today.
-12. Do not put a repository URL, branch, tag, commit, measurement, artifact
+13. Do not put a repository URL, branch, tag, commit, measurement, artifact
     digest, or secret in droplive.yaml.
-13. Do not change the source repository. Test changes in a temporary working
+14. Do not change the source repository. Test changes in a temporary working
     copy. Recipe files can overlay that working copy for testing.
-14. When safe, add realistic sample data with seed.sh. Use the application's API,
+15. When safe, add realistic sample data with seed.sh. Use the application's API,
     official CLI, or official import format. Do not write private database tables.
     Keep seed data deterministic, repeatable, obviously fictional, and free of
     secrets. Skip seeding when the project has no stable seeding interface.
-15. Run python3 tools/lint_recipes.py before you finish.
-16. For every MCP recipe, select one network mode:
+16. Run python3 tools/lint_recipes.py before you finish.
+17. For every MCP recipe, select one network mode:
     - Use `network: none` only when the server works without outbound network
       access. DropLive blocks network access when it tests this claim.
     - Use `network: observed` when the server needs network access. DropLive
@@ -106,32 +122,32 @@ Rules:
     - Use optional `expected_hosts` only to document expected public hostnames.
       It does not allow or block traffic. Do not put URLs, paths, ports,
       credentials, or IP addresses in it.
-17. Give every MCP recipe one small, deterministic `tools.smoke` call. It must
+18. Give every MCP recipe one small, deterministic `tools.smoke` call. It must
     be read-only, bounded, and independent of private user data. Use public or
     disposable fixture data. Use `tools.examples` only for useful optional
     starting arguments. Do not copy the full tool catalog into the recipe.
-18. Verify MCP initialize, capability listing, and the smoke call against
+19. Verify MCP initialize, capability listing, and the smoke call against
     disposable fixtures. A process that stays alive without a successful MCP
     operation does not pass. Never use a real vendor credential.
-19. Treat an MCP package recipe as one exact package release. Verify that the
+20. Treat an MCP package recipe as one exact package release. Verify that the
     package belongs to the source project. Do not replace a requested source
     commit with an unrelated package release. Do not combine `mcp.package` with
     a source build. A source recipe builds the exact requested Git commit.
-20. For an MCP package build, resolve and hash the complete dependency closure.
+21. For an MCP package build, resolve and hash the complete dependency closure.
     Treat that closure as part of the tested artifact identity.
-21. Resolve every runtime dependency. A browser-control MCP server must use the
+22. Resolve every runtime dependency. A browser-control MCP server must use the
     documented browser capability or include a pinned browser in its artifact.
     Do not assume that Chrome, Chromium, a Playwright browser, a database, or
     another service is installed. If the recipe cannot express the dependency,
     stop and report it as unsupported.
-22. When an MCP command needs a runtime value, put the complete `{{NAME}}` token
+23. When an MCP command needs a runtime value, put the complete `{{NAME}}` token
     in its own command argument and declare the matching environment, emulator,
     or companion binding. Do not embed a token inside another argument.
-23. Use the documented capability for a vendor-like service. For example, use
+24. Use the documented capability for a vendor-like service. For example, use
     `storage.s3.v1` for S3. Do not also declare an S3 companion. Use companions
     only for dependency types listed in the repository. A recipe declares the
     capability it needs, not private DropLive topology.
-24. For a skill, verify observable effects with a fixed prompt and an explicit
+25. For a skill, verify observable effects with a fixed prompt and an explicit
     tool allowlist. Never use a real vendor credential.
 
 For an app, API, or MCP server, test the selected Docker or Compose path. Confirm:
