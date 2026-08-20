@@ -12,6 +12,24 @@ run:
   - /usr/src/paperless/data
   - /usr/src/paperless/export
   - /usr/src/paperless/media
+# Paperless names both connections itself. With only DATABASE_URL and REDIS_URL
+# bound, its s6 init could not find either -- "unable to start service
+# init-wait-for-redis: command exited 1" -- and stopped the container.
 companions:
-  database: postgres
-  cache: redis
+  database:
+    type: postgres
+    bindings:
+      PAPERLESS_DBHOST: host
+      PAPERLESS_DBPORT: port
+      PAPERLESS_DBNAME: database
+      PAPERLESS_DBUSER: username
+      PAPERLESS_DBPASS: password
+  cache:
+    type: redis
+    bindings:
+      PAPERLESS_REDIS: url
+environment:
+  # Django refuses to start otherwise: "PAPERLESS_SECRET_KEY is not set or is the
+  # default 'change-me' value."
+  PAPERLESS_SECRET_KEY:
+    owner: droplive
