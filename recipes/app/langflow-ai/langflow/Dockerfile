@@ -8,4 +8,8 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
       org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
       org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
 
+# Read once at boot to create the superuser. Only the password is secret; see
+# droplive.yaml.
+ENV LANGFLOW_SUPERUSER=admin
+
 EXPOSE 7860

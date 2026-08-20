@@ -3,3 +3,7 @@ kind: app
 run:
   port: 8000
   health: /
+companions:
+  # Without one it opens SQLite at a path it cannot write and exits with
+  # "django.db.utils.OperationalError: unable to open database file".
+  database: postgres

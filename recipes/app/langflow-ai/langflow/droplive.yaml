@@ -3,3 +3,15 @@ kind: app
 run:
   port: 7860
   health: /
+environment:
+  # Langflow exits at boot with "ValueError: Username and password must be set"
+  # -- with AUTO_LOGIN off it creates its superuser from these two and creates
+  # nobody without them. Upstream also refuses its own legacy default password,
+  # so this has to be minted rather than stated.
+  #
+  # The username is not a secret: it is a literal in the Dockerfile and the same
+  # literal here, so the demo card can show the visitor what to type.
+  LANGFLOW_SUPERUSER_PASSWORD:
+    owner: droplive
+    login:
+      username: admin
