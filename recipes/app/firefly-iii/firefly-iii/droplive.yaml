@@ -5,8 +5,18 @@ run:
   health: /
   data:
   - /var/www/html/storage/upload
+# Laravel reads its connection in parts and defaults the user to 'app'. With only
+# DATABASE_URL bound it reached the companion and was refused:
+# "SQLSTATE[HY000] [1045] Access denied for user 'app'@'172.18.x.x'".
 companions:
-  database: mariadb
+  database:
+    type: mariadb
+    bindings:
+      DB_HOST: host
+      DB_PORT: port
+      DB_DATABASE: database
+      DB_USERNAME: username
+      DB_PASSWORD: password
 environment:
   # Laravel refuses to boot without it, and mints nothing itself:
   # "Uncaught Illuminate\\Encryption\\MissingAppKeyException: No application

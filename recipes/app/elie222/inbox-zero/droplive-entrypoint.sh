@@ -22,12 +22,39 @@ if [ ! -d "$TEMPLATE" ]; then
   exit 1
 fi
 
-# Empty means uninitialized. A restart onto a populated volume must not re-copy: the
-# placeholders in it have already been substituted, and copying the template back
-# would be harmless but slow, while copying over a running app would not.
-if [ -z "$(ls -A "$TARGET" 2>/dev/null || true)" ]; then
+# MOVED, not copied, and a MARKER decides whether it has been done.
+#
+# A copy needs the build output twice over at once, and the writable filesystem is
+# sized to the image plus a margin -- so the copy ran the device out of space
+# partway through:
+#
+#   cp: can't create directory '/app/apps/web/.next/./server/app/_not-found':
+#       No space left on device
+#
+# A rename inside one filesystem costs nothing and needs no second copy. The
+# template and the target are on the same device by construction: the Dockerfile
+# `mv`s one to the other.
+#
+# Emptiness cannot decide this. The failed copy left `.next` PARTLY populated, the
+# old `ls -A` test then read that as initialized, and every restart afterwards
+# started the application against a half-written build -- which exits 0 without ever
+# binding its port, so it reads as the app simply refusing to run. A partial state
+# has to be distinguishable from a finished one.
+MARKER="$TARGET/.droplive-initialized"
+
+if [ ! -f "$MARKER" ]; then
   echo "[droplive-init] initializing $TARGET from $TEMPLATE"
-  cp -a "$TEMPLATE/." "$TARGET/"
+  # Clear anything a previous failed attempt left, or the move lands beside it.
+  rm -rf "${TARGET:?}"/* "${TARGET:?}"/.[!.]* 2>/dev/null || true
+  if ! mv "$TEMPLATE"/* "$TARGET"/ 2>/dev/null; then
+    # A different filesystem: fall back to copying, and fail LOUDLY if it cannot
+    # finish rather than leaving a half-written build to start against.
+    cp -a "$TEMPLATE/." "$TARGET/" || {
+      echo "[droplive-init] could not initialize $TARGET" >&2
+      exit 1
+    }
+  fi
+  touch "$MARKER"
 else
   echo "[droplive-init] $TARGET already initialized"
 fi
