@@ -10,3 +10,7 @@ run:
   - /usr/src/redmine/files
 companions:
   database: postgres
+sign_in:
+  username: admin
+  password: admin
+  note: Upstream default for a fresh database. Redmine requires a password change after the first sign-in.

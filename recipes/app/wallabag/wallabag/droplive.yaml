@@ -7,3 +7,7 @@ run:
   - /var/www/wallabag/data
 companions:
   database: mariadb
+sign_in:
+  username: wallabag
+  password: wallabag
+  note: Upstream default for a fresh database. Change it from Settings.
