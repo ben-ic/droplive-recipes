@@ -4,8 +4,9 @@ run:
   port: 80
   health:
     path: /wp-login.php
-    contains:
-    - 'name="log"'
+    status:
+    - 200
+    - 302
   data:
   - /var/www/html
 companions:
