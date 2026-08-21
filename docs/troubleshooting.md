@@ -158,8 +158,11 @@ companions:
   database: postgres
 ```
 
-Do not add a second application service with an arbitrary database image to the
-recipe Compose file.
+For a platform-managed database or cache, use the short form and do not add an
+arbitrary service image. If the application requires an exact Compose image,
+keep that image and use the expanded form with the same service name, an
+explicit `type`, and the required environment `bindings`. The image name does
+not select the companion type.
 
 ## The project needs privileged mode, host networking, or a writable root
 

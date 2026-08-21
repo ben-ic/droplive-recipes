@@ -416,6 +416,12 @@ which is most of them. Reach for the expanded form when it cannot: Joomla wants
 its connection in parts and halts with "Missing JOOMLA_DB_HOST and
 MYSQL_PORT_3306_TCP environment variables" if it does not get them.
 
+For a multi-service Compose recipe, the companion key must match the Compose
+service name. Keep an exact database or cache image in Compose when the
+application requires that image. Declare its protocol with `type` and map the
+application's environment names with `bindings`. DropLive does not infer a
+companion type from an image repository, tag, or service name.
+
 A declared binding is emitted alongside the usual `DATABASE_URL` or
 `REDIS_URL`, so an application reading either shape finds what it needs. A name something
 else already binds is left alone.

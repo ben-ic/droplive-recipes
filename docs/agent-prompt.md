@@ -118,7 +118,10 @@ Rules:
     is for credentials DropLive cannot change, not credentials nobody changed.
 12. Use companions for databases and caches. Use only listed emulator
     capabilities for external services. Never add an arbitrary external host.
-    DropLive reads only the short companion form today.
+    Use the expanded companion form when an application needs split environment
+    bindings or an exact Compose database or cache image. Match the companion
+    key to the Compose service name and declare `type` explicitly. Never infer
+    type from the image or service name.
 13. Do not put a repository URL, branch, tag, commit, measurement, artifact
     digest, or secret in droplive.yaml.
 14. Do not change the source repository. Test changes in a temporary working
