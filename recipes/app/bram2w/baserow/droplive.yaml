@@ -2,7 +2,9 @@ version: 1
 kind: app
 run:
   port: 80
-  health: /api/_health/
+  # This pinned all-in-one image serves its backend health route at /_health.
+  # /api/_health/ is the route for the split backend service, not this image.
+  health: /_health
   data:
   - /baserow/data
 companions:
