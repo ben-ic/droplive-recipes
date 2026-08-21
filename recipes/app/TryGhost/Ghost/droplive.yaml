@@ -6,14 +6,6 @@ run:
   data:
   - /var/lib/ghost/content
 companions:
-  # Ghost 6 defaults to MySQL on localhost. These names intentionally avoid the
-  # platform's reserved *DB_HOST/*DB_PASSWORD connection-name suffixes. The
-  # entrypoint maps the reviewed bindings to Ghost's runtime config keys.
-  database:
-    type: mysql
-    bindings:
-      GHOST_CONNECTION_HOST: host
-      GHOST_CONNECTION_PORT: port
-      GHOST_CONNECTION_USER: username
-      GHOST_CONNECTION_PASSWORD: password
-      GHOST_CONNECTION_DATABASE: database
+  # Use the platform's standard DATABASE_URL binding. The entrypoint converts
+  # its reviewed MySQL URL into Ghost's split runtime configuration.
+  database: mysql
