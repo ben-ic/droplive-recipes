@@ -5,3 +5,7 @@ run:
   health: /
   data:
   - /config
+sign_in:
+  username: admin
+  password: adminadmin
+  note: Demo account. Change it from Tools > Options > Web UI.
