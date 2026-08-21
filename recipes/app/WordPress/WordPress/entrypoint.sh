@@ -9,6 +9,10 @@ export WORDPRESS_DB_USER="$(php -r '$u=parse_url(getenv("DATABASE_URL")); echo r
 export WORDPRESS_DB_PASSWORD="$(php -r '$u=parse_url(getenv("DATABASE_URL")); echo rawurldecode($u["pass"] ?? "");')"
 export WORDPRESS_DB_NAME="$(php -r '$u=parse_url(getenv("DATABASE_URL")); echo rawurldecode(ltrim($u["path"] ?? "", "/"));')"
 
+# The build probe can create wp-config.php with its temporary companion host.
+# Recreate it from the runtime DATABASE_URL before the app starts.
+rm -f /var/www/html/wp-config.php
+
 # WordPress otherwise stores the loopback address used by this setup script.
 # Use the public request host so login and admin redirects stay on the demo URL.
 export WORDPRESS_CONFIG_EXTRA='

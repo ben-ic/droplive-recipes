@@ -8,7 +8,9 @@ run:
     - 200
     - 302
   data:
-  - /var/www/html
+  # Keep uploads, themes, and plugins. Do not persist wp-config.php: the
+  # build probe writes it with temporary database coordinates.
+  - /var/www/html/wp-content
 companions:
   database:
     type: mysql
