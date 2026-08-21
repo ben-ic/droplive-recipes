@@ -8,3 +8,12 @@ run:
 environment:
   DB_PASSWORD:
     owner: droplive
+companions:
+  database:
+    type: postgres
+    bindings:
+      DB_HOSTNAME: host
+  redis:
+    type: redis
+    bindings:
+      REDIS_HOSTNAME: host
