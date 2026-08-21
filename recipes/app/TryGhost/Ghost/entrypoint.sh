@@ -42,4 +42,8 @@ export url="$APP_URL"
 export server__host=0.0.0.0
 export server__port=2368
 
+if [ "$#" -eq 0 ]; then
+  set -- node current/index.js
+fi
+
 exec docker-entrypoint.sh "$@"
