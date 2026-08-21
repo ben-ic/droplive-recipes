@@ -10,3 +10,7 @@ run:
 companions:
   database: postgres
   cache: redis
+environment:
+  # Baserow refuses to start without a per-install key for its settings DB.
+  SETTINGS_ENCRYPTION_KEY:
+    owner: droplive
