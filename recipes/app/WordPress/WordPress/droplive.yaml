@@ -9,7 +9,10 @@ run:
   data:
   - /var/www/html
 companions:
-  database: mysql
+  database:
+    type: mysql
+    bindings:
+      DATABASE_URL: url
 environment:
   # The recipe installs the short-lived demo and shows this credential on the
   # sign-in card. A visitor never handles the companion database credentials.

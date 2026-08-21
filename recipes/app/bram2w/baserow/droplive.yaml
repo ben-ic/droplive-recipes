@@ -8,7 +8,10 @@ run:
   data:
   - /baserow/data
 companions:
-  database: postgres
+  database:
+    type: postgres
+    bindings:
+      DATABASE_URL: url
   cache: redis
 environment:
   # Baserow refuses to start without a per-install key for its settings DB.
