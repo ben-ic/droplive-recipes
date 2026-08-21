@@ -2,8 +2,16 @@ version: 1
 kind: app
 run:
   port: 8978
-  health: /
+  health:
+    path: /
+    contains:
+    - CloudBeaver
   data:
   - /opt/cloudbeaver/workspace
-companions:
-  database: postgres
+environment:
+  CB_ADMIN_PASSWORD:
+    owner: droplive
+    format: alphanumeric
+    length: 24
+    login:
+      username: droplive-admin

@@ -5,3 +5,10 @@ run:
   health: /
   data:
   - /home/coder
+environment:
+  PASSWORD:
+    owner: droplive
+    format: alphanumeric
+    length: 24
+    login:
+      username: not required
