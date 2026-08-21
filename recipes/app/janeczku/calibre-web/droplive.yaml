@@ -2,6 +2,17 @@ version: 1
 kind: app
 run:
   port: 8083
-  health: /
+  health:
+    path: /login
+    contains:
+    - 'name="username"'
   data:
   - /config
+  - /books
+environment:
+  CALIBRE_ADMIN_PASSWORD:
+    owner: droplive
+    format: alphanumeric
+    length: 24
+    login:
+      username: admin
