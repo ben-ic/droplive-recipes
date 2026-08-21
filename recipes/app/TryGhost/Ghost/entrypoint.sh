@@ -25,7 +25,7 @@ export database__connection__database="$ghost_db_database"
 # host and port before handing control to the official entrypoint.
 export DB_HOST="$ghost_db_host" DB_PORT="$ghost_db_port"
 db_ready=false
-for _ in $(seq 1 60); do
+for _ in $(seq 1 180); do
   if node -e 'const net = require("node:net"); const socket = net.createConnection({host: process.env.DB_HOST, port: Number(process.env.DB_PORT)}); const fail = () => process.exit(1); socket.once("connect", () => { socket.destroy(); process.exit(0); }); socket.once("error", fail); socket.setTimeout(1000, fail);'; then
     db_ready=true
     break
