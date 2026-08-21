@@ -1,0 +1,22 @@
+version: 1
+kind: app
+run:
+  port: 1337
+  health: /
+companions:
+  database: postgres
+  cache: redis
+environment:
+  # Boards signs its sessions with this and mints nothing itself.
+  SECRET_KEY:
+    owner: droplive
+  # The first-run seed creates one account from these. Left alone it is
+  # demo/demo, which is printed in the project's own seed file, so the demo
+  # mints the password instead and puts it on the sign-in card. The username
+  # stays the seed's literal default.
+  DEFAULT_ADMIN_PASSWORD:
+    owner: droplive
+    format: password
+    length: 24
+    login:
+      username: demo
