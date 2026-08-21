@@ -2,6 +2,16 @@ version: 1
 kind: app
 run:
   port: 80
-  health: /healthcheck
+  health:
+    path: /status
+    contains:
+    - '"isInit":true'
   data:
   - /config
+environment:
+  ROOT_PASSWORD:
+    owner: droplive
+    format: alphanumeric
+    length: 24
+    login:
+      username: root
