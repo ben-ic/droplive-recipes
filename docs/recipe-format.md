@@ -310,6 +310,15 @@ The fields are fixed and ordered:
 | `capability` | Optional. `owner-login` or `admin-login` |
 | `username` | Optional. The fixed username shown beside the password |
 
+`hex64` and `hex96` are the number of characters, so `hex96` is 96 bytes. Many
+applications hash a password with bcrypt, which refuses anything over 72 bytes.
+Fusion exits at boot with `bcrypt: password length exceeds 72 bytes` when it is
+given `hex96`, and starts with `hex64`. Check how the application hashes the
+value before choosing.
+
+Leave `username` out when the application signs in with a password alone. The
+card then shows only the password, which is all Fusion has.
+
 Rules that decide whether the line counts:
 
 - The same script must also require `name` with a `${NAME:?…}` guard. An
