@@ -1,0 +1,5 @@
+version: 1
+kind: app
+run:
+  port: 19999
+  health: /api/v1/info
