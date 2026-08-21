@@ -8,4 +8,15 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
       org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
       org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
 
+ENV CB_SERVER_NAME="DropLive Database Demo" \
+    CB_ADMIN_NAME="droplive-admin" \
+    CLOUDBEAVER_APP_ANONYMOUS_ACCESS_ENABLED=false \
+    CLOUDBEAVER_POLICY_REQUIRE_MIXED_CASE=false \
+    CLOUDBEAVER_POLICY_MIN_NUMBER_COUNT=0
+
+COPY --chmod=0555 droplive-entrypoint.sh /usr/local/bin/droplive-cloudbeaver-entrypoint
+
 EXPOSE 8978
+
+ENTRYPOINT ["/usr/local/bin/droplive-cloudbeaver-entrypoint"]
+CMD ["./launch-product.sh"]

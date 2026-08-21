@@ -2,6 +2,23 @@ version: 1
 kind: app
 run:
   port: 80
-  health: /
+  health:
+    path: /auth/login
+    contains:
+    - 'name="email"'
 companions:
-  database: mariadb
+  database:
+    type: mariadb
+    bindings:
+      DB_HOST: host
+      DB_PORT: port
+      DB_NAME: database
+      DB_USERNAME: username
+      DB_PASSWORD: password
+environment:
+  ADMIN_PASSWORD:
+    owner: droplive
+    format: alphanumeric
+    length: 24
+    login:
+      username: admin@example.invalid

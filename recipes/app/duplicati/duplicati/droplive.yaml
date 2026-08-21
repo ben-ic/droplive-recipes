@@ -10,3 +10,8 @@ run:
   - /backups
   - /config
   - /source
+environment:
+  # Current LinuxServer images refuse to start without a per-install key for
+  # encrypting the settings database.
+  SETTINGS_ENCRYPTION_KEY:
+    owner: droplive

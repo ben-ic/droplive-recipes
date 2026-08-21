@@ -2,8 +2,26 @@ version: 1
 kind: app
 run:
   port: 80
-  health: /
+  health:
+    path: /wp-login.php
+    contains:
+    - 'name="log"'
   data:
   - /var/www/html
 companions:
-  database: mysql
+  database:
+    type: mysql
+    bindings:
+      WORDPRESS_DB_HOST: host
+      WORDPRESS_DB_USER: username
+      WORDPRESS_DB_PASSWORD: password
+      WORDPRESS_DB_NAME: database
+environment:
+  # The recipe installs the short-lived demo and shows this credential on the
+  # sign-in card. A visitor never handles the companion database credentials.
+  WORDPRESS_ADMIN_PASSWORD:
+    owner: droplive
+    format: alphanumeric
+    length: 24
+    login:
+      username: admin
