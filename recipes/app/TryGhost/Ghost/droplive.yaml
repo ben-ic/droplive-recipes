@@ -5,3 +5,14 @@ run:
   health: /
   data:
   - /var/lib/ghost/content
+companions:
+  # Ghost 6 defaults to MySQL on localhost. Its native variable names contain
+  # lower-case segments, so the recipe entrypoint maps these reviewed bindings.
+  database:
+    type: mysql
+    bindings:
+      GHOST_DB_HOST: host
+      GHOST_DB_PORT: port
+      GHOST_DB_USER: username
+      GHOST_DB_PASSWORD: password
+      GHOST_DB_DATABASE: database

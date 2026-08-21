@@ -29,10 +29,12 @@ USER node
 VOLUME ["/app/data"]
 EXPOSE 3000
 
+COPY --chmod=755 entrypoint.sh /usr/local/bin/droplive-entrypoint
+
 # The application health response checks both PostgreSQL and local storage.
 # Require all three typed statuses instead of accepting an arbitrary 2xx page.
 HEALTHCHECK --start-period=60s --interval=30s --timeout=10s --retries=4 \
   CMD node -e "fetch('http://127.0.0.1:3000/api/health').then(async r => { const b = await r.json(); if (!r.ok || b.status !== 'healthy' || b.database?.status !== 'healthy' || b.storage?.status !== 'healthy') process.exit(1); }).catch(() => process.exit(1))"
 
-ENTRYPOINT ["docker-entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/droplive-entrypoint"]
 CMD ["node", "apps/server/dist/index.mjs"]
