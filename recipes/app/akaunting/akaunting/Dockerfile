@@ -2,6 +2,7 @@ FROM docker.io/akaunting/akaunting@sha256:50940112be48a229a2f567dc50ace9886fe5b1
 
 ENV AKAUNTING_SETUP=true \
     LOCALE=en-US \
+    DB_CONNECTION=mysql \
     DB_PREFIX=dl_ \
     COMPANY_NAME="DropLive Demo" \
     COMPANY_EMAIL=demo@example.invalid \
