@@ -5,3 +5,6 @@ run:
   health: /api/server/ping
   data:
     - /data
+environment:
+  DB_PASSWORD:
+    owner: droplive
