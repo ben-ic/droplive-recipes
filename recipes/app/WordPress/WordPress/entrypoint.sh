@@ -1,11 +1,23 @@
 #!/bin/sh
 set -eu
 
-: "${WORDPRESS_DB_HOST:?DropLive supplies the MySQL host}"
-: "${WORDPRESS_DB_USER:?DropLive supplies the MySQL user}"
-: "${WORDPRESS_DB_PASSWORD:?DropLive supplies the MySQL password}"
-: "${WORDPRESS_DB_NAME:?DropLive supplies the MySQL database}"
+: "${DATABASE_URL:?DropLive supplies the MySQL connection URL}"
 : "${WORDPRESS_ADMIN_PASSWORD:?DropLive generates the WordPress admin password}"
+
+wordpress_db_host="$(php -r '$u=parse_url(getenv("DATABASE_URL")); echo $u["host"] ?? "";')"
+wordpress_db_port="$(php -r '$u=parse_url(getenv("DATABASE_URL")); echo $u["port"] ?? "3306";')"
+wordpress_db_user="$(php -r '$u=parse_url(getenv("DATABASE_URL")); echo rawurldecode($u["user"] ?? "");')"
+wordpress_db_password="$(php -r '$u=parse_url(getenv("DATABASE_URL")); echo rawurldecode($u["pass"] ?? "");')"
+wordpress_db_name="$(php -r '$u=parse_url(getenv("DATABASE_URL")); echo rawurldecode(ltrim($u["path"] ?? "", "/"));')"
+: "${wordpress_db_host:?DropLive supplies the MySQL host}"
+: "${wordpress_db_user:?DropLive supplies the MySQL user}"
+: "${wordpress_db_password:?DropLive supplies the MySQL password}"
+: "${wordpress_db_name:?DropLive supplies the MySQL database}"
+
+export WORDPRESS_DB_HOST="${wordpress_db_host}:${wordpress_db_port}"
+export WORDPRESS_DB_USER="$wordpress_db_user"
+export WORDPRESS_DB_PASSWORD="$wordpress_db_password"
+export WORDPRESS_DB_NAME="$wordpress_db_name"
 
 # WordPress otherwise stores the loopback address used by this setup script.
 # Use the public request host so login and admin redirects stay on the demo URL.

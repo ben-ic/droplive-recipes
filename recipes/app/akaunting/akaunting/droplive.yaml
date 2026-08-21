@@ -7,14 +7,7 @@ run:
     contains:
     - 'name="email"'
 companions:
-  database:
-    type: mariadb
-    bindings:
-      DB_HOST: host
-      DB_PORT: port
-      DB_NAME: database
-      DB_USERNAME: username
-      DB_PASSWORD: password
+  database: mariadb
 environment:
   ADMIN_PASSWORD:
     owner: droplive

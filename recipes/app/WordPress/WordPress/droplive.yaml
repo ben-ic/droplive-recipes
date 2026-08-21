@@ -9,13 +9,7 @@ run:
   data:
   - /var/www/html
 companions:
-  database:
-    type: mysql
-    bindings:
-      WORDPRESS_DB_HOST: host
-      WORDPRESS_DB_USER: username
-      WORDPRESS_DB_PASSWORD: password
-      WORDPRESS_DB_NAME: database
+  database: mysql
 environment:
   # The recipe installs the short-lived demo and shows this credential on the
   # sign-in card. A visitor never handles the companion database credentials.
