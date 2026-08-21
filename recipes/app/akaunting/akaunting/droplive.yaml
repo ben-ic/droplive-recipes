@@ -8,7 +8,9 @@ run:
     - 'name="email"'
 companions:
   database:
-    type: mariadb
+    # MariaDB speaks the MySQL protocol. Use the mysql companion kind because
+    # Akaunting's Laravel build rejects `mariadb` as a driver name.
+    type: mysql
     bindings:
       DATABASE_URL: url
 environment:
