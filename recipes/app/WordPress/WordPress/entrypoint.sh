@@ -4,20 +4,20 @@ set -eu
 : "${DATABASE_URL:?DropLive supplies the MySQL connection URL}"
 : "${WORDPRESS_ADMIN_PASSWORD:?DropLive generates the WordPress admin password}"
 
-wordpress_db_host="$(php -r '$u=parse_url(getenv("DATABASE_URL")); echo $u["host"] ?? "";')"
-wordpress_db_port="$(php -r '$u=parse_url(getenv("DATABASE_URL")); echo $u["port"] ?? "3306";')"
-wordpress_db_user="$(php -r '$u=parse_url(getenv("DATABASE_URL")); echo rawurldecode($u["user"] ?? "");')"
-wordpress_db_password="$(php -r '$u=parse_url(getenv("DATABASE_URL")); echo rawurldecode($u["pass"] ?? "");')"
-wordpress_db_name="$(php -r '$u=parse_url(getenv("DATABASE_URL")); echo rawurldecode(ltrim($u["path"] ?? "", "/"));')"
-: "${wordpress_db_host:?DropLive supplies the MySQL host}"
-: "${wordpress_db_user:?DropLive supplies the MySQL user}"
-: "${wordpress_db_password:?DropLive supplies the MySQL password}"
-: "${wordpress_db_name:?DropLive supplies the MySQL database}"
+WORDPRESS_DB_HOST_VALUE="$(php -r '$u=parse_url(getenv("DATABASE_URL")); echo $u["host"] ?? "";')"
+WORDPRESS_DB_PORT_VALUE="$(php -r '$u=parse_url(getenv("DATABASE_URL")); echo $u["port"] ?? "3306";')"
+WORDPRESS_DB_USER_VALUE="$(php -r '$u=parse_url(getenv("DATABASE_URL")); echo rawurldecode($u["user"] ?? "");')"
+WORDPRESS_DB_PASSWORD_VALUE="$(php -r '$u=parse_url(getenv("DATABASE_URL")); echo rawurldecode($u["pass"] ?? "");')"
+WORDPRESS_DB_NAME_VALUE="$(php -r '$u=parse_url(getenv("DATABASE_URL")); echo rawurldecode(ltrim($u["path"] ?? "", "/"));')"
+: "${WORDPRESS_DB_HOST_VALUE:?DropLive supplies the MySQL host}"
+: "${WORDPRESS_DB_USER_VALUE:?DropLive supplies the MySQL user}"
+: "${WORDPRESS_DB_PASSWORD_VALUE:?DropLive supplies the MySQL password}"
+: "${WORDPRESS_DB_NAME_VALUE:?DropLive supplies the MySQL database}"
 
-export WORDPRESS_DB_HOST="${wordpress_db_host}:${wordpress_db_port}"
-export WORDPRESS_DB_USER="$wordpress_db_user"
-export WORDPRESS_DB_PASSWORD="$wordpress_db_password"
-export WORDPRESS_DB_NAME="$wordpress_db_name"
+export WORDPRESS_DB_HOST="${WORDPRESS_DB_HOST_VALUE}:${WORDPRESS_DB_PORT_VALUE}"
+export WORDPRESS_DB_USER="$WORDPRESS_DB_USER_VALUE"
+export WORDPRESS_DB_PASSWORD="$WORDPRESS_DB_PASSWORD_VALUE"
+export WORDPRESS_DB_NAME="$WORDPRESS_DB_NAME_VALUE"
 
 # WordPress otherwise stores the loopback address used by this setup script.
 # Use the public request host so login and admin redirects stay on the demo URL.
@@ -32,19 +32,19 @@ if (isset($_SERVER["HTTP_HOST"])) {
 export WORDPRESS_CONFIG_EXTRA
 
 docker-entrypoint.sh "$@" &
-wordpress_pid=$!
+WORDPRESS_PID=$!
 
 stop_wordpress() {
-  kill -TERM "$wordpress_pid" 2>/dev/null || true
-  wait "$wordpress_pid" 2>/dev/null || true
+  kill -TERM "$WORDPRESS_PID" 2>/dev/null || true
+  wait "$WORDPRESS_PID" 2>/dev/null || true
 }
 trap stop_wordpress INT TERM EXIT
 
-attempt=0
-while [ "$attempt" -lt 120 ]; do
+ATTEMPT=0
+while [ "$ATTEMPT" -lt 120 ]; do
   if curl -fsSL http://127.0.0.1/wp-login.php | grep -q 'name="log"'; then
     trap - EXIT
-    wait "$wordpress_pid"
+    wait "$WORDPRESS_PID"
     exit $?
   fi
 
@@ -60,7 +60,7 @@ while [ "$attempt" -lt 120 ]; do
       'http://127.0.0.1/wp-admin/install.php?step=2' || true
   fi
 
-  attempt=$((attempt + 1))
+  ATTEMPT=$((ATTEMPT + 1))
   sleep 1
 done
 
