@@ -34,5 +34,4 @@ emulators:
     byok: true
     bindings:
       OPENROUTER_BASE_URL: api_base_url
-      PI_DEFAULT_MODEL: model_name
       OPENROUTER_API_KEY: non_authenticating_api_key
