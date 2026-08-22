@@ -8,4 +8,9 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
       org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
       org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
 
+COPY --chmod=0755 droplive-entrypoint.sh /usr/local/bin/droplive-entrypoint
+COPY --chmod=0755 configure-demo.sh /custom-cont-init.d/90-droplive-sabnzbd
+
 EXPOSE 8080
+
+ENTRYPOINT ["/usr/local/bin/droplive-entrypoint"]

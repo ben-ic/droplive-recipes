@@ -5,3 +5,5 @@ repository: https://github.com/sabnzbd/sabnzbd
 run:
   port: 8080
   health: /
+  data:
+  - /config
