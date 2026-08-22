@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "High performance self-hosted photo and video management solution"
 run:
   port: 2283
   health: /api/server/ping

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Kimai is the #1 open-source time-tracking application"
 run:
   port: 8001
   health: /

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "A Free & Self-hostable Airtable Alternative"
 run:
   port: 8080
   health: /api/v1/health

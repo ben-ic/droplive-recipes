@@ -1,5 +1,6 @@
 version: 1
 kind: mcp
+description: "GitHub's official MCP Server"
 emulators:
   github:
     capability: github.api.v1

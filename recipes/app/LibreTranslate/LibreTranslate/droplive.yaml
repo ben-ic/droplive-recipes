@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Free and Open Source Machine Translation API. Self-hosted, offline capable and easy to setup"
 run:
   port: 5000
   health: /

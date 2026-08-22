@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Continuous Inspection"
 run:
   port: 9000
   health: /

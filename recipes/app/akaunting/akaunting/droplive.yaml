@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Online Accounting Software"
 run:
   port: 80
   health:

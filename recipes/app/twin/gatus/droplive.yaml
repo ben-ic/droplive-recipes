@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Automated developer-oriented status page with alerting and incident support"
 run:
   port: 8080
   health:

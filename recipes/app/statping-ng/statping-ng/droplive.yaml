@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "An updated drop-in for statping"
 run:
   port: 8080
   health: /

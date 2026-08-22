@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Create, fill and sign documents online with an open source signing platform"
 run:
   port: 3000
   health: /

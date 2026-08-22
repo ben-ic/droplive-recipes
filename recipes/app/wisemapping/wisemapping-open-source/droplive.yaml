@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Open Source Mindmap Tool"
 run:
   port: 80
   health: /c/login

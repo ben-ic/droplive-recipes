@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Store securely encrypted backups in the cloud!"
 run:
   port: 8200
   health: /

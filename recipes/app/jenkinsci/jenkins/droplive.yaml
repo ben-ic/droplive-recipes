@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Jenkins automation server"
 run:
   port: 8080
   health: /login

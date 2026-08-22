@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Best and simplest tool for website change detection, web page monitoring, and website change alerts"
 run:
   port: 5000
   health: /

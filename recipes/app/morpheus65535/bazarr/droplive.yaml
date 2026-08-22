@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Bazarr is a companion application to Sonarr and Radarr"
 run:
   port: 6767
   health: /

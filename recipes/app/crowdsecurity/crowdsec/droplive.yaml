@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Crowdsourced intrusion prevention that detects and blocks malicious IP addresses"
 run:
   port: 8080
   health: /health

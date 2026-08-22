@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "The Privacy First PDF Toolkit"
 run:
   port: 8080
   health: /

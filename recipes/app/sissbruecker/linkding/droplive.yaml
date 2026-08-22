@@ -1,10 +1,9 @@
 version: 1
 kind: app
+description: "Self-hosted bookmark manager that is designed be to be minimal, fast, and easy to set up using Docker"
 run:
   port: 9090
   health: /login/
-  data:
-  - /etc/linkding/data
 environment:
   # Minted per demo, and handed to the visitor on the demo card. linkding reads
   # it once at boot to create `admin`; nothing else consumes it.
@@ -12,3 +11,28 @@ environment:
     owner: droplive
     login:
       username: admin
+
+# linkding signs in through OIDC, and the demo points it at the reviewed API
+# fixture rather than at Microsoft. The four endpoints and both client values are
+# what `microsoft.oidc.v1` documents; DropLive resolves them to this session's own
+# fixture, so the authorization endpoint is a public origin a browser can reach
+# while the back channels stay on the guest's loopback.
+#
+# This block used to be a per-application clause inside the control plane, keyed
+# on a catalogue id linkding no longer has. It never fired for a recipe-built
+# linkding, which launched with no OIDC configuration at all.
+emulators:
+  api:
+    capability: microsoft.oidc.v1
+    # An authorization step is a browser redirect, so this capability is reachable
+    # from the visitor's browser as well as from the app's server. That is what
+    # makes the authorization endpoint a public origin while the token, userinfo
+    # and JWKS calls stay on the guest's own loopback.
+    access: server-and-browser
+    bindings:
+      OIDC_OP_AUTHORIZATION_ENDPOINT: authorization_endpoint
+      OIDC_OP_TOKEN_ENDPOINT: token_endpoint
+      OIDC_OP_USER_ENDPOINT: userinfo_endpoint
+      OIDC_OP_JWKS_ENDPOINT: jwks_endpoint
+      OIDC_RP_CLIENT_ID: client_id
+      OIDC_RP_CLIENT_SECRET: non_authenticating_client_secret

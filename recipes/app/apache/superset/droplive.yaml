@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Apache Superset is a Data Visualization and Data Exploration Platform"
 run:
   port: 8088
   health: /health

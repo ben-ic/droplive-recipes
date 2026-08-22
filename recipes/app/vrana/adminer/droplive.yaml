@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Database management in a single PHP file"
 run:
   port: 8080
   health: /

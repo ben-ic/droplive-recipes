@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Hierarchical note taking application for building a personal knowledge base"
 run:
   port: 8080
   health: /

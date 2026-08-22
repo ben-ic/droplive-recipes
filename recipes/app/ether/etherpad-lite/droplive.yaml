@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Etherpad: A modern really-real-time collaborative document editor"
 run:
   port: 9001
   health:

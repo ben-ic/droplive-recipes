@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Smart PVR for newsgroup and bittorrent users"
 run:
   port: 8989
   health: /

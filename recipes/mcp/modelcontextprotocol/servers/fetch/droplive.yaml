@@ -1,5 +1,6 @@
 version: 1
 kind: mcp
+description: "Fetches a web page and converts it to markdown for a model to read"
 product: fetch
 mcp:
   transport: stdio

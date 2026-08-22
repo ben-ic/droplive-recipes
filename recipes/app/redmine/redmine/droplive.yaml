@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Project management and issue tracking with wikis, forums and time tracking"
 run:
   port: 3000
   health: /

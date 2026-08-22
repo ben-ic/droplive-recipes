@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "NOW MANAGED ON CODEBERG"
 run:
   port: 80
   health: /

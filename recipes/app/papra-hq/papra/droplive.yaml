@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "The minimalistic document archiving platform"
 run:
   port: 1221
   health:

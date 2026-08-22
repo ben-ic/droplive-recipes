@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "qBittorrent BitTorrent client"
 run:
   port: 8080
   health: /

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "An email and SMTP testing tool with API for developers"
 run:
   port: 8025
   health: /

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "A lightweight, self-hosted friendly RSS reader"
 run:
   port: 8080
   health: /

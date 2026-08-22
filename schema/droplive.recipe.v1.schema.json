@@ -4,14 +4,40 @@
   "title": "DropLive recipe v1",
   "type": "object",
   "additionalProperties": false,
-  "required": ["version", "kind"],
+  "required": [
+    "version",
+    "kind",
+    "description"
+  ],
   "properties": {
-    "version": {"const": 1},
-    "kind": {"enum": ["app", "api", "mcp", "skill"]},
-    "product": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "version": {
+      "const": 1
+    },
+    "kind": {
+      "enum": [
+        "app",
+        "api",
+        "mcp",
+        "skill"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 160
+    },
+    "product": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
     "interfaces": {
       "type": "array",
-      "items": {"enum": ["web", "api"]},
+      "items": {
+        "enum": [
+          "web",
+          "api"
+        ]
+      },
       "minItems": 1,
       "uniqueItems": true
     },
@@ -19,126 +45,435 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "docker-compose": {"$ref": "#/$defs/relativePath"},
-        "service": {"type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.-]*$"},
-        "dockerfile": {"$ref": "#/$defs/relativePath"},
-        "context": {"$ref": "#/$defs/relativePath"},
-        "image": {"type": "string", "pattern": "^[^@[:space:]]+@sha256:[0-9a-f]{64}$"}
+        "docker-compose": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "service": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.-]*$"
+        },
+        "dockerfile": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "context": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "image": {
+          "type": "string",
+          "pattern": "^[^@[:space:]]+@sha256:[0-9a-f]{64}$"
+        }
       },
       "oneOf": [
-        {"required": ["docker-compose"], "not": {"anyOf": [{"required": ["dockerfile"]}, {"required": ["image"]}]}},
-        {"required": ["dockerfile"], "not": {"anyOf": [{"required": ["docker-compose"]}, {"required": ["image"]}]}},
-        {"required": ["image"], "not": {"anyOf": [{"required": ["docker-compose"]}, {"required": ["dockerfile"]}]}},
-        {"required": ["service"], "not": {"anyOf": [{"required": ["docker-compose"]}, {"required": ["dockerfile"]}, {"required": ["image"]}]}}
+        {
+          "required": [
+            "docker-compose"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "dockerfile"
+                ]
+              },
+              {
+                "required": [
+                  "image"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "required": [
+            "dockerfile"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "docker-compose"
+                ]
+              },
+              {
+                "required": [
+                  "image"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "required": [
+            "image"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "docker-compose"
+                ]
+              },
+              {
+                "required": [
+                  "dockerfile"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "required": [
+            "service"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "docker-compose"
+                ]
+              },
+              {
+                "required": [
+                  "dockerfile"
+                ]
+              },
+              {
+                "required": [
+                  "image"
+                ]
+              }
+            ]
+          }
+        }
       ]
     },
     "run": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "port": {"type": "integer", "minimum": 1, "maximum": 65535},
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        },
         "health": {
           "oneOf": [
-            {"type": "string", "pattern": "^/"},
-            {"$ref": "#/$defs/health"}
+            {
+              "type": "string",
+              "pattern": "^/"
+            },
+            {
+              "$ref": "#/$defs/health"
+            }
           ]
         },
         "data": {
           "type": "array",
-          "items": {"type": "string", "pattern": "^/"},
+          "items": {
+            "type": "string",
+            "pattern": "^/"
+          },
           "uniqueItems": true
         },
-        "working-directory": {"type": "string", "pattern": "^/"}
+        "working-directory": {
+          "type": "string",
+          "pattern": "^/"
+        }
       }
     },
     "environment": {
       "type": "object",
-      "propertyNames": {"pattern": "^[A-Z_][A-Z0-9_]*$"},
-      "additionalProperties": {"$ref": "#/$defs/environment-variable"}
+      "propertyNames": {
+        "pattern": "^[A-Z_][A-Z0-9_]*$"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/environment-variable"
+      }
     },
     "companions": {
       "type": "object",
-      "propertyNames": {"pattern": "^[a-z][a-z0-9_-]*$"},
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_-]*$"
+      },
       "additionalProperties": {
         "oneOf": [
-          {"enum": ["postgres", "mysql", "mariadb", "mongodb", "redis", "upstash"]},
-          {"$ref": "#/$defs/companion"}
+          {
+            "enum": [
+              "postgres",
+              "mysql",
+              "mariadb",
+              "mongodb",
+              "redis",
+              "upstash"
+            ]
+          },
+          {
+            "$ref": "#/$defs/companion"
+          }
         ]
       }
     },
     "emulators": {
       "type": "object",
-      "propertyNames": {"pattern": "^[a-z][a-z0-9_-]*$"},
-      "additionalProperties": {"$ref": "#/$defs/emulator"}
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_-]*$"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/emulator"
+      }
     },
-    "mcp": {"$ref": "#/$defs/mcp"},
-    "skill": {"$ref": "#/$defs/skill"},
-    "seed": {"$ref": "#/$defs/seed"},
-    "sign_in": {"$ref": "#/$defs/signIn"}
+    "mcp": {
+      "$ref": "#/$defs/mcp"
+    },
+    "skill": {
+      "$ref": "#/$defs/skill"
+    },
+    "seed": {
+      "$ref": "#/$defs/seed"
+    },
+    "sign_in": {
+      "$ref": "#/$defs/signIn"
+    }
   },
   "allOf": [
     {
-      "if": {"properties": {"kind": {"const": "mcp"}}, "required": ["kind"]},
-      "then": {
-        "required": ["mcp"],
-        "not": {"required": ["skill"]}
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "mcp"
+          }
+        },
+        "required": [
+          "kind"
+        ]
       },
-      "else": {"not": {"required": ["mcp"]}}
-    },
-    {
-      "if": {"properties": {"kind": {"const": "skill"}}, "required": ["kind"]},
       "then": {
-        "required": ["skill"],
-        "not": {"required": ["mcp"]}
+        "required": [
+          "mcp"
+        ],
+        "not": {
+          "required": [
+            "skill"
+          ]
+        }
       },
-      "else": {"not": {"required": ["skill"]}}
+      "else": {
+        "not": {
+          "required": [
+            "mcp"
+          ]
+        }
+      }
     },
     {
       "if": {
         "properties": {
-          "kind": {"const": "mcp"},
-          "mcp": {"required": ["package"]}
+          "kind": {
+            "const": "skill"
+          }
         },
-        "required": ["kind", "mcp"]
+        "required": [
+          "kind"
+        ]
       },
-      "then": {"not": {"required": ["build"]}}
+      "then": {
+        "required": [
+          "skill"
+        ],
+        "not": {
+          "required": [
+            "mcp"
+          ]
+        }
+      },
+      "else": {
+        "not": {
+          "required": [
+            "skill"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "mcp"
+          },
+          "mcp": {
+            "required": [
+              "package"
+            ]
+          }
+        },
+        "required": [
+          "kind",
+          "mcp"
+        ]
+      },
+      "then": {
+        "not": {
+          "required": [
+            "build"
+          ]
+        }
+      }
     }
   ],
   "$defs": {
     "environment-variable": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["owner"],
+      "required": [
+        "owner"
+      ],
       "properties": {
-        "owner": {"enum": ["droplive", "user"]},
-        "format": {"enum": ["hex", "url-safe", "alphanumeric", "password", "base64", "laravel-base64"]},
-        "length": {"type": "integer", "minimum": 8, "maximum": 256},
-        "pattern": {"type": "string", "minLength": 2, "maxLength": 256, "pattern": "^\\^.*\\$$"},
+        "owner": {
+          "enum": [
+            "droplive",
+            "user"
+          ]
+        },
+        "format": {
+          "enum": [
+            "hex",
+            "url-safe",
+            "alphanumeric",
+            "password",
+            "base64",
+            "laravel-base64"
+          ]
+        },
+        "length": {
+          "type": "integer",
+          "minimum": 8,
+          "maximum": 256
+        },
+        "pattern": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 256,
+          "pattern": "^\\^.*\\$$"
+        },
         "login": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["username"],
+          "required": [
+            "username"
+          ],
           "properties": {
-            "username": {"type": "string", "minLength": 1, "maxLength": 128}
+            "username": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
           }
         }
       },
       "allOf": [
         {
-          "if": {"properties": {"owner": {"const": "user"}}, "required": ["owner"]},
-          "then": {"not": {"anyOf": [{"required": ["format"]}, {"required": ["length"]}, {"required": ["pattern"]}, {"required": ["login"]}]}}
+          "if": {
+            "properties": {
+              "owner": {
+                "const": "user"
+              }
+            },
+            "required": [
+              "owner"
+            ]
+          },
+          "then": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "format"
+                  ]
+                },
+                {
+                  "required": [
+                    "length"
+                  ]
+                },
+                {
+                  "required": [
+                    "pattern"
+                  ]
+                },
+                {
+                  "required": [
+                    "login"
+                  ]
+                }
+              ]
+            }
+          }
         },
         {
-          "if": {"properties": {"format": {"const": "laravel-base64"}}, "required": ["format"]},
-          "then": {"not": {"anyOf": [{"required": ["length"]}, {"required": ["pattern"]}]}}
+          "if": {
+            "properties": {
+              "format": {
+                "const": "laravel-base64"
+              }
+            },
+            "required": [
+              "format"
+            ]
+          },
+          "then": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "length"
+                  ]
+                },
+                {
+                  "required": [
+                    "pattern"
+                  ]
+                }
+              ]
+            }
+          }
         },
         {
-          "if": {"properties": {"format": {"const": "hex"}}, "required": ["format"]},
-          "then": {"properties": {"length": {"multipleOf": 2}}}
+          "if": {
+            "properties": {
+              "format": {
+                "const": "hex"
+              }
+            },
+            "required": [
+              "format"
+            ]
+          },
+          "then": {
+            "properties": {
+              "length": {
+                "multipleOf": 2
+              }
+            }
+          }
         },
         {
-          "if": {"properties": {"format": {"const": "base64"}}, "required": ["format"]},
-          "then": {"properties": {"length": {"multipleOf": 4}}}
+          "if": {
+            "properties": {
+              "format": {
+                "const": "base64"
+              }
+            },
+            "required": [
+              "format"
+            ]
+          },
+          "then": {
+            "properties": {
+              "length": {
+                "multipleOf": 4
+              }
+            }
+          }
         }
       ]
     },
@@ -150,18 +485,30 @@
     "health": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["path"],
+      "required": [
+        "path"
+      ],
       "properties": {
-        "path": {"type": "string", "pattern": "^/"},
+        "path": {
+          "type": "string",
+          "pattern": "^/"
+        },
         "status": {
           "type": "array",
-          "items": {"type": "integer", "minimum": 100, "maximum": 599},
+          "items": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 599
+          },
           "minItems": 1,
           "uniqueItems": true
         },
         "contains": {
           "type": "array",
-          "items": {"type": "string", "minLength": 1},
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
           "minItems": 1
         }
       }
@@ -169,33 +516,74 @@
     "emulator": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["capability", "bindings"],
+      "required": [
+        "capability",
+        "bindings"
+      ],
       "properties": {
-        "capability": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*\\.v[0-9]+$"},
-        "access": {"enum": ["server", "browser", "server-and-browser"]},
-        "dataset": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*\\.v[0-9]+$"},
+        "capability": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]*\\.v[0-9]+$"
+        },
+        "access": {
+          "enum": [
+            "server",
+            "browser",
+            "server-and-browser"
+          ]
+        },
+        "dataset": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]*\\.v[0-9]+$"
+        },
         "seed": {
           "type": "object",
           "minProperties": 1,
           "propertyNames": {
-            "not": {"enum": ["users", "tokens", "oauth_clients", "oauth_apps", "oauth_applications", "api_keys", "account", "integrations", "database_users", "iam"]}
+            "not": {
+              "enum": [
+                "users",
+                "tokens",
+                "oauth_clients",
+                "oauth_apps",
+                "oauth_applications",
+                "api_keys",
+                "account",
+                "integrations",
+                "database_users",
+                "iam"
+              ]
+            }
           }
         },
         "bindings": {
           "type": "object",
           "minProperties": 1,
-          "propertyNames": {"pattern": "^[A-Z_][A-Z0-9_]*$"},
-          "additionalProperties": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}
+          "propertyNames": {
+            "pattern": "^[A-Z_][A-Z0-9_]*$"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          }
         },
         "callbacks": {
           "type": "array",
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["path"],
+            "required": [
+              "path"
+            ],
             "properties": {
-              "path": {"type": "string", "pattern": "^/(?!/)(?!.*(?:\\.\\.|%2[fF]|%5[cC]))[^?#]*$"},
-              "verification-environment": {"type": "string", "pattern": "^[A-Z_][A-Z0-9_]*$"}
+              "path": {
+                "type": "string",
+                "pattern": "^/(?!/)(?!.*(?:\\.\\.|%2[fF]|%5[cC]))[^?#]*$"
+              },
+              "verification-environment": {
+                "type": "string",
+                "pattern": "^[A-Z_][A-Z0-9_]*$"
+              }
             }
           }
         }
@@ -204,80 +592,210 @@
     "companion": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["type", "bindings"],
+      "required": [
+        "type",
+        "bindings"
+      ],
       "properties": {
-        "type": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
-        "dataset": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*\\.v[0-9]+$"},
+        "type": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "dataset": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]*\\.v[0-9]+$"
+        },
         "bindings": {
           "type": "object",
           "minProperties": 1,
-          "propertyNames": {"pattern": "^[A-Z_][A-Z0-9_]*$"},
-          "additionalProperties": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}
+          "propertyNames": {
+            "pattern": "^[A-Z_][A-Z0-9_]*$"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          }
         }
       }
     },
     "mcp": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["transport", "network", "tools"],
+      "required": [
+        "transport",
+        "network",
+        "tools"
+      ],
       "properties": {
-        "transport": {"enum": ["stdio", "streamable-http"]},
-        "package": {"$ref": "#/$defs/mcpPackage"},
+        "transport": {
+          "enum": [
+            "stdio",
+            "streamable-http"
+          ]
+        },
+        "package": {
+          "$ref": "#/$defs/mcpPackage"
+        },
         "command": {
           "type": "array",
-          "items": {"type": "string", "minLength": 1},
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
           "minItems": 1
         },
-        "path": {"type": "string", "pattern": "^/"},
-        "network": {"enum": ["observed", "none"]},
+        "path": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "network": {
+          "enum": [
+            "observed",
+            "none"
+          ]
+        },
         "expected_hosts": {
           "type": "array",
-          "items": {"$ref": "#/$defs/expectedHost"},
+          "items": {
+            "$ref": "#/$defs/expectedHost"
+          },
           "minItems": 1,
           "uniqueItems": true
         },
-        "tools": {"$ref": "#/$defs/mcpTools"}
+        "tools": {
+          "$ref": "#/$defs/mcpTools"
+        }
       },
       "allOf": [
         {
-          "if": {"properties": {"transport": {"const": "stdio"}}, "required": ["transport"]},
+          "if": {
+            "properties": {
+              "transport": {
+                "const": "stdio"
+              }
+            },
+            "required": [
+              "transport"
+            ]
+          },
           "then": {
-            "required": ["command"],
-            "not": {"required": ["path"]}
+            "required": [
+              "command"
+            ],
+            "not": {
+              "required": [
+                "path"
+              ]
+            }
           }
         },
         {
-          "if": {"properties": {"transport": {"const": "streamable-http"}}, "required": ["transport"]},
-          "then": {"required": ["path"]}
-        },
-        {
-          "if": {"required": ["package"]},
-          "then": {"required": ["command"]}
+          "if": {
+            "properties": {
+              "transport": {
+                "const": "streamable-http"
+              }
+            },
+            "required": [
+              "transport"
+            ]
+          },
+          "then": {
+            "required": [
+              "path"
+            ]
+          }
         },
         {
           "if": {
-            "properties": {"network": {"const": "none"}},
-            "required": ["network"]
+            "required": [
+              "package"
+            ]
           },
-          "then": {"not": {"required": ["expected_hosts"]}}
+          "then": {
+            "required": [
+              "command"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "network": {
+                "const": "none"
+              }
+            },
+            "required": [
+              "network"
+            ]
+          },
+          "then": {
+            "not": {
+              "required": [
+                "expected_hosts"
+              ]
+            }
+          }
         }
       ]
     },
     "mcpPackage": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["manager", "name", "version", "integrity"],
+      "required": [
+        "manager",
+        "name",
+        "version",
+        "integrity"
+      ],
       "properties": {
-        "manager": {"enum": ["npm", "pypi", "github-release"]},
-        "name": {"type": "string", "minLength": 1, "pattern": "^(?!.*(?:latest|main|master)$).+$"},
-        "version": {"type": "string", "minLength": 1, "pattern": "^(?![vV]?(?:latest|main|master)$)[0-9][0-9A-Za-z.+_-]*$"},
-        "artifact": {"type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$"},
-        "integrity": {"type": "string", "pattern": "^(?:sha256:[0-9a-f]{64}|sha512-[A-Za-z0-9+/]+={0,2})$"}
+        "manager": {
+          "enum": [
+            "npm",
+            "pypi",
+            "github-release"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!.*(?:latest|main|master)$).+$"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?![vV]?(?:latest|main|master)$)[0-9][0-9A-Za-z.+_-]*$"
+        },
+        "artifact": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$"
+        },
+        "integrity": {
+          "type": "string",
+          "pattern": "^(?:sha256:[0-9a-f]{64}|sha512-[A-Za-z0-9+/]+={0,2})$"
+        }
       },
       "allOf": [
         {
-          "if": {"properties": {"manager": {"enum": ["pypi", "github-release"]}}, "required": ["manager"]},
-          "then": {"required": ["artifact"]}
+          "if": {
+            "properties": {
+              "manager": {
+                "enum": [
+                  "pypi",
+                  "github-release"
+                ]
+              }
+            },
+            "required": [
+              "manager"
+            ]
+          },
+          "then": {
+            "required": [
+              "artifact"
+            ]
+          }
         }
       ]
     },
@@ -289,46 +807,92 @@
     "mcpTools": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["smoke"],
+      "required": [
+        "smoke"
+      ],
       "properties": {
-        "examples": {"type": "object", "additionalProperties": {"type": "object"}},
-        "smoke": {"$ref": "#/$defs/mcpCall"}
+        "examples": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          }
+        },
+        "smoke": {
+          "$ref": "#/$defs/mcpCall"
+        }
       }
     },
     "mcpCall": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["name", "arguments"],
+      "required": [
+        "name",
+        "arguments"
+      ],
       "properties": {
-        "name": {"type": "string", "minLength": 1, "maxLength": 128},
-        "arguments": {"type": "object", "maxProperties": 32}
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "arguments": {
+          "type": "object",
+          "maxProperties": 32
+        }
       }
     },
     "skill": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["entrypoint"],
+      "required": [
+        "entrypoint"
+      ],
       "properties": {
-        "entrypoint": {"$ref": "#/$defs/relativePath"}
+        "entrypoint": {
+          "$ref": "#/$defs/relativePath"
+        }
       }
     },
     "signIn": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["username", "password"],
+      "required": [
+        "username",
+        "password"
+      ],
       "properties": {
-        "username": {"type": "string", "minLength": 1, "maxLength": 128},
-        "password": {"type": "string", "minLength": 1, "maxLength": 256},
-        "note": {"type": "string", "minLength": 1, "maxLength": 200}
+        "username": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "password": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
       }
     },
     "seed": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["archive", "target"],
+      "required": [
+        "archive",
+        "target"
+      ],
       "properties": {
-        "archive": {"$ref": "#/$defs/relativePath"},
-        "target": {"type": "string", "pattern": "^/"}
+        "archive": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "target": {
+          "type": "string",
+          "pattern": "^/"
+        }
       }
     }
   }

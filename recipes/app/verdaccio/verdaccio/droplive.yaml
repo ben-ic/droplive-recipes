@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "A lightweight Node.js private proxy registry"
 run:
   port: 4873
   health: /

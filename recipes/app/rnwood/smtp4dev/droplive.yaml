@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "smtp4dev - the fake smtp email server for development and testing"
 run:
   port: 80
   health: /

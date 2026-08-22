@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Open source business intelligence tool that lets everyone query and chart data"
 run:
   port: 3000
   health: /api/health

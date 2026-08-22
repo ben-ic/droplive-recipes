@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "The flexible backend for all your projects Turn your DB into a headless CMS, admin panels, or apps with a custom UI, instant APIs, auth & more"
 run:
   port: 8055
   health: /server/health

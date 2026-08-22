@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "A self-hosted, ad-free, privacy-respecting metasearch engine"
 run:
   port: 5000
   health: /

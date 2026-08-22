@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Content management framework for websites and structured content"
 run:
   port: 80
   health: /

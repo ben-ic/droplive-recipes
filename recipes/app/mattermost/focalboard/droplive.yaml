@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Focalboard is an open source, self-hosted alternative to Trello, Notion, and Asana"
 run:
   port: 8000
   health: /

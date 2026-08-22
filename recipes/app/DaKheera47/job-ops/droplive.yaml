@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "job-ops: DevOps principles applied to job hunting. A self-hosted pipeline to track, analyze, and assist your application process"
 run:
   port: 3001
   health: /

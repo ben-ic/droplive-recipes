@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Pipelines: Versatile, UI-Agnostic OpenAI-Compatible Plugin Framework"
 run:
   port: 9099
   health: /

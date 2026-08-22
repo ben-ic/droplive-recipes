@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "The Roundcube Webmail suite"
 run:
   port: 80
   health: /

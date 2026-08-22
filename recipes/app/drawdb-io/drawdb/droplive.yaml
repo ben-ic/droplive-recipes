@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Free, simple, and intuitive online database diagram editor and SQL generator"
 run:
   port: 8080
   health: /

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Empowering People Ethically \u2014 Matomo is hiring!"
 run:
   port: 80
   health: /

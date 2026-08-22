@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Cloud Database Manager"
 run:
   port: 8978
   health:

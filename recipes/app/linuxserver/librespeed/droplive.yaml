@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Self-hosted internet speed test that runs entirely in the browser"
 run:
   port: 80
   health: /

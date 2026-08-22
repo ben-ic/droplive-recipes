@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "An Application dashboard and launcher"
 run:
   port: 80
   health: /

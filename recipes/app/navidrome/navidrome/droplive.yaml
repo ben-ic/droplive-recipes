@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Your Personal Streaming Service"
 run:
   port: 4533
   health: /ping

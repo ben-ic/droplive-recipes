@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "A lightweight, self-hosted personal finance app with a user-friendly interface and powerful bookkeeping features"
 run:
   port: 8080
   health: /healthz.json

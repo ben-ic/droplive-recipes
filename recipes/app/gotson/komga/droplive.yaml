@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Media server for comics/mangas/BDs/magazines/eBooks with API, OPDS, Kobo Sync and KOReader Sync support"
 run:
   port: 25600
   health: /

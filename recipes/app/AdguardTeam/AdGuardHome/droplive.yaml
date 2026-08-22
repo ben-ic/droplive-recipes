@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Network-wide ads & trackers blocking DNS server"
 run:
   port: 3000
   health: /login.html

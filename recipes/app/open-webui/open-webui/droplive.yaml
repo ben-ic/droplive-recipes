@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "User-friendly AI Interface (Supports Ollama, OpenAI API, ...)"
 run:
   port: 8080
   health: /health

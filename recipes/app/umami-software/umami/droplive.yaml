@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Umami is a privacy-first analytics platform"
 run:
   port: 3000
   health: /

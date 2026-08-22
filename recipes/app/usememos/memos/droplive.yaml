@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Open-source, self-hosted note-taking tool built for quick capture. Markdown-native, lightweight, and fully yours"
 run:
   port: 5230
   health: /healthz

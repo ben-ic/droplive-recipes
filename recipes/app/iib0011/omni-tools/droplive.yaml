@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Self-hosted collection of powerful web-based tools for everyday tasks. No ads, no tracking, just fast, accessible utilities right from your browser!"
 run:
   port: 8080
   health: /

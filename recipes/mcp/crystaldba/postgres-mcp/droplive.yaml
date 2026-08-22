@@ -1,5 +1,6 @@
 version: 1
 kind: mcp
+description: "Postgres MCP Pro provides configurable read/write access and performance analysis for you and your AI agents"
 companions:
   database:
     type: postgres

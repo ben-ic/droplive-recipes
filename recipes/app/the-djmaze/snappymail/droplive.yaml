@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Simple, modern & fast web-based email client"
 run:
   port: 8888
   health: /

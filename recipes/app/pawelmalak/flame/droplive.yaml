@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Flame is self-hosted startpage for your server. Easily manage your apps and bookmarks with built-in editors"
 run:
   port: 5005
   health: /

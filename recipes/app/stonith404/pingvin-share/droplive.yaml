@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "A self-hosted file sharing platform that combines lightness and beauty, perfect for seamless and efficient file sharing"
 run:
   port: 3000
   health: /

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Scalable datastore for metrics, events, and real-time analytics"
 run:
   port: 8086
   health: /health

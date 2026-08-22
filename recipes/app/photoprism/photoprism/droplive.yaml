@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "AI-Powered Photos App"
 run:
   port: 2342
   health: /

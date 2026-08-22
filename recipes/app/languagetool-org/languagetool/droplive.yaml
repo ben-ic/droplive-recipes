@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Style and Grammar Checker for 25+ Languages"
 run:
   port: 8010
   health: /v2/languages

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Publishing platform for websites, blogs and content-driven applications"
 run:
   port: 80
   health:

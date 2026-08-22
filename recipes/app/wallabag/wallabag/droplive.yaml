@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "wallabag is a self hostable application for saving web pages: Save and classify articles. Read them later. Freely"
 run:
   port: 80
   health: /

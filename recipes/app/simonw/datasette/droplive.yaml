@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "An open source multi-tool for exploring and publishing data"
 run:
   port: 8001
   health: /

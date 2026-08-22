@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "A local-first personal finance app"
 run:
   port: 5006
   health: /

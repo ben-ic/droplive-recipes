@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "A self-hostable personal dashboard built for you. Includes status-checking, widgets, themes, icon packs, a UI editor and tons more!"
 run:
   port: 8080
   health: /

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Straightforward realtime kanban boards management for intuitive task tracking"
 run:
   port: 1337
   health: /

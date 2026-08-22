@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "A community-supported supercharged document management system: scan, index and archive all your documents"
 run:
   port: 8000
   health: /

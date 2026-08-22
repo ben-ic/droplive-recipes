@@ -20,11 +20,10 @@ recipes/app/<github-owner>/<github-repository>/
 ```yaml
 version: 1
 kind: app
+description: Short line saying what the application does
 run:
   port: 3000
   health: /health
-  data:
-  - /app/data
 ```
 
 `Dockerfile` names the published image, pinned by digest:
@@ -38,8 +37,10 @@ EXPOSE 3000
 That is the whole recipe, and it is what most of the ones here look like. The
 large majority of the applications in this repository need nothing more.
 
-Three things matter:
+A few things matter:
 
+- `description` is required. One line, 10 to 160 characters, saying what the
+  application does. It is what a visitor reads in the catalog.
 - `run.port` is required.
 - `health` must return 200 only when the application is ready.
 - `data` lists every directory the application writes at runtime. The root

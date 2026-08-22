@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Simple bookmark manager built with Go"
 run:
   port: 8080
   health: /

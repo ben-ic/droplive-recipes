@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Stop renting your intelligence. Own it with AnythingLLM. Everything you need for a powerful local-first agent experience"
 run:
   port: 3001
   health: /

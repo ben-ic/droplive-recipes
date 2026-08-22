@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Self-hosted file sync and share server with a web interface and WebDAV"
 run:
   port: 9200
   health: /

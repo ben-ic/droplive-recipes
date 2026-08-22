@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "The original Trilium Notes hierarchical note taking application, continued as TriliumNext"
 run:
   port: 8080
   health: /

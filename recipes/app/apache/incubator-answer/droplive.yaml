@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "A Q&A platform software for teams at any scales"
 run:
   port: 80
   health: /

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Collection of handy online tools for developers, with great UX"
 run:
   port: 80
   health: /

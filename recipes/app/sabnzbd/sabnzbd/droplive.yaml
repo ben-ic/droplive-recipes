@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "SABnzbd - The automated Usenet download tool"
 run:
   port: 8080
   health: /

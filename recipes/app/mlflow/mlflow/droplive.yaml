@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "The open source AI engineering platform for agents, LLMs, and ML models"
 run:
   port: 5000
   health: /

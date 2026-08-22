@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "A free open source IT asset/license management system"
 run:
   port: 80
   health: /health

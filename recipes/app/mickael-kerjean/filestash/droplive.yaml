@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Universal file manager for S3, FTP, SFTP, WebDAV and other storage backends"
 run:
   port: 8334
   health: /

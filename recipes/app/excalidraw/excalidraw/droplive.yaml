@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Virtual whiteboard for sketching hand-drawn like diagrams"
 run:
   port: 80
   health: /

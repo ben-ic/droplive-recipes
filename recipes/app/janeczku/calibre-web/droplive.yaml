@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Web app for browsing, reading and downloading eBooks in a Calibre library"
 run:
   port: 8083
   health:

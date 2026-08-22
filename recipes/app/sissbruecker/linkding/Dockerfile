@@ -17,4 +17,15 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
 # in the recipe so the demo card can show the visitor what to type.
 ENV LD_SUPERUSER_NAME=admin
 
+# Off in the image, on because the demo has an issuer to point at. A sign-in
+# button that leads nowhere is worse than no button.
+ENV LD_ENABLE_OIDC=True
+
+# Stated rather than left to the default, because it is the assertion the whole
+# fixture rests on: the emulator mints RS256 id tokens and serves a real JWKS, and
+# linkding's client verifies the signature against it. A silent default is not a
+# claim. (At the pinned emulate version Google signs HS256 with a hardcoded secret
+# and serves an empty key set, which is why these endpoints are Microsoft's.)
+ENV OIDC_RP_SIGN_ALGO=RS256
+
 EXPOSE 9090

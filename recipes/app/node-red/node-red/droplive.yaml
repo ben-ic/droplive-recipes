@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Low-code programming for event-driven applications"
 run:
   port: 1880
   health: /healthz

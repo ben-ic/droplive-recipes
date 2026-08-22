@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Build AI Agents, Visually"
 run:
   port: 3000
   health: /

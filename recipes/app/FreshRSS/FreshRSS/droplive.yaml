@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "A free, self-hostable news aggregator\u2026"
 run:
   port: 80
   health: /

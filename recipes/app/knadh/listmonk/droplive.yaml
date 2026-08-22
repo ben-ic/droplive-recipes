@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "High performance, self-hosted, newsletter and mailing list manager with a modern dashboard. Single binary app"
 run:
   port: 9000
   health: /health

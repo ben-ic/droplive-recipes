@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "FreeScout \u2014 Free self-hosted help desk & shared mailbox (Zendesk / Help Scout alternative)"
 run:
   port: 80
   health: /

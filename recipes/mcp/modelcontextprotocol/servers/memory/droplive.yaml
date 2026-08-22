@@ -1,5 +1,6 @@
 version: 1
 kind: mcp
+description: "Stores and recalls facts across a conversation in a local knowledge graph"
 product: memory
 mcp:
   transport: stdio

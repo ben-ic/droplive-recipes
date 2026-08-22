@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "The open and composable observability and data visualization platform"
 run:
   port: 3000
   health: /api/health

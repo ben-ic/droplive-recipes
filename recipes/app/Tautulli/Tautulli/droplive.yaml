@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "A Python based monitoring and tracking tool for Plex Media Server"
 run:
   port: 8181
   health: /

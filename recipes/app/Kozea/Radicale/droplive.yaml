@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "A simple CalDAV (calendar) and CardDAV (contact) server"
 run:
   port: 5232
   health: /

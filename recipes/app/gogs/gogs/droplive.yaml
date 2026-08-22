@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "The painless way to host your own Git service"
 run:
   port: 3000
   health: /install

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Self-hosted collaborative bookmark manager to collect, read, annotate, and fully preserve what matters, all in one place"
 run:
   port: 3000
   health: /login

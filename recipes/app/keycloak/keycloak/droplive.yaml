@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Open Source Identity and Access Management For Modern Applications and Services"
 run:
   port: 8080
   health: /

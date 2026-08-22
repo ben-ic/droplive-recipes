@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "A self-contained JavaScript wiki for the browser, Node.js, AWS Lambda etc"
 run:
   port: 8080
   health: /

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Lightweight federated social network server that speaks ActivityPub"
 run:
   port: 8080
   health: /

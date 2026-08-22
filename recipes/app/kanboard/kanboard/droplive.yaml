@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Kanban project management software"
 run:
   port: 80
   health: /

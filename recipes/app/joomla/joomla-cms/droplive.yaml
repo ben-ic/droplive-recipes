@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Home of the Joomla! Content Management System"
 run:
   port: 80
   health: /

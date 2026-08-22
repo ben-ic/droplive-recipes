@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Mattermost is an open source platform for secure collaboration across the entire software development lifecycle"
 run:
   port: 8065
   health: /api/v4/system/ping

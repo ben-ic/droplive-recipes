@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "A glossy Matrix collaboration client for the web"
 run:
   port: 80
   health: /

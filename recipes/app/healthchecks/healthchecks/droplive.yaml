@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Open-source cron job and background task monitoring service, written in Python & Django"
 run:
   port: 8000
   health: /

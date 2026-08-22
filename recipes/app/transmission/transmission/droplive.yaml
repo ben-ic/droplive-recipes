@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Official Transmission BitTorrent client repository"
 run:
   port: 9091
   health: /

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "Build databases, automations, apps & agents with AI \u2014 no code"
 run:
   port: 80
   # The proxy-only /_health route becomes ready while first-run database

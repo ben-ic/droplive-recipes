@@ -1,5 +1,6 @@
 version: 1
 kind: app
+description: "HedgeDoc - Ideas grow better together"
 run:
   port: 3000
   health:
