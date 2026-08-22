@@ -501,6 +501,12 @@ capability lists a browser-only surface. The capability file is authoritative.
 An unsupported capability fails clearly. It never sends traffic to a real
 vendor as a fallback.
 
+`computer.daytona.v1` provides a real Chromium computer inside the demo's own
+microVM. An application can use the official Daytona SDK with the supplied API
+URL, API key, and target. The SDK calls DropLive's local computer service; it
+does not call Daytona's infrastructure. The visitor can view and control the
+same screen through the application's normal web interface.
+
 ### Planned BYOK opt-in
 
 Real vendor credentials are not inferred from environment-variable names. A
