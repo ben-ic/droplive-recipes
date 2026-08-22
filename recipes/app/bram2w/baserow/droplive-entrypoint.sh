@@ -6,6 +6,8 @@ set -eu
 
 exec env \
   BASEROW_PUBLIC_URL="$APP_URL" \
+  NUXT_PUBLIC_PUBLIC_BACKEND_URL="$APP_URL" \
+  NUXT_PUBLIC_PUBLIC_WEB_FRONTEND_URL="$APP_URL" \
   PRIVATE_BACKEND_URL="http://127.0.0.1:8000" \
   PRIVATE_WEB_FRONTEND_URL="http://127.0.0.1:3000" \
   DATABASE_HOST="$(python3 -c 'from os import environ; from urllib.parse import urlsplit; print(urlsplit(environ["DATABASE_URL"]).hostname or "")')" \
