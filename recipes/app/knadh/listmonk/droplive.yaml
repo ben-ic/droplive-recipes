@@ -6,4 +6,17 @@ run:
   data:
   - /listmonk/uploads
 companions:
-  database: postgres
+  database:
+    type: postgres
+    bindings:
+      DROPLIVE_LISTMONK_DB_HOST: host
+      DROPLIVE_LISTMONK_DB_PORT: port
+      DROPLIVE_LISTMONK_DB_DATABASE: database
+      DROPLIVE_LISTMONK_DB_USER: username
+      DROPLIVE_LISTMONK_DB_PASSWORD: password
+environment:
+  LISTMONK_ADMIN_PASSWORD:
+    owner: droplive
+    format: password
+    login:
+      username: admin
