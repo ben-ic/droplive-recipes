@@ -24,6 +24,9 @@ COPY data/ /data/
 COPY --from=health-builder --chmod=0555 /out/gatus-healthcheck /gatus-healthcheck
 
 ENV GATUS_CONFIG_PATH=/config/config.yaml \
+    GATUS_STABLE_URL=http://127.0.0.1:8080/health \
+    GATUS_FAILING_URL=http://127.0.0.1:8080/health \
+    GATUS_FLAPPING_URL=http://127.0.0.1:8080/health \
     PORT=8080
 
 EXPOSE 8080
