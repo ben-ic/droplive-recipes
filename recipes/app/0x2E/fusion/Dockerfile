@@ -5,7 +5,7 @@ ARG DROPLIVE_SOURCE_TREE_SHA256
 
 # The image runs ./fusion relative to its workdir, and DropLive reads
 # declarations only from an absolute entrypoint path a recipe COPY maps back.
-COPY entrypoint.sh /entrypoint.sh
+COPY --chmod=0755 entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 CMD []
 
