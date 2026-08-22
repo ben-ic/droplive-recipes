@@ -1,6 +1,7 @@
 #!/bin/sh
 set -eu
 
-: "${PAPERLESS_URL:?DropLive supplies the public origin}"
+: "${APP_URL:?DropLive supplies the public origin}"
+export PAPERLESS_URL="$APP_URL"
 
 exec /init "$@"
