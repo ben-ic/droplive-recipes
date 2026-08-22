@@ -5,5 +5,3 @@ repository: https://github.com/fallenbagel/jellyseerr
 run:
   port: 5055
   health: /
-  data:
-  - /app/config

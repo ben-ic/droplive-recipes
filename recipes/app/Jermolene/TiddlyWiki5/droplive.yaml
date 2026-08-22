@@ -5,5 +5,3 @@ repository: https://github.com/Jermolene/TiddlyWiki5
 run:
   port: 8080
   health: /
-  data:
-  - /var/lib/tiddlywiki

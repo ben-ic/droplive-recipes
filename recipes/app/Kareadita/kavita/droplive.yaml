@@ -5,5 +5,3 @@ repository: https://github.com/Kareadita/kavita
 run:
   port: 5000
   health: /
-  data:
-  - /kavita/config

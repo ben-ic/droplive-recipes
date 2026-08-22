@@ -5,5 +5,3 @@ repository: https://github.com/docusealco/docuseal
 run:
   port: 3000
   health: /
-  data:
-  - /data

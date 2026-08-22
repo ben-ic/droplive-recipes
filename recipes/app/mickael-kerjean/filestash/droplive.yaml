@@ -5,5 +5,3 @@ repository: https://github.com/mickael-kerjean/filestash
 run:
   port: 8334
   health: /
-  data:
-  - /app/data/state

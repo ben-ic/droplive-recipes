@@ -5,8 +5,6 @@ repository: https://github.com/jenkinsci/jenkins
 run:
   port: 8080
   health: /login
-  data:
-  - /var/jenkins_home
 environment:
   JENKINS_ADMIN_PASSWORD:
     owner: droplive

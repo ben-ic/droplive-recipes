@@ -5,8 +5,6 @@ repository: https://github.com/qbittorrent/qBittorrent
 run:
   port: 8080
   health: /
-  data:
-  - /config
 sign_in:
   username: admin
   password: adminadmin

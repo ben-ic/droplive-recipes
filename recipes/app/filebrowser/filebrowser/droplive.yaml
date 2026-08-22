@@ -5,8 +5,6 @@ repository: https://github.com/filebrowser/filebrowser
 run:
   port: 80
   health: /health
-  data:
-  - /srv
 sign_in:
   username: admin
   password: admin

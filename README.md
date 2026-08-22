@@ -46,8 +46,6 @@ A few things matter:
   forge it lives. GitHub is the common case, not an assumption.
 - `run.port` is required.
 - `health` must return 200 only when the application is ready.
-- `data` lists every directory the application writes at runtime. The root
-  filesystem is read-only, so a path you do not list is not writable.
 
 Run the validator:
 

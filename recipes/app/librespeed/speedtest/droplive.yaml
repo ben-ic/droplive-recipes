@@ -5,5 +5,3 @@ repository: https://github.com/librespeed/speedtest
 run:
   port: 80
   health: /
-  data:
-  - /config

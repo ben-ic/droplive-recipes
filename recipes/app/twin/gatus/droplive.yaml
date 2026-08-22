@@ -8,5 +8,3 @@ run:
     path: /health
     contains:
     - '"status":"UP"'
-  data:
-  - /data

@@ -5,5 +5,3 @@ repository: https://github.com/node-red/node-red
 run:
   port: 1880
   health: /healthz
-  data:
-  - /data

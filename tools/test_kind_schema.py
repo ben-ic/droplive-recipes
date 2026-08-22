@@ -144,9 +144,24 @@ with tempfile.TemporaryDirectory() as directory:
     assert dockerfile_errors(dockerfile, {}, require_network_probe=False) == []
     assert len(dockerfile_errors(dockerfile, {}, require_network_probe=True)) == 2
 
+    # read_only cuts both ways now. An application is given a writable
+    # copy-on-write root, so asking for a read-only one is the mistake; an MCP or
+    # emulator container still has to set it.
+    head = "services:\n  app:\n    image: scratch@sha256:" + "0" * 64 + "\n"
     compose = folder / "docker-compose.yaml"
-    compose.write_text("services:\n  app:\n    image: scratch@sha256:" + "0" * 64 + "\n    read_only: true\n")
-    assert compose_errors(compose, None, {}, require_network_probe=False) == []
-    assert len(compose_errors(compose, None, {}, require_network_probe=True)) == 2
+
+    compose.write_text(head + "    read_only: true\n")
+    assert compose_errors(compose, None, {}, False, "mcp") == []
+    assert len(compose_errors(compose, None, {}, True, "mcp")) == 2
+    assert compose_errors(compose, None, {}, False, "app") == [
+        "service app sets read_only: true, but an application is given a writable "
+        "root filesystem; remove it and the workarounds it forced"
+    ]
+
+    compose.write_text(head)
+    assert compose_errors(compose, None, {}, False, "app") == []
+    assert compose_errors(compose, None, {}, False, "mcp") == [
+        "service app must set read_only: true"
+    ]
 
 print("MCP and skill schema cases passed")

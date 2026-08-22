@@ -5,10 +5,3 @@ repository: https://github.com/crowdsecurity/crowdsec
 run:
   port: 8080
   health: /health
-  # Declared for writability, not persistence. The image restores its shipped
-  # configuration and GeoLite2 databases into both paths from /staging on every
-  # start, so a demo wants them empty -- but under a read-only root it cannot
-  # write them at all unless they are managed paths.
-  data:
-  - /var/lib/crowdsec
-  - /etc/crowdsec

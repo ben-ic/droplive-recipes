@@ -5,5 +5,3 @@ repository: https://github.com/Tautulli/Tautulli
 run:
   port: 8181
   health: /
-  data:
-  - /config

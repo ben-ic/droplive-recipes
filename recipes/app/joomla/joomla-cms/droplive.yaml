@@ -5,8 +5,6 @@ repository: https://github.com/joomla/joomla-cms
 run:
   port: 80
   health: /
-  data:
-  - /var/www/html
 # Joomla cannot read a single DATABASE_URL. Its entrypoint wants the connection
 # in parts and says so before halting: "Missing JOOMLA_DB_HOST and
 # MYSQL_PORT_3306_TCP environment variables."

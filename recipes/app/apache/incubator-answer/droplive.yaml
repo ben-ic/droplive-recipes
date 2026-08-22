@@ -5,7 +5,5 @@ repository: https://github.com/apache/incubator-answer
 run:
   port: 80
   health: /
-  data:
-  - /data
 companions:
   database: postgres

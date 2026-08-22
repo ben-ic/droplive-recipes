@@ -5,5 +5,3 @@ repository: https://github.com/usememos/memos
 run:
   port: 5230
   health: /healthz
-  data:
-  - /var/opt/memos

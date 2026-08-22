@@ -5,5 +5,3 @@ repository: https://github.com/Prowlarr/Prowlarr
 run:
   port: 9696
   health: /
-  data:
-  - /config

@@ -5,5 +5,3 @@ repository: https://github.com/nzbgetcom/nzbget
 run:
   port: 6789
   health: /
-  data:
-  - /config

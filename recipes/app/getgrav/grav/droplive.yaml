@@ -5,5 +5,3 @@ repository: https://github.com/getgrav/grav
 run:
   port: 80
   health: /
-  data:
-  - /config

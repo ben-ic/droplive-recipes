@@ -5,5 +5,3 @@ repository: https://github.com/Lidarr/Lidarr
 run:
   port: 8686
   health: /
-  data:
-  - /config

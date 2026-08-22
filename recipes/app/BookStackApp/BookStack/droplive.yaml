@@ -5,7 +5,5 @@ repository: https://github.com/BookStackApp/BookStack
 run:
   port: 80
   health: /
-  data:
-  - /config
 companions:
   database: mariadb

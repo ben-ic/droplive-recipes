@@ -5,5 +5,3 @@ repository: https://github.com/FreshRSS/FreshRSS
 run:
   port: 80
   health: /
-  data:
-  - /var/www/FreshRSS/data

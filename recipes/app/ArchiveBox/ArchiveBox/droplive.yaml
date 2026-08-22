@@ -5,8 +5,6 @@ repository: https://github.com/ArchiveBox/ArchiveBox
 run:
   port: 8000
   health: /
-  data:
-  - /data
 environment:
   # ArchiveBox creates this administrator on the first start when both values
   # are present. DropLive shows the generated password on the sign-in card.

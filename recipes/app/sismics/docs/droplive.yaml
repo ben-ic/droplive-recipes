@@ -5,7 +5,5 @@ repository: https://github.com/sismics/docs
 run:
   port: 8080
   health: /
-  data:
-  - /data
 companions:
   database: postgres

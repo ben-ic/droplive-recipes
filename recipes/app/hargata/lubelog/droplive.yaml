@@ -5,5 +5,3 @@ repository: https://github.com/hargata/lubelog
 run:
   port: 8080
   health: /health
-  data:
-  - /App/data

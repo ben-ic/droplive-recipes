@@ -5,8 +5,6 @@ repository: https://github.com/directus/directus
 run:
   port: 8055
   health: /server/health
-  data:
-  - /directus/database
 environment:
   # Directus invents an admin password at first boot and prints it to its own
   # log -- "No admin password provided. Defaulting to 13GV6H7oEgjg" -- so the

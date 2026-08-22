@@ -5,5 +5,3 @@ repository: https://github.com/prometheus/prometheus
 run:
   port: 9090
   health: /-/healthy
-  data:
-  - /prometheus

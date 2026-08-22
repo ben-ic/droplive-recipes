@@ -105,6 +105,7 @@ def compose_errors(
     service_name: str | None,
     run: dict[str, Any],
     require_network_probe: bool = True,
+    kind: str | None = None,
 ) -> list[str]:
     try:
         document = yaml.safe_load(path.read_text())
@@ -128,8 +129,18 @@ def compose_errors(
         return [f"docker-compose.yaml has no service named {service_name}"]
 
     errors: list[str] = []
-    if service.get("read_only") is not True:
-        errors.append(f"service {service_name} must set read_only: true")
+    # An application gets its own writable copy-on-write root, populated from the
+    # image, so a read-only root is no longer something to ask for -- it is the
+    # thing the workarounds in these recipes existed to survive. An MCP or
+    # emulator container has no such need and keeps it.
+    if kind in ("mcp", "skill"):
+        if service.get("read_only") is not True:
+            errors.append(f"service {service_name} must set read_only: true")
+    elif service.get("read_only") is True:
+        errors.append(
+            f"service {service_name} sets read_only: true, but an application is "
+            "given a writable root filesystem; remove it and the workarounds it forced"
+        )
     if (
         require_network_probe
         and "port" not in run
@@ -160,7 +171,11 @@ def build_errors(recipe_file: Path, recipe: dict[str, Any]) -> list[str]:
         return []
     if local_compose.is_file():
         return compose_errors(
-            local_compose, build.get("service"), run, require_network_probe
+            local_compose,
+            build.get("service"),
+            run,
+            require_network_probe,
+            recipe.get("kind"),
         )
     if local_dockerfile.is_file():
         return dockerfile_errors(local_dockerfile, run, require_network_probe)

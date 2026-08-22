@@ -5,6 +5,4 @@ repository: https://github.com/gethomepage/homepage
 run:
   port: 3000
   health: /
-  data:
-  - /app/config
 

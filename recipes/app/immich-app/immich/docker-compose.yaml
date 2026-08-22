@@ -3,15 +3,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    read_only: true
-    tmpfs:
-      - /tmp
-    volumes:
-      - type: volume
-        source: uploads
-        target: /data
-        volume:
-          nocopy: true
     environment:
       DB_HOSTNAME: database
       DB_PASSWORD: "${DB_PASSWORD:?DropLive supplies a per-demo value}"
@@ -33,5 +24,3 @@ services:
   redis:
     image: docker.io/valkey/valkey@sha256:3acc0687f2a2e1091fae6450d7842dd658c941338cf0a873ddd9e14b9e4ea4dd
 
-volumes:
-  uploads:

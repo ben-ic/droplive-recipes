@@ -8,8 +8,6 @@ run:
     path: /api/health
     contains:
     - '"status":"healthy"'
-  data:
-  - /app/data
 companions:
   database: postgres
 environment:

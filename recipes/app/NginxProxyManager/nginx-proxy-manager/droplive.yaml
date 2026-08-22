@@ -5,5 +5,3 @@ repository: https://github.com/NginxProxyManager/nginx-proxy-manager
 run:
   port: 81
   health: /
-  data:
-  - /data

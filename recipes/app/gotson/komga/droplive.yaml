@@ -5,8 +5,6 @@ repository: https://github.com/gotson/komga
 run:
   port: 25600
   health: /
-  data:
-  - /config
 environment:
   KOMGA_ADMIN_PASSWORD:
     owner: droplive

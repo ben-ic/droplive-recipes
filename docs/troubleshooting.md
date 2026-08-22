@@ -15,24 +15,19 @@ build:
 
 ## The image builds but the application does not start
 
-Run it with a read-only root filesystem. This is the most common failure.
+Run it the way a demo runs it: a writable root filesystem, no volumes and no
+tmpfs.
 
-```yaml
-services:
-  app:
-    read_only: true
-    tmpfs:
-      - /tmp
-      - /app/cache
-    volumes:
-      - data:/app/data
+```bash
+docker run --rm -p 8080:<port> <your-image>
 ```
 
-If startup writes a configuration file, generate it during the image build or
-write it to a `tmpfs` path. If startup changes users, ownership, or files under
-`/etc`, replace the entrypoint and perform that work during the build.
+Adding a volume is almost never the fix, and used to be the cause. A declared
+path arrived as a fresh empty filesystem and hid whatever the image had put
+there, so an application looking for its own shipped files found none.
 
-Do not disable the read-only root.
+If the container exits at once, read its first ten lines. A missing required
+variable, not the filesystem, is the usual answer.
 
 ## The application starts but never becomes ready
 

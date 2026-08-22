@@ -5,5 +5,3 @@ repository: https://github.com/verdaccio/verdaccio
 run:
   port: 4873
   health: /
-  data:
-  - /verdaccio/storage

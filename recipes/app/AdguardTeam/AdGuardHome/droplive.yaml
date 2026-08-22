@@ -5,9 +5,6 @@ repository: https://github.com/AdguardTeam/AdGuardHome
 run:
   port: 3000
   health: /login.html
-  data:
-  - /opt/adguardhome/conf
-  - /opt/adguardhome/work
 environment:
   ADGUARD_ADMIN_PASSWORD:
     owner: droplive

@@ -5,8 +5,6 @@ repository: https://github.com/pocketbase/pocketbase
 run:
   port: 8090
   health: /_/
-  data:
-  - /pb_data
 environment:
   PB_ADMIN_PASSWORD:
     owner: droplive

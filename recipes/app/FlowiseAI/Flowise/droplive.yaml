@@ -5,5 +5,3 @@ repository: https://github.com/FlowiseAI/Flowise
 run:
   port: 3000
   health: /
-  data:
-  - /root/.flowise

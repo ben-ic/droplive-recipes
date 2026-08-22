@@ -5,5 +5,3 @@ repository: https://github.com/mealie-recipes/mealie
 run:
   port: 9000
   health: /api/app/about
-  data:
-  - /app/data

@@ -5,5 +5,3 @@ repository: https://github.com/morpheus65535/bazarr
 run:
   port: 6767
   health: /
-  data:
-  - /config

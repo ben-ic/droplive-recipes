@@ -8,9 +8,6 @@ run:
     path: /login
     contains:
     - 'name="username"'
-  data:
-  - /config
-  - /books
 environment:
   CALIBRE_ADMIN_PASSWORD:
     owner: droplive

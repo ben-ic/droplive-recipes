@@ -5,7 +5,5 @@ repository: https://github.com/owncloud/core
 run:
   port: 9200
   health: /
-  data:
-  - /var/lib/ocis
 companions:
   database: postgres

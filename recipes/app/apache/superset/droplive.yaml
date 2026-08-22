@@ -5,8 +5,6 @@ repository: https://github.com/apache/superset
 run:
   port: 8088
   health: /health
-  data:
-  - /app/superset_home
 companions:
   database: postgres
   cache: redis

@@ -5,7 +5,5 @@ repository: https://github.com/flarum/flarum
 run:
   port: 8888
   health: /
-  data:
-  - /flarum/app/public/assets
 companions:
   database: mariadb
