@@ -5,3 +5,8 @@ run:
   health: /_/
   data:
   - /pb_data
+environment:
+  PB_ADMIN_PASSWORD:
+    owner: droplive
+    login:
+      username: droplive-owner@local.invalid
