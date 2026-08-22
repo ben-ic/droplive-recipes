@@ -33,8 +33,8 @@ def main() -> None:
         raise RuntimeError("MEALIE_BOOTSTRAP_EMAIL must be a valid email address")
     if email == settings._DEFAULT_EMAIL.strip().lower():
         raise RuntimeError("MEALIE_BOOTSTRAP_EMAIL must not use Mealie's demonstration address")
-    if len(password) != 16 or not re.fullmatch(r"[A-Za-z0-9_-]{16}", password):
-        raise RuntimeError("MEALIE_BOOTSTRAP_PASSWORD must be a 16-character URL-safe password")
+    if len(password) != 64 or not re.fullmatch(r"[A-Za-z0-9_-]{64}", password):
+        raise RuntimeError("MEALIE_BOOTSTRAP_PASSWORD must be a 64-character URL-safe password")
 
     with session_context() as session:
         users = list(session.execute(select(User)).scalars())
