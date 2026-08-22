@@ -466,6 +466,33 @@ capability lists a browser-only surface. The capability file is authoritative.
 An unsupported capability fails clearly. It never sends traffic to a real
 vendor as a fallback.
 
+### Planned BYOK opt-in
+
+Real vendor credentials are not inferred from environment-variable names. A
+recipe must explicitly opt in for each emulator group before the launch page can
+offer **Advanced -> Use real provider**:
+
+```yaml
+emulators:
+  llm:
+    capability: llm.openai_chat.v1
+    byok: true
+    bindings:
+      OPENAI_BASE_URL: api_base_url
+      OPENAI_MODEL: model_name
+      OPENAI_API_KEY: non_authenticating_api_key
+```
+
+`byok: true` is the planned recipe surface. It is not accepted by the validator
+until the complete safety path in the main product's `plan/byok.md` is present.
+The control replaces the full capability binding group. It does not replace one
+environment variable at a time. The default one-click launch still uses the
+emulator.
+
+A visitor key is a launch-time secret. It must not reach the build, recipe,
+Postgres, an Oban job, logs, a public receipt, or a screenshot. A recipe must
+omit `byok` when real traffic is unsafe or does not improve the demo.
+
 ## MCP servers
 
 See [MCP servers and skills](mcp-and-skills.md) for the classification rule,

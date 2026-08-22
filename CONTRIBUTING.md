@@ -81,6 +81,10 @@ declared as `owner: droplive`.
 
 ## Pull request checklist
 
+Public listing requires the separate browser gate in
+[`docs/catalogue-verification.md`](docs/catalogue-verification.md). A passing
+build alone does not make a recipe ready for listing.
+
 - [ ] `kind` is correct.
 - [ ] An MCP or skill follows its separate sandbox and evidence rules.
 - [ ] The recipe is as small as possible.
