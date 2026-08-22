@@ -33,3 +33,8 @@ environment:
   # default 'change-me' value."
   PAPERLESS_SECRET_KEY:
     owner: droplive
+  PAPERLESS_ADMIN_PASSWORD:
+    owner: droplive
+    format: password
+    login:
+      username: admin
