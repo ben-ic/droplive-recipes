@@ -1,5 +1,5 @@
 #!/bin/sh
-# droplive: generate=hex96 ownership=app purpose=owner-bootstrap lifecycle=stable rotation=app name=NODE_RED_ADMIN_PASSWORD capability=owner-login username=admin
+# droplive: generate=hex64 ownership=app purpose=owner-bootstrap lifecycle=stable rotation=app name=NODE_RED_ADMIN_PASSWORD capability=owner-login username=admin
 set -eu
 
 if test "$(id -u)" = 0; then
