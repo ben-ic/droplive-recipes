@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "Home of the Joomla! Content Management System"
+description: "Content management system for building websites and web applications"
 repository: https://github.com/joomla/joomla-cms
 run:
   port: 80

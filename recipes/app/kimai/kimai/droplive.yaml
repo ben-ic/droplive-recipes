@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "Kimai is the #1 open-source time-tracking application"
+description: "Track time against projects and customers, and export it for invoicing"
 repository: https://github.com/kimai/kimai
 run:
   port: 8001

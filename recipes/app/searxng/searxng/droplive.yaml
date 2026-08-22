@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "SearXNG is a free internet metasearch engine which aggregates results from various search services and databases. Users are neither tracked nor profiled"
+description: "Metasearch engine that queries other search engines without tracking users"
 repository: https://github.com/searxng/searxng
 run:
   port: 8080

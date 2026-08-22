@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "A one-of-a-kind resume builder that keeps your privacy in mind. Completely secure, customizable, portable, open-source and free forever. Try it out today!"
+description: "Build, edit and share a resume from the browser"
 repository: https://github.com/amruthpillai/reactive-resume
 run:
   port: 3000

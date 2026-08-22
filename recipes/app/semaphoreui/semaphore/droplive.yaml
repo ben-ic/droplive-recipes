@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "Modern UI and powerful API for Ansible, Terraform/OpenTofu/Terragrunt, PowerShell and other DevOps tools"
+description: "Web interface for running Ansible playbooks and Terraform plans"
 repository: https://github.com/semaphoreui/semaphore
 run:
   port: 3000

@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "qBittorrent BitTorrent client"
+description: "BitTorrent client with a web interface, search and RSS feeds"
 repository: https://github.com/qbittorrent/qBittorrent
 run:
   port: 8080

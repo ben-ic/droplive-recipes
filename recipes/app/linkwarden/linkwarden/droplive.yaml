@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "Self-hosted collaborative bookmark manager to collect, read, annotate, and fully preserve what matters, all in one place"
+description: "Save, annotate and archive bookmarks, keeping a copy of the page"
 repository: https://github.com/linkwarden/linkwarden
 run:
   port: 3000

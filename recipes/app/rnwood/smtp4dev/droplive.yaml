@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "smtp4dev - the fake smtp email server for development and testing"
+description: "Fake SMTP server that catches outgoing mail so developers can read it"
 repository: https://github.com/rnwood/smtp4dev
 run:
   port: 80

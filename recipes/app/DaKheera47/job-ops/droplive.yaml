@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "job-ops: DevOps principles applied to job hunting. A self-hosted pipeline to track, analyze, and assist your application process"
+description: "Track job applications through a pipeline, with notes and status at each stage"
 repository: https://github.com/DaKheera47/job-ops
 run:
   port: 3001

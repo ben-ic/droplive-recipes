@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "A lightweight, self-hosted personal finance app with a user-friendly interface and powerful bookkeeping features"
+description: "Track personal income, spending and account balances"
 repository: https://github.com/mayswind/ezbookkeeping
 run:
   port: 8080

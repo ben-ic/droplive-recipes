@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "Online Accounting Software"
+description: "Accounting for small businesses: invoices, bills, expenses and reports"
 repository: https://github.com/akaunting/akaunting
 run:
   port: 80

@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "Cloud Database Manager"
+description: "Browse and query SQL and NoSQL databases from the browser"
 repository: https://github.com/dbeaver/cloudbeaver
 run:
   port: 8978

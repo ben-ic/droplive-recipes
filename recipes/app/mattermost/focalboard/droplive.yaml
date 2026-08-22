@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "Focalboard is an open source, self-hosted alternative to Trello, Notion, and Asana"
+description: "Project and task boards in the style of Trello or Notion"
 repository: https://github.com/mattermost/focalboard
 run:
   port: 8000

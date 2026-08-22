@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "A self-hosted file sharing platform that combines lightness and beauty, perfect for seamless and efficient file sharing"
+description: "Share files through a link, with an expiry date and optional password"
 repository: https://github.com/stonith404/pingvin-share
 run:
   port: 3000

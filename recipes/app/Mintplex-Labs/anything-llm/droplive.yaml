@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "Stop renting your intelligence. Own it with AnythingLLM. Everything you need for a powerful local-first agent experience"
+description: "Chat with your own documents using a local or hosted language model"
 repository: https://github.com/Mintplex-Labs/anything-llm
 run:
   port: 3001

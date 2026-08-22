@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "Empowering People Ethically \u2014 Matomo is hiring!"
+description: "Website analytics you host yourself, as an alternative to Google Analytics"
 repository: https://github.com/matomo-org/matomo
 run:
   port: 80

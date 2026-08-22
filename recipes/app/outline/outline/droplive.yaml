@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "The fastest knowledge base for growing teams. Beautiful, realtime collaborative, feature packed, and markdown compatible"
+description: "Team knowledge base of Markdown documents with real-time collaboration"
 repository: https://github.com/outline/outline
 run:
   port: 3000

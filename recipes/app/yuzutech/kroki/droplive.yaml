@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "Creates diagrams from textual descriptions!"
+description: "Renders diagrams from text for many diagram languages through one API"
 repository: https://github.com/yuzutech/kroki
 run:
   port: 8000

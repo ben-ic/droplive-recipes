@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "Glances an Eye on your system. A top/htop alternative for GNU/Linux, BSD, macOS and Windows operating systems"
+description: "System monitor showing CPU, memory, disk, network and running processes"
 repository: https://github.com/nicolargo/glances
 run:
   port: 61208

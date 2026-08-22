@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "FreeScout \u2014 Free self-hosted help desk & shared mailbox (Zendesk / Help Scout alternative)"
+description: "Shared mailbox and help desk for handling support conversations as a team"
 repository: https://github.com/freescout-help-desk/freescout
 run:
   port: 80

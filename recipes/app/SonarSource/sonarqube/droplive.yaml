@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "Continuous Inspection"
+description: "Static analysis for code quality, bugs and security issues across many languages"
 repository: https://github.com/SonarSource/sonarqube
 run:
   port: 9000

@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "Self-hosted collection of powerful web-based tools for everyday tasks. No ads, no tracking, just fast, accessible utilities right from your browser!"
+description: "Collection of small web utilities for everyday conversion and formatting tasks"
 repository: https://github.com/iib0011/omni-tools
 run:
   port: 8080

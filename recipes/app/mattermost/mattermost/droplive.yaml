@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "Mattermost is an open source platform for secure collaboration across the entire software development lifecycle"
+description: "Team messaging with channels, threads and integrations"
 repository: https://github.com/mattermost/mattermost
 run:
   port: 8065

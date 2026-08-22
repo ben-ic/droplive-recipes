@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "The Cyber Swiss Army Knife - a web app for encryption, encoding, compression and data analysis"
+description: "Encode, decode, encrypt, compress and analyse data in the browser"
 repository: https://github.com/gchq/cyberchef
 run:
   port: 8080

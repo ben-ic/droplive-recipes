@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "Kavita is a fast, feature rich, cross platform reading server"
+description: "Reading server for comics, manga and ebooks, with a browser-based reader"
 repository: https://github.com/Kareadita/kavita
 run:
   port: 5000

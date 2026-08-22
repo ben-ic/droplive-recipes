@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "A lightning-fast search engine API bringing AI-powered hybrid search to your sites and applications"
+description: "Search engine API with typo tolerance and fast full-text results"
 repository: https://github.com/meilisearch/meilisearch
 run:
   port: 7700

@@ -1,6 +1,6 @@
 version: 1
 kind: app
-description: "The fastest path to AI-powered full stack observability, even for lean teams"
+description: "Real-time monitoring of systems, containers and applications, with per-second metrics"
 repository: https://github.com/netdata/netdata
 run:
   port: 19999
