@@ -8,3 +8,12 @@ run:
     path: /health
     contains:
     - '"status":"UP"'
+emulators:
+  targets:
+    capability: http.targets.v1
+    access: server
+    dataset: business.saas_company.v1
+    bindings:
+      GATUS_STABLE_URL: stable_url
+      GATUS_FAILING_URL: failing_url
+      GATUS_FLAPPING_URL: flapping_url

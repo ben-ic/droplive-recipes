@@ -77,3 +77,39 @@ capabilities:
       non_authenticating_token: public_value
     datasets:
       - github.collaboration.v1
+
+  http.rss.v1:
+    access:
+      - server
+    outputs:
+      feed_url: server_url
+    datasets:
+      - business.saas_company.v1
+
+  http.targets.v1:
+    access:
+      - server
+    outputs:
+      base_url: server_url
+      page_url: server_url
+      stable_url: server_url
+      failing_url: server_url
+      flapping_url: server_url
+    datasets:
+      - business.saas_company.v1
+
+  prometheus.scrape.v1:
+    access:
+      - server
+    outputs:
+      metrics_url: server_url
+    datasets:
+      - business.saas_company.v1
+
+  openapi.document.v1:
+    access:
+      - browser
+    outputs:
+      openapi_url: browser_url
+    datasets:
+      - business.saas_company.v1

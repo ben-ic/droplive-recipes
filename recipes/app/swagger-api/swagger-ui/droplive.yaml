@@ -5,3 +5,10 @@ repository: https://github.com/swagger-api/swagger-ui
 run:
   port: 8080
   health: /
+emulators:
+  specification:
+    capability: openapi.document.v1
+    access: browser
+    dataset: business.saas_company.v1
+    bindings:
+      URL: openapi_url

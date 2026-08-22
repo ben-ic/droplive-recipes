@@ -7,4 +7,10 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
       org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
       org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
 
+COPY --chmod=0555 droplive-entrypoint.sh /usr/local/bin/droplive-changedetection
+COPY --chmod=0444 droplive-seed.py /usr/local/lib/droplive-changedetection-seed.py
+COPY --chmod=0444 droplive-datastore.json /usr/local/share/droplive-changedetection-datastore.json
+
+ENTRYPOINT ["/usr/local/bin/droplive-changedetection"]
+CMD ["python", "./changedetection.py", "-d", "/datastore"]
 EXPOSE 5000

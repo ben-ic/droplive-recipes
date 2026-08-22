@@ -8,3 +8,21 @@ run:
     path: /dashboard
     contains:
     - Uptime Kuma
+  data:
+    - /app/data
+environment:
+  DROPLIVE_ADMIN_PASSWORD:
+    owner: droplive
+    format: password
+    length: 24
+    login:
+      username: maya
+emulators:
+  targets:
+    capability: http.targets.v1
+    access: server
+    dataset: business.saas_company.v1
+    bindings:
+      DROPLIVE_STABLE_URL: stable_url
+      DROPLIVE_FAILING_URL: failing_url
+      DROPLIVE_FLAPPING_URL: flapping_url

@@ -5,3 +5,19 @@ repository: https://github.com/FreshRSS/FreshRSS
 run:
   port: 80
   health: /
+  data:
+    - /var/www/FreshRSS/data
+environment:
+  FRESHRSS_PASSWORD:
+    owner: droplive
+    format: password
+    length: 24
+    login:
+      username: maya
+emulators:
+  news:
+    capability: http.rss.v1
+    access: server
+    dataset: business.saas_company.v1
+    bindings:
+      DROPLIVE_FEED_URL: feed_url
