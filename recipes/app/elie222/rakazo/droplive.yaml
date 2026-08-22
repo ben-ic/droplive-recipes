@@ -1,0 +1,38 @@
+version: 1
+kind: app
+description: Persistent AI teammates with memory, routines, tools, and a visible computer
+repository: https://github.com/elie222/rakazo
+run:
+  port: 5173
+  health:
+    path: /
+    contains:
+      - "Rakazo"
+  data:
+    - /data
+companions:
+  database: postgres
+environment:
+  BETTER_AUTH_SECRET:
+    owner: droplive
+    format: hex
+    length: 64
+  ENCRYPTION_KEY:
+    owner: droplive
+    format: hex
+    length: 64
+emulators:
+  computer:
+    capability: computer.daytona.v1
+    access: server-and-browser
+    bindings:
+      DAYTONA_API_URL: api_url
+      DAYTONA_API_KEY: api_key
+      DAYTONA_TARGET: target
+  llm:
+    capability: llm.openai_chat.v1
+    byok: true
+    bindings:
+      OPENROUTER_BASE_URL: api_base_url
+      PI_DEFAULT_MODEL: model_name
+      OPENROUTER_API_KEY: non_authenticating_api_key
