@@ -36,11 +36,14 @@ services:
       PORT: "3000"
       HOSTNAME: 0.0.0.0
 
-      # The demo's own origin. The application reads it under three names and
-      # compares them against each other, so all three come from the one value.
+      # The demo's own origin. The application and Better Auth read it under four
+      # names, so all four come from the one value. BETTER_AUTH_URL is the
+      # canonical server identity used after an OAuth callback; without it Better
+      # Auth can derive the guest bind address and redirect to 0.0.0.0:3000.
       NEXT_PUBLIC_BASE_URL: "${PUBLIC_URL:?DropLive supplies the public origin}"
       INTERNAL_API_URL: "${PUBLIC_URL:?DropLive supplies the public origin}"
       AUTH_URL: "${PUBLIC_URL:?DropLive supplies the public origin}"
+      BETTER_AUTH_URL: "${PUBLIC_URL:?DropLive supplies the public origin}"
 
       # Prisma runs migrations on DIRECT_URL and queries on DATABASE_URL. A demo
       # has one database, so both name it.
