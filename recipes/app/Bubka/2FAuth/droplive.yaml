@@ -5,3 +5,10 @@ repository: https://github.com/Bubka/2FAuth
 run:
   port: 8000
   health: /
+  data:
+  - /2fauth
+environment:
+  # Laravel refuses encrypted cookies and OAuth keys without an application key.
+  APP_KEY:
+    owner: droplive
+    format: laravel-base64
