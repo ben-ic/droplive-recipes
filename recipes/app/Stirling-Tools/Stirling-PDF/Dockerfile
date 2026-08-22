@@ -1,5 +1,9 @@
 FROM docker.io/frooodle/s-pdf@sha256:3b3670fce70b396ec56ba380a3cc7858e0abf83fe13f31c88f7737847763a396
 
+# This security image creates an administrator on first boot. DropLive supplies
+# a fresh password per demo and shows it on the launch screen.
+ENV SECURITY_INITIALLOGIN_USERNAME=admin
+
 ARG DROPLIVE_SOURCE_COMMIT
 ARG DROPLIVE_SOURCE_TREE_SHA256
 ARG DROPLIVE_RUNTIME_CONTRACT_SHA256

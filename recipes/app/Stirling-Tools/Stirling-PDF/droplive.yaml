@@ -3,3 +3,9 @@ kind: app
 run:
   port: 8080
   health: /
+environment:
+  SECURITY_INITIALLOGIN_PASSWORD:
+    owner: droplive
+    format: password
+    login:
+      username: admin
