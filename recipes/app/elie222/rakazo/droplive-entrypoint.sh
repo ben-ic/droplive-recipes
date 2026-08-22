@@ -9,7 +9,6 @@ set -eu
 : "${DAYTONA_API_KEY:?DropLive supplies the local computer API key}"
 : "${DAYTONA_TARGET:?DropLive supplies the local computer target}"
 : "${OPENROUTER_BASE_URL:?DropLive supplies the reviewed model API URL}"
-: "${PI_DEFAULT_MODEL:?DropLive supplies the reviewed model name}"
 : "${OPENROUTER_API_KEY:?DropLive supplies the model API key}"
 
 export BETTER_AUTH_URL="$APP_URL"

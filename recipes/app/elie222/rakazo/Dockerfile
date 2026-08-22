@@ -34,6 +34,8 @@ ENV NODE_ENV=production \
     DATA_DIR=/data \
     SANDBOX_PROVIDER=daytona \
     AGENT_RUNTIME=pi \
+    PI_DEFAULT_PROVIDER=openrouter \
+    PI_DEFAULT_MODEL=deepseek/deepseek-v4-flash-0731 \
     WAKEUP_DRIVER=graphile \
     SIGNUPS_ENABLED=true
 
