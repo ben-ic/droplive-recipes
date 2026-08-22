@@ -9,11 +9,11 @@ companions:
   database:
     type: postgres
     bindings:
-      DROPLIVE_LISTMONK_DB_HOST: host
-      DROPLIVE_LISTMONK_DB_PORT: port
-      DROPLIVE_LISTMONK_DB_DATABASE: database
-      DROPLIVE_LISTMONK_DB_USER: username
-      DROPLIVE_LISTMONK_DB_PASSWORD: password
+      LISTMONK_DB_HOST: host
+      LISTMONK_DB_PORT: port
+      LISTMONK_DB_DATABASE: database
+      LISTMONK_DB_USER: username
+      LISTMONK_DB_PASSWORD: password
 environment:
   LISTMONK_ADMIN_PASSWORD:
     owner: droplive
