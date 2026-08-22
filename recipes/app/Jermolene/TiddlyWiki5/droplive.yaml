@@ -2,6 +2,19 @@ version: 1
 kind: app
 run:
   port: 8080
-  health: /
+  health:
+    path: /
+    status:
+    - 200
+    - 401
   data:
   - /var/lib/tiddlywiki
+environment:
+  # The image uses HTTP Basic Auth and defaults the username to `user`.
+  # Generate the password per demo and show it on the launch screen.
+  PASSWORD:
+    owner: droplive
+    format: alphanumeric
+    length: 24
+    login:
+      username: user
