@@ -8,8 +8,8 @@ import urllib.request
 API = "http://127.0.0.1:5000/api/v1/watch"
 DATASTORE = "/datastore/url-watches.json"
 WANTED = (
-    ("Northstar company", os.environ["DROPLIVE_COMPANY_URL"], "Company"),
-    ("Lumen release page", os.environ["DROPLIVE_CHANGING_URL"], "Product launch"),
+    ("Northstar company", os.environ["DROPLIVE_COMPANY_URL"], "Company", None),
+    ("Lumen release page", os.environ["DROPLIVE_CHANGING_URL"], "Product launch", 15),
 )
 
 
@@ -39,6 +39,16 @@ while True:
         time.sleep(0.5)
 
 existing = {item.get("url") for item in current.values()} if isinstance(current, dict) else set()
-for title, url, tag in WANTED:
+for title, url, tag, interval_seconds in WANTED:
     if url not in existing:
-        request("POST", {"url": url, "title": title, "tag": tag})
+        payload = {"url": url, "title": title, "tag": tag}
+        if interval_seconds is not None:
+            payload["time_between_check_use_default"] = False
+            payload["time_between_check"] = {
+                "weeks": None,
+                "days": None,
+                "hours": None,
+                "minutes": None,
+                "seconds": interval_seconds,
+            }
+        request("POST", payload)
