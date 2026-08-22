@@ -5,5 +5,3 @@ repository: https://github.com/Bubka/2FAuth
 run:
   port: 8000
   health: /
-  data:
-  - /2fauth

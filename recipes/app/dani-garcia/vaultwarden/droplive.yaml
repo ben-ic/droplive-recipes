@@ -5,5 +5,3 @@ repository: https://github.com/dani-garcia/vaultwarden
 run:
   port: 8080
   health: /alive
-  data:
-  - /data

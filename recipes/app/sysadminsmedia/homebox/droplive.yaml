@@ -5,8 +5,6 @@ repository: https://github.com/sysadminsmedia/homebox
 run:
   port: 7745
   health: /api/v1/status
-  data:
-  - /data
 environment:
   # Homebox refuses to start without it: "panic: auth.api_key_pepper must be
   # set". It is the secret its API keys are peppered with, so it is exactly the

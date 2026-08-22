@@ -5,7 +5,5 @@ repository: https://github.com/freescout-help-desk/freescout
 run:
   port: 80
   health: /
-  data:
-  - /data
 companions:
   database: mariadb

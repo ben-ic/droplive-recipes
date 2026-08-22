@@ -8,8 +8,6 @@ run:
   # migrations are still running. Wait for the backend so the browser does not
   # open to a temporary 127.0.0.1:8000 connection error.
   health: /api/_health/
-  data:
-  - /baserow/data
 companions:
   database:
     type: postgres

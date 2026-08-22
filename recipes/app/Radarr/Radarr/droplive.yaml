@@ -5,5 +5,3 @@ repository: https://github.com/Radarr/Radarr
 run:
   port: 7878
   health: /
-  data:
-  - /config

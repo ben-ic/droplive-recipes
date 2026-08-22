@@ -5,5 +5,3 @@ repository: https://github.com/the-djmaze/snappymail
 run:
   port: 8888
   health: /
-  data:
-  - /var/lib/snappymail

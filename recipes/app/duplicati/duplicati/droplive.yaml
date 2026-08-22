@@ -5,13 +5,6 @@ repository: https://github.com/duplicati/duplicati
 run:
   port: 8200
   health: /
-  # Every path the image declares as an OCI VOLUME. The launch preflight
-  # refuses a plan that omits one rather than hand the app an anonymous
-  # volume that dies with the container.
-  data:
-  - /backups
-  - /config
-  - /source
 environment:
   # Current LinuxServer images refuse to start without a per-install key for
   # encrypting the settings database.

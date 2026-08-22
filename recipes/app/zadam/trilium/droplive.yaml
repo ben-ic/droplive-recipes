@@ -5,5 +5,3 @@ repository: https://github.com/zadam/trilium
 run:
   port: 8080
   health: /
-  data:
-  - /home/node/trilium-data

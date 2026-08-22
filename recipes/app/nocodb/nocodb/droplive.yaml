@@ -5,5 +5,3 @@ repository: https://github.com/nocodb/nocodb
 run:
   port: 8080
   health: /api/v1/health
-  data:
-  - /usr/app/data

@@ -8,8 +8,6 @@ run:
     path: /status
     contains:
     - '"isInit":true'
-  data:
-  - /config
 environment:
   ROOT_PASSWORD:
     owner: droplive

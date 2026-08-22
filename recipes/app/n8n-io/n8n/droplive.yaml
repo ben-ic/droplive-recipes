@@ -5,5 +5,3 @@ repository: https://github.com/n8n-io/n8n
 run:
   port: 5678
   health: /healthz
-  data:
-  - /home/node/.n8n

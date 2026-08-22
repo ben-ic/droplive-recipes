@@ -5,5 +5,3 @@ repository: https://github.com/transmission/transmission
 run:
   port: 9091
   health: /
-  data:
-  - /config

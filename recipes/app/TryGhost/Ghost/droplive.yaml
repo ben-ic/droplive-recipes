@@ -5,8 +5,6 @@ repository: https://github.com/TryGhost/Ghost
 run:
   port: 2368
   health: /
-  data:
-  - /var/lib/ghost/content
 companions:
   # Use the platform's standard DATABASE_URL binding. The entrypoint converts
   # its reviewed MySQL URL into Ghost's split runtime configuration.

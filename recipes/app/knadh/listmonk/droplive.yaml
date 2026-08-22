@@ -5,8 +5,6 @@ repository: https://github.com/knadh/listmonk
 run:
   port: 9000
   health: /health
-  data:
-  - /listmonk/uploads
 companions:
   database:
     type: postgres

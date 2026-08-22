@@ -5,5 +5,3 @@ repository: https://github.com/open-webui/open-webui
 run:
   port: 8080
   health: /health
-  data:
-  - /app/backend/data

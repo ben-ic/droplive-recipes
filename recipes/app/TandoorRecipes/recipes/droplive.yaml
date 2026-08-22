@@ -5,7 +5,5 @@ repository: https://github.com/TandoorRecipes/recipes
 run:
   port: 8080
   health: /
-  data:
-  - /opt/recipes/mediafiles
 companions:
   database: postgres

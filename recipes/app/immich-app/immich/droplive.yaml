@@ -5,7 +5,6 @@ repository: https://github.com/immich-app/immich
 run:
   port: 2283
   health: /api/server/ping
-  data:
     - /data
 environment:
   DB_PASSWORD:

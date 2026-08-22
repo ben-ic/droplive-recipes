@@ -5,8 +5,6 @@ repository: https://github.com/wallabag/wallabag
 run:
   port: 80
   health: /
-  data:
-  - /var/www/wallabag/data
 companions:
   database: mariadb
 sign_in:

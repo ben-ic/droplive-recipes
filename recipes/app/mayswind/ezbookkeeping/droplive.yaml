@@ -5,5 +5,3 @@ repository: https://github.com/mayswind/ezbookkeeping
 run:
   port: 8080
   health: /healthz.json
-  data:
-  - /data

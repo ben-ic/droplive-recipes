@@ -5,5 +5,3 @@ repository: https://github.com/linuxserver/Heimdall
 run:
   port: 80
   health: /
-  data:
-  - /config

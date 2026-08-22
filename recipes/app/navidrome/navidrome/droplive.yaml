@@ -5,6 +5,3 @@ repository: https://github.com/navidrome/navidrome
 run:
   port: 4533
   health: /ping
-  data:
-  - /music
-  - /data

@@ -5,11 +5,6 @@ repository: https://github.com/redmine/redmine
 run:
   port: 3000
   health: /
-  # The image declares this a VOLUME. Every OCI volume has to be declared here or
-  # the launch preflight refuses the plan rather than hand the app an anonymous
-  # one that dies with the container.
-  data:
-  - /usr/src/redmine/files
 companions:
   database: postgres
 sign_in:

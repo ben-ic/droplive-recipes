@@ -5,5 +5,3 @@ repository: https://github.com/go-shiori/shiori
 run:
   port: 8080
   health: /
-  data:
-  - /srv/shiori

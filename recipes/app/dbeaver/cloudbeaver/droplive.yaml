@@ -8,8 +8,6 @@ run:
     path: /
     contains:
     - CloudBeaver
-  data:
-  - /opt/cloudbeaver/workspace
 environment:
   CB_ADMIN_PASSWORD:
     owner: droplive

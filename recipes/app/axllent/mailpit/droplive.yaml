@@ -5,5 +5,3 @@ repository: https://github.com/axllent/mailpit
 run:
   port: 8025
   health: /
-  data:
-  - /data

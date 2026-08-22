@@ -5,5 +5,3 @@ repository: https://github.com/louislam/dockge
 run:
   port: 5001
   health: /
-  data:
-  - /app/data

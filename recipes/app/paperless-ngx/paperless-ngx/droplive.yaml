@@ -5,15 +5,6 @@ repository: https://github.com/paperless-ngx/paperless-ngx
 run:
   port: 8000
   health: /
-  # Every path the image declares as an OCI VOLUME. The launch preflight
-  # refuses a plan that omits one, and each of these is a directory the
-  # app fills at runtime -- a declared data dir is a fresh mkfs.ext4, so
-  # only a path the image does not already populate is safe to declare.
-  data:
-  - /usr/src/paperless/consume
-  - /usr/src/paperless/data
-  - /usr/src/paperless/export
-  - /usr/src/paperless/media
 # Paperless names both connections itself. With only DATABASE_URL and REDIS_URL
 # bound, its s6 init could not find either -- "unable to start service
 # init-wait-for-redis: command exited 1" -- and stopped the container.

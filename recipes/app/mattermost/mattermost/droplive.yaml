@@ -5,16 +5,6 @@ repository: https://github.com/mattermost/mattermost
 run:
   port: 8065
   health: /api/v4/system/ping
-  # Every path the image declares as an OCI VOLUME. The launch preflight
-  # refuses a plan that omits one, and each of these is created by the app
-  # at runtime -- a declared data dir is a fresh mkfs.ext4, so a path the
-  # image already populates would be blanked by declaring it.
-  data:
-  - /mattermost/client/plugins
-  - /mattermost/config
-  - /mattermost/data
-  - /mattermost/logs
-  - /mattermost/plugins
 # Mattermost names its own connection and, without it, keeps the built-in default
 # of a database on its own host: "cannot create store: error setting up
 # connections: dial tcp [::1]:5432: connect: connection refused".

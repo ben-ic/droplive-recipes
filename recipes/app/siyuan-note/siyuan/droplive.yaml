@@ -8,5 +8,3 @@ run:
     path: /api/system/bootProgress
     contains:
     - '"progress":100'
-  data:
-  - /data/siyuan

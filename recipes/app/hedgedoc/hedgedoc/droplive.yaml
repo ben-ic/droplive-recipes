@@ -8,7 +8,5 @@ run:
     path: /_health
     contains:
     - '"ready":true'
-  data:
-  - /hedgedoc/public/uploads
 companions:
   database: postgres

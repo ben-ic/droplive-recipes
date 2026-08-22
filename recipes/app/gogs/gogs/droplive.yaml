@@ -5,5 +5,3 @@ repository: https://github.com/gogs/gogs
 run:
   port: 3000
   health: /install
-  data:
-  - /data

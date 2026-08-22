@@ -5,5 +5,3 @@ repository: https://github.com/glanceapp/glance
 run:
   port: 8080
   health: /api/healthz
-  data:
-  - /app/config

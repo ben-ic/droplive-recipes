@@ -8,5 +8,3 @@ run:
     path: /api/v2/health
     contains:
     - '"status":"OK"'
-  data:
-  - /data

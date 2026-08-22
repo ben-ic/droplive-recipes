@@ -16,8 +16,8 @@ Goal:
 - Add one recipe under recipes/<kind>/<github-owner>/<github-repository>/.
   For several MCP products in one repository, add a product subfolder and the
   matching product slug.
-- For an app, API, or MCP server, make the project build and start with a
-  read-only root filesystem.
+- For an app, API, or MCP server, make the project build and start on a writable
+  root filesystem with nothing declared and no volumes.
 - For a skill, identify the complete instruction package and its entrypoint.
 - Keep droplive.yaml as small as possible.
 
@@ -60,13 +60,12 @@ Rules:
    when startup itself must do something first, and say in a comment which
    failure caused it. A recipe-owned docker-compose.yaml is supported but rarely
    the right answer for one container.
-6. Every path in run.data is mounted EMPTY. Nothing is copied from the image, so
-   a directory the image ships is hidden rather than extended, and a directory
-   the image only expects to exist will not. List a path because the application
-   writes there, not because the data matters. If startup needs files at that
-   path, bake a template elsewhere in the image and restore it from an entrypoint
-   before the application starts. Test with empty, non-seeded volumes: an
-   ordinary Docker named volume is seeded from the image and will hide this.
+6. Declare no writable paths. A demo gets its own writable copy-on-write root,
+   populated from the image, so every path is writable already and holds what
+   the image shipped. There is no run.data. Do not set read_only: true on an
+   application's Compose service, and do not add volumes or tmpfs to make
+   something writable -- that is what used to break these recipes, because a
+   declared path arrived empty and hid the image's own files.
 7. Pin every recipe-owned FROM image by sha256 digest. Do not copy a complete
    upstream Dockerfile only to make a small runtime change. Extend a pinned
    upstream image with the smallest required adaptation.
@@ -179,11 +178,7 @@ Rules:
 For an app, API, or MCP server, test the selected Docker or Compose path. Confirm:
 - it builds for linux/amd64;
 - it starts without privileged mode or host networking;
-- it starts with a read-only root filesystem;
-- every writable volume starts empty;
-- the application does not depend on Docker named-volume copy-up;
-- files required at startup remain available after writable mounts are attached;
-- every write goes to tmpfs or declared persistent data;
+- it starts with a writable root filesystem, no volumes and no tmpfs;
 - values declared in droplive.yaml, companions, and emulators are injected only
   at runtime; and
 - no secret is present in the committed files.

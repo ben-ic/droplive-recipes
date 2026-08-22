@@ -1,17 +1,13 @@
-# syntax=docker/dockerfile:1
+# The pinned upstream image, unchanged.
 #
-# The pinned upstream image, extended with two things and nothing else: the build
-# output moved aside as a template, and an entrypoint that restores it into the
-# writable mount. See droplive-entrypoint.sh for why that mount has to be writable.
+# This recipe used to move `.next` aside at build time and restore it from an
+# entrypoint, because `start.sh` rewrites the built bundles with per-session
+# NEXT_PUBLIC_* values and a read-only root refused. The demo now gets a writable
+# copy-on-write root populated from the image, so the build output is writable
+# where it already is, and the image's own entrypoint runs again.
 FROM ghcr.io/elie222/inbox-zero@sha256:b543689db188d252b7032327129f9f019c0d3257a4febff7a98005cd9318ec14
 
-# `.next` becomes a mount point, so its contents move somewhere the mount cannot
-# hide. The empty directory left behind is what DropLive's volume covers.
-RUN mv /app/apps/web/.next /opt/droplive-next \
- && mkdir -p /app/apps/web/.next
+ARG DROPLIVE_SOURCE_COMMIT
+ARG DROPLIVE_SOURCE_TREE_SHA256
 
-COPY --chmod=0755 droplive-entrypoint.sh /usr/local/bin/droplive-entrypoint.sh
-
-# The image's own command is unchanged and still runs; this only precedes it.
-ENTRYPOINT ["/usr/local/bin/droplive-entrypoint.sh"]
-CMD ["/app/docker/scripts/start.sh"]
+EXPOSE 3000

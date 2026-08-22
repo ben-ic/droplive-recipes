@@ -33,14 +33,13 @@ The runtime must:
 
 - build for `linux/amd64`;
 - start without privileged mode or host networking;
-- run with a read-only root filesystem;
-- write temporary files only to declared `tmpfs` paths;
-- write persistent files only to declared volumes;
+- start on a writable root filesystem with no declared paths and no volumes;
 - contain no committed secret.
 
-DropLive managed volumes start empty. They do not copy existing files from the
-image. Test with empty volumes and confirm that no mount hides files needed at
-startup.
+A demo gets its own writable copy-on-write root, populated from the image, so
+test it the same way: no volumes, no tmpfs, nothing declared. If it starts like
+that, it starts on DropLive. An MCP or emulator container is the exception and
+still runs read-only.
 
 An app, API, or Streamable HTTP MCP server must expose one main port and have an
 HTTP health check that proves it is ready. A `stdio` MCP server needs neither.
@@ -89,14 +88,13 @@ build alone does not make a recipe ready for listing.
 - [ ] An MCP or skill follows its separate sandbox and evidence rules.
 - [ ] The recipe is as small as possible.
 - [ ] Every recipe-owned `FROM` image is pinned by digest.
-- [ ] For a runtime recipe, `docker-compose.yaml` sets `read_only: true` on the main service.
+- [ ] An application's `docker-compose.yaml` does **not** set `read_only: true`; only an MCP or emulator service does.
 - [ ] An app, API, or Streamable HTTP MCP service has its required port and HTTP health check.
 - [ ] A `stdio` MCP service proves readiness with its MCP handshake and an operation.
 - [ ] An MCP package build records the complete resolved dependency closure.
 - [ ] An MCP recipe declares its network mode and one safe smoke call.
 - [ ] An MCP package recipe does not also declare a source build.
-- [ ] For a runtime recipe, writable paths use `tmpfs` or a volume.
-- [ ] The runtime does not depend on Docker named-volume copy-up.
+- [ ] The recipe declares no writable paths: the root filesystem is writable already.
 - [ ] Docker Compose supplies public defaults and marks optional values.
 - [ ] `droplive.yaml` declares only `owner: droplive` or `owner: user` values.
 - [ ] Generated values use a supported format, length, and safe pattern.

@@ -122,25 +122,11 @@ refused, whatever the Dockerfile says.
 run:
   port: 3000
   health: /health
-  data:
-    - /app/data
 ```
 
 - `port` is the main container port. **Required.**
 - `health` is an HTTP path. HTTP 200 means ready by default.
-- `data` lists the directories the application writes at runtime. The root
-  filesystem is read-only, so an unlisted path is not writable.
 - `working-directory` overrides a broken image working directory.
-
-`data` is about writability first and persistence second. A demo lasts fifteen
-minutes and keeps nothing afterwards, so list a directory because the
-application writes to it, not because the data matters.
-
-Each listed path is mounted **empty**. Nothing is copied from the image, so a
-directory the image ships is hidden rather than extended, and a directory the
-image merely expects to exist will not. If startup needs files there, restore
-them from a template in an entrypoint — see
-[entrypoint declarations](#entrypoint-declarations).
 
 A health check can also require response text:
 
@@ -153,14 +139,24 @@ run:
       - '"ready":true'
 ```
 
-Do not add a `data` path for temporary files. Put temporary paths in the
-`tmpfs` section of `docker-compose.yaml`.
+### There is no `data`, and nothing to make writable
 
-DropLive managed volumes start empty. Unlike Docker named volumes, they do not
-copy existing files from the image. Do not mount one over files that the
-application needs to start. If the application must change image files at
-runtime, keep a template copy in the image and use a small entrypoint to copy it
-into the empty writable mount before startup.
+A demo gets its **own writable copy-on-write root filesystem, populated from the
+image**. Every path the application writes is already writable, already holds
+whatever the image shipped there, and is thrown away with the µVM after fifteen
+minutes.
+
+So a recipe declares no writable paths at all. `run.data` used to create a fresh,
+**empty** filesystem at each listed path, which hid whatever the image had put
+there -- and that, not the application, is what broke CrowdSec, Element Web,
+Snipe-IT and NodeBB. Those recipes carried entrypoints and build steps whose only
+job was to put back what the declaration had removed. All of it is gone.
+
+Do not add `read_only: true` to an application's Compose service either. It
+describes a root filesystem the demo does not have, and the linter rejects it.
+
+An MCP or emulator container is different: it runs read-only, and its recipe
+still says so.
 
 ## `environment`
 
