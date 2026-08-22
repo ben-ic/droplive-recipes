@@ -6,11 +6,6 @@ for value in "${DROPLIVE_ADMIN_PASSWORD:-}" "${DROPLIVE_STABLE_URL:-}" \
   "${DROPLIVE_FAILING_URL:-}" "${DROPLIVE_FLAPPING_URL:-}"; do
   if [ -n "$value" ]; then seed_values=$((seed_values + 1)); fi
 done
-if [ "$seed_values" -ne 0 ] && [ "$seed_values" -ne 4 ]; then
-  echo "Uptime Kuma setup received an incomplete DropLive seed environment" >&2
-  exit 64
-fi
-
 "$@" &
 server_pid=$!
 trap 'kill -TERM "$server_pid" 2>/dev/null || true' TERM INT
