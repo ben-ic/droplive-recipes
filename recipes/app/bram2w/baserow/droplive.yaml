@@ -2,9 +2,10 @@ version: 1
 kind: app
 run:
   port: 80
-  # This pinned all-in-one image serves its backend health route at /_health.
-  # /api/_health/ is the route for the split backend service, not this image.
-  health: /_health
+  # The proxy-only /_health route becomes ready while first-run database
+  # migrations are still running. Wait for the backend so the browser does not
+  # open to a temporary 127.0.0.1:8000 connection error.
+  health: /api/_health/
   data:
   - /baserow/data
 companions:
