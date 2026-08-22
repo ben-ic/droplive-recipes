@@ -3,3 +3,7 @@ kind: app
 run:
   port: 8000
   health: /login/
+sign_in:
+  username: admin
+  password: admin
+  note: Upstream credentials for a fresh Baby Buddy database.
