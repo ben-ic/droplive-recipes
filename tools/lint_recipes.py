@@ -198,6 +198,11 @@ def capability_errors(recipe: dict[str, Any], capabilities: dict[str, Any]) -> l
         for environment_name, output in emulator["bindings"].items():
             if output not in definition["outputs"]:
                 errors.append(f"capability {capability_id} has no output {output} for {environment_name}")
+        if emulator.get("byok") is True:
+            if capability_id != "llm.openai_chat.v1":
+                errors.append(f"emulator {name} enables BYOK for unsupported capability {capability_id}")
+            elif "non_authenticating_api_key" not in emulator["bindings"].values():
+                errors.append(f"emulator {name} BYOK must bind non_authenticating_api_key")
         dataset = emulator.get("dataset")
         if dataset and dataset not in definition["datasets"]:
             errors.append(f"capability {capability_id} does not support dataset {dataset}")

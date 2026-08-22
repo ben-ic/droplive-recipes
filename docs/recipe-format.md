@@ -507,7 +507,7 @@ URL, API key, and target. The SDK calls DropLive's local computer service; it
 does not call Daytona's infrastructure. The visitor can view and control the
 same screen through the application's normal web interface.
 
-### Planned BYOK opt-in
+### BYOK opt-in
 
 Real vendor credentials are not inferred from environment-variable names. A
 recipe must explicitly opt in for each emulator group before the launch page can
@@ -524,11 +524,10 @@ emulators:
       OPENAI_API_KEY: non_authenticating_api_key
 ```
 
-`byok: true` is the planned recipe surface. It is not accepted by the validator
-until the complete safety path in the main product's `plan/byok.md` is present.
-The control replaces the full capability binding group. It does not replace one
-environment variable at a time. The default one-click launch still uses the
-emulator.
+`byok: true` is accepted only for `llm.openai_chat.v1`, and that group must bind
+`non_authenticating_api_key`. The control replaces the complete binding group
+that the recipe declares. It does not let a visitor submit any other environment
+name. The default one-click launch still uses the emulator.
 
 A visitor key is a launch-time secret. It must not reach the build, recipe,
 Postgres, an Oban job, logs, a public receipt, or a screenshot. A recipe must
