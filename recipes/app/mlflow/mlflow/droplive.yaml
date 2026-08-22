@@ -5,3 +5,5 @@ repository: https://github.com/mlflow/mlflow
 run:
   port: 5000
   health: /
+  data:
+  - /mlflow

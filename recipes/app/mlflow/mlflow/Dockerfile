@@ -8,4 +8,7 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
       org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
       org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
 
+WORKDIR /mlflow
+CMD ["mlflow", "server", "--host", "0.0.0.0", "--port", "5000"]
+
 EXPOSE 5000
