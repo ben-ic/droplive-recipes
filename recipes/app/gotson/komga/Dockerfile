@@ -9,3 +9,9 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
       org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
 
 EXPOSE 25600
+
+COPY droplive-entrypoint.sh /usr/local/bin/droplive-entrypoint.sh
+RUN chmod 0755 /usr/local/bin/droplive-entrypoint.sh
+
+ENV KOMGA_ADMIN_EMAIL=admin@example.org
+ENTRYPOINT ["/usr/local/bin/droplive-entrypoint.sh"]

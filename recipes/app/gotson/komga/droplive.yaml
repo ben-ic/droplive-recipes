@@ -5,3 +5,10 @@ run:
   health: /
   data:
   - /config
+environment:
+  KOMGA_ADMIN_PASSWORD:
+    owner: droplive
+    format: password
+    length: 24
+    login:
+      username: admin@example.org
