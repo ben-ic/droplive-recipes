@@ -7,4 +7,9 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
       org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
       org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
 
+COPY --chmod=755 droplive-entrypoint.sh /usr/local/bin/droplive-entrypoint
+
+ENTRYPOINT ["/usr/local/bin/droplive-entrypoint"]
+CMD ["node", "server.js"]
+
 EXPOSE 3000
