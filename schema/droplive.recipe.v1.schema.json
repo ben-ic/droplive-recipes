@@ -173,6 +173,11 @@
             }
           ]
         },
+        "open": {
+          "type": "string",
+          "pattern": "^/(?!/)[^\\s?#]*$",
+          "maxLength": 1024
+        },
         "data": {
           "type": "array",
           "items": {
