@@ -16,6 +16,10 @@ def recipe(variable):
     return {
         "version": 1,
         "kind": "app",
+        # Required at the root. Without them every fixture fails validation, and
+        # `invalid` would then pass for any input at all.
+        "description": "A fixture recipe used only by this test",
+        "repository": "https://github.com/example/project",
         "environment": {"TEST_VALUE": variable},
     }
 
