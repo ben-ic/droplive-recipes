@@ -8,3 +8,4 @@ COPY --chmod=0755 droplive-entrypoint.sh /usr/local/bin/droplive-entrypoint
 EXPOSE 1337
 
 ENTRYPOINT ["/usr/local/bin/droplive-entrypoint"]
+CMD ["./start.sh"]
