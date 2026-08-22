@@ -34,7 +34,27 @@ while :; do
     exit 0
   fi
 
-  if curl -fsS 'http://127.0.0.1/wp-admin/install.php?step=1' | grep -q 'weblog_title'; then
+  # The official image normally creates wp-config.php from WORDPRESS_DB_*.
+  # Keep a fallback for versions that reach the browser installer instead. The
+  # installer now starts with a language chooser, then asks for the database.
+  if curl -fsS 'http://127.0.0.1/wp-admin/setup-config.php' | grep -q 'name="language"'; then
+    curl -fsS -o /dev/null \
+      --data-urlencode 'language=en_US' \
+      'http://127.0.0.1/wp-admin/setup-config.php?step=0' || true
+  fi
+
+  if curl -fsS 'http://127.0.0.1/wp-admin/setup-config.php?step=1&language=en_US' | grep -q 'name="dbname"'; then
+    curl -fsS -o /dev/null \
+      --data-urlencode "dbname=${WORDPRESS_DB_NAME}" \
+      --data-urlencode "uname=${WORDPRESS_DB_USER}" \
+      --data-urlencode "pwd=${WORDPRESS_DB_PASSWORD}" \
+      --data-urlencode "dbhost=${WORDPRESS_DB_HOST}" \
+      --data-urlencode 'prefix=wp_' \
+      --data-urlencode 'language=en_US' \
+      'http://127.0.0.1/wp-admin/setup-config.php?step=2&noapi&language=en_US' || true
+  fi
+
+  if curl -fsS 'http://127.0.0.1/wp-admin/install.php?step=1&language=en_US' | grep -q 'weblog_title'; then
     curl -fsS -o /dev/null \
       --data-urlencode 'weblog_title=DropLive Demo' \
       --data-urlencode 'user_name=admin' \
@@ -42,8 +62,9 @@ while :; do
       --data-urlencode "admin_password2=${WORDPRESS_ADMIN_PASSWORD}" \
       --data-urlencode 'admin_email=demo@example.invalid' \
       --data-urlencode 'blog_public=0' \
+      --data-urlencode 'language=en_US' \
       --data-urlencode 'Submit=Install WordPress' \
-      'http://127.0.0.1/wp-admin/install.php?step=2' || true
+      'http://127.0.0.1/wp-admin/install.php?step=2&language=en_US' || true
   fi
 
   sleep 1
