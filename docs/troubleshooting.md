@@ -5,13 +5,9 @@ them.
 
 ## DropLive found several build files
 
-Select the upstream file and, for Compose, its main service:
-
-```yaml
-build:
-  docker-compose: deploy/docker-compose.yml
-  service: web
-```
+Recipe import sends only the recipe folder to the build. Put the selected
+Dockerfile or `docker-compose.yaml` at the recipe root. When Compose has several
+services, name the visitor-facing service `app`.
 
 ## The image builds but the application does not start
 
@@ -67,15 +63,15 @@ A recipe entrypoint declares required values too. `: "${NAME:?message}"` marks
 For a generated value, `format` defaults to `url-safe`. Supported formats are
 `hex`, `url-safe`, `alphanumeric`, `password`, `base64`, and
 `laravel-base64`. See [the recipe reference](recipe-format.md) for length and
-pattern rules. `login` is the exception: it validates and nothing reads it, so
-the sign-in card comes from the entrypoint annotation instead.
+pattern rules. Use `login` when this generated value is the visitor sign-in
+credential. An entrypoint annotation can also declare a bootstrap credential.
 
 Never add a real secret to Git.
 
 ## The demo shows no sign-in credential
 
-The sign-in card comes from a `# droplive:` annotation on the recipe entrypoint,
-not from `environment` in `droplive.yaml`. Check, in order:
+The sign-in card can come from `environment.<name>.login` or a `# droplive:`
+annotation on the recipe entrypoint. For an annotation, check:
 
 - the annotated variable is also required in the same script with
   `${NAME:?…}`;
@@ -103,6 +99,9 @@ DropLive recognise its shape. See
 Check [`capabilities/v1.yaml`](../capabilities/v1.yaml). If the capability is
 present, declare an emulator binding. If it is absent, state the missing
 capability in the pull request. Do not point the recipe at your own server.
+
+BYOK is not an automatic fallback. Use `byok: true` only when the reviewed
+capability supports it. The default launch must continue to use the emulator.
 
 ## The repository contains both an MCP server and a skill
 
@@ -136,14 +135,6 @@ allowlist to every installed tool.
 If the dependency has no reviewed capability, report it as unsupported. Do not
 give the skill a real vendor credential or unrestricted network access.
 
-## The emulator answers 401 for every call
-
-The `seed` introduced an identity the dataset's tokens do not know, or the capability
-was given no dataset at all. The emulator log names the vendor at startup.
-
-A recipe cannot create identities; layer content over a reviewed `dataset` and let it
-own the users and tokens. See [seeding](seeding.md).
-
 ## The project needs a database or cache
 
 Declare a named companion:
@@ -174,9 +165,3 @@ FROM ghcr.io/example/image@sha256:0123456789abcdef0123456789abcdef0123456789abcd
 ```
 
 Tags are mutable and are not accepted in recipe-owned Dockerfiles.
-
-## Sample data breaks after an update
-
-Use the application's API, official CLI, or official import format. Do not write
-directly to private database tables. If the project has no stable import path,
-remove `seed.sh`. Sample data is useful, but it must not make the recipe fragile.

@@ -2,109 +2,81 @@
 
 ## Before you start
 
-You need:
+You need a public upstream repository or a local checkout, Python 3, and Docker
+with Docker Compose for an app, API, or MCP service.
 
-- A public GitHub repository or a local checkout of one
-- Python 3
+## Create the smallest complete recipe
 
-For an app, API, or MCP server, you also need Docker with Docker Compose.
+1. Create `recipes/<kind>/<forge-owner>/<repository>/`.
+2. Add `droplive.yaml` with `version`, `kind`, required `description`, and
+   required canonical HTTPS `repository`.
+3. Add the required `run` port and readiness check for a web service.
+4. Add a digest-pinned recipe-root `Dockerfile`, or add a recipe-root
+   `docker-compose.yaml` for a real multi-service application.
+5. Run the complete topology without privileged mode, host networking, host
+   mounts, or committed secrets.
 
-You do not need to be the upstream maintainer. Maintainers and community members
-use the same recipe format.
+The recipe owns repository identity, visitor description, and runtime intent.
+Do not add stars, homepage, licence, or other changing forge facts.
 
-## Make the smallest recipe
+## Docker Compose
 
-1. Create `recipes/<kind>/<owner>/<repository>/`.
-2. Add `droplive.yaml` with `version: 1`, the correct `kind`, and a `run` block
-   naming the port, the health path, and every directory written at runtime.
-3. Add a `Dockerfile` whose `FROM` is the published image, pinned by digest.
-4. Run it. Add nothing until the application asks for it.
+Docker Compose is a first-class input. Use it when the application has more than
+one required application-owned service. Keep service boundaries, commands,
+dependencies, and environment defaults in Compose.
 
-That is the whole recipe for most applications here. Extend the pinned image in
-the Dockerfile when it needs a command or a default; add an entrypoint script
-only when startup itself has to do something first.
+If Compose has more than one service, name the visitor-facing service `app`.
+Pin every service that uses `image` without `build`. Use typed companions for
+platform-managed databases and caches. Do not infer a companion type from a
+service or image name.
 
-Do not copy a whole upstream Dockerfile or Compose file to make the recipe look
-complete.
+Application demos use a private writable copy-on-write root filesystem. Do not
+set `read_only: true` for an application service. MCP services keep their
+documented sandbox rules.
 
-## Test an app, API, or MCP server
+## Credentials and setup
 
-The runtime must:
+The launch UI must show all values and instructions that a visitor needs.
 
-- build for `linux/amd64`;
-- start without privileged mode or host networking;
-- start on a writable root filesystem with no declared paths and no volumes;
-- contain no committed secret.
+- Put public defaults in the image or Compose.
+- Use `owner: droplive` for a session value that DropLive generates.
+- Add login metadata for a generated value that the visitor uses to sign in.
+- Use `sign_in` only for an immutable public credential that the upstream image
+  already accepts and cannot replace at startup.
+- Use a typed companion or reviewed emulator for supported external services.
+- Never commit a password, token, private key, or API key.
 
-A demo gets its own writable copy-on-write root, populated from the image, so
-test it the same way: no volumes, no tmpfs, nothing declared. If it starts like
-that, it starts on DropLive. An MCP or emulator container is the exception and
-still runs read-only.
+BYOK is allowed only on a reviewed capability whose schema permits `byok: true`.
+The normal launch must still use the emulator. Never add a real key, a custom
+provider form, or an operator-input key variable to a recipe.
 
-An app, API, or Streamable HTTP MCP server must expose one main port and have an
-HTTP health check that proves it is ready. A `stdio` MCP server needs neither.
-Its MCP handshake and a successful operation prove readiness.
+## Validate and verify
 
-An MCP test must also complete the protocol checks in
-[MCP servers and skills](docs/mcp-and-skills.md).
+Run:
 
-For a package build, the qualification result must include the resolved and
-hashed dependency closure. The top-level package hash alone is not the tested
-artifact identity.
-
-An MCP package recipe identifies one exact package release. It cannot also
-select a source build. A source recipe builds the exact requested Git commit.
-Every MCP recipe must select `network: observed` or `network: none` and must
-include one safe, bounded, read-only smoke call.
-
-## Test a skill
-
-A skill does not need a container port or health check. Validate the complete
-skill package, then run fixed scenarios in an agent sandbox with an explicit
-tool allowlist. Check fixture changes instead of trusting the final answer.
-
-Then run:
-
-```bash
+```sh
 python3 tools/lint_recipes.py
 python3 tools/test_environment_schema.py
 python3 tools/test_kind_schema.py
 python3 tools/test_entrypoint_rules.py
 ```
 
-`lint_recipes.py` reads your entrypoint as well as `droplive.yaml`. It rejects a
-`# droplive:` line that does not parse or that sits somewhere nothing reads it,
-an annotation with no matching `${NAME:?…}` guard, a second `capability=` in one
-script, an exact-length check on a generated value, and an origin variable
-declared as `owner: droplive`.
+Unknown keys fail validation by design.
+
+A passing validator, build, health probe, or MCP readiness check creates only a
+candidate. It does not authorize listing. Before an exact version is listed, a
+reviewer must complete the public browser gate in
+[`docs/catalogue-verification.md`](docs/catalogue-verification.md).
 
 ## Pull request checklist
 
-Public listing requires the separate browser gate in
-[`docs/catalogue-verification.md`](docs/catalogue-verification.md). A passing
-build alone does not make a recipe ready for listing.
-
-- [ ] `kind` is correct.
-- [ ] An MCP or skill follows its separate sandbox and evidence rules.
-- [ ] The recipe is as small as possible.
-- [ ] Every recipe-owned `FROM` image is pinned by digest.
-- [ ] An application's `docker-compose.yaml` does **not** set `read_only: true`; only an MCP or emulator service does.
-- [ ] An app, API, or Streamable HTTP MCP service has its required port and HTTP health check.
-- [ ] A `stdio` MCP service proves readiness with its MCP handshake and an operation.
-- [ ] An MCP package build records the complete resolved dependency closure.
-- [ ] An MCP recipe declares its network mode and one safe smoke call.
-- [ ] An MCP package recipe does not also declare a source build.
-- [ ] The recipe declares no writable paths: the root filesystem is writable already.
-- [ ] Docker Compose supplies public defaults and marks optional values.
-- [ ] `droplive.yaml` declares only `owner: droplive` or `owner: user` values.
-- [ ] Generated values use a supported format, length, and safe pattern.
-- [ ] The entrypoint requires each runtime value with `: "${NAME:?message}"`.
-- [ ] A generated bootstrap credential carries its `# droplive:` annotation directly above that guard.
-- [ ] At most one annotation per script carries `capability=`.
-- [ ] No origin variable is declared as `owner: droplive`.
-- [ ] No password, token, private key, or API key is committed. A published upstream default in `sign_in` is the one exception; it is public already, and a generated value never belongs there.
-- [ ] `seed.sh`, when present, is repeatable and contains only obvious sample data.
-- [ ] The validator passes.
-
-See [docs/troubleshooting.md](docs/troubleshooting.md) when the application builds
-but does not start.
+- [ ] `description` and canonical HTTPS `repository` are present and correct.
+- [ ] The recipe is the smallest complete statement of runtime intent.
+- [ ] Every recipe-owned base image and image-only Compose service is digest-pinned.
+- [ ] Compose preserves each required application service.
+- [ ] The visitor-facing service has a readiness check that proves it is ready.
+- [ ] The launch metadata provides every required credential and setup value.
+- [ ] No secret is committed.
+- [ ] Any BYOK opt-in uses a supported capability and keeps the emulator default.
+- [ ] All validators pass.
+- [ ] The exact version remains unlisted until public browser verification passes.

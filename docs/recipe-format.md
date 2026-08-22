@@ -1,10 +1,11 @@
 # Recipe reference
 
-The file name is always `droplive.yaml`.
+The file name is always `droplive.yaml`. The recipe is the reviewed source of
+runtime intent.
 
-Unknown fields fail validation. An app or API needs `version`, `kind`, and a
-`run` block with a port; add optional fields only when the application asks for
-them.
+Unknown fields fail JSON Schema validation by design. Every recipe requires
+`version`, `kind`, `description`, and `repository`. Add an optional field only
+when the runtime needs it.
 
 ## `version`
 
@@ -25,54 +26,20 @@ Required. It must match the first folder below `recipes/`.
 | `mcp` | An MCP server |
 | `skill` | A skill package |
 
-## `interfaces`
-
-> **Not read.** The schema accepts it and nothing acts on it. No recipe uses it.
-
-```yaml
-interfaces: [web, api]
-```
-
 ## Build discovery
 
-A recipe builds the `Dockerfile` beside its `droplive.yaml`, or the
-recipe-owned `docker-compose.yaml` when there is one. That is the whole of it:
-every application in this repository is a recipe-owned `Dockerfile` extending a
-digest-pinned upstream image.
+A recipe uses the `Dockerfile` beside `droplive.yaml`, or the recipe-root
+`docker-compose.yaml` when that file exists. Recipe import sends only the
+selected recipe folder to the build.
 
-> **`build` is not read.** The schema accepts the field, the linter validates
-> it, and nothing acts on it — no recipe uses it. The subsections below describe
-> the intended selection syntax, not behaviour you can rely on today. Put the
-> Dockerfile at the recipe root instead.
+Docker Compose is a first-class multi-service input. Keep all required
+application-owned services in the file. The compiler preserves their builds or
+images, commands, dependencies, environment, and identities. When Compose has
+more than one service, name the visitor-facing service `app`. With one service,
+that service is selected.
 
-### Select upstream Docker Compose
-
-```yaml
-build:
-  docker-compose: deploy/docker-compose.yml
-  service: web
-```
-
-`service` is optional when Compose has one service or a service named `app`.
-
-### Select an upstream Dockerfile
-
-```yaml
-build:
-  dockerfile: docker/Dockerfile
-  context: .
-```
-
-The default context is the upstream repository root.
-
-### Use an existing image
-
-```yaml
-build:
-  image: ghcr.io/example/project@sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
-```
-
-The image must be pinned by digest.
+Pin every recipe-owned `FROM` and every image-only Compose service by digest.
+Use typed companions for platform-managed database and cache services.
 
 ## `description`
 
@@ -108,15 +75,14 @@ The folder is the recipe's address on disk; this URL is the project's identity.
 They must agree -- the last two path segments have to match
 `<owner>/<repo>` in the folder, and the linter enforces it.
 
-A recipe carries the description and this URL, and nothing else about the
-project. Star count, licence and homepage are facts about that repository, so
-DropLive reads them from the forge on a schedule and never from a committed
-copy. A star count in git is wrong the day after it is written.
+A recipe owns the description and repository identity. The forge refresher owns
+only changing forge facts: star count, licence, homepage, and refresh time. It
+must not repair or replace the declared identity or description.
 
 ## `run`
 
-Required for an app or API. `run.port` in particular: a recipe without it is
-refused, whatever the Dockerfile says.
+Use `run` when the image or Compose file does not fully state the public port and
+readiness check.
 
 ```yaml
 run:
@@ -124,7 +90,7 @@ run:
   health: /health
 ```
 
-- `port` is the main container port. **Required.**
+- `port` is the main container port.
 - `health` is an HTTP path. HTTP 200 means ready by default.
 - `working-directory` overrides a broken image working directory.
 
@@ -139,18 +105,13 @@ run:
       - '"ready":true'
 ```
 
-### There is no `data`, and nothing to make writable
+### Writable root
 
-A demo gets its **own writable copy-on-write root filesystem, populated from the
-image**. Every path the application writes is already writable, already holds
-whatever the image shipped there, and is thrown away with the µVM after fifteen
-minutes.
+A demo gets its own writable copy-on-write root filesystem, populated from the
+image. The complete root is temporary and is destroyed with the microVM.
 
-So a recipe declares no writable paths at all. `run.data` used to create a fresh,
-**empty** filesystem at each listed path, which hid whatever the image had put
-there -- and that, not the application, is what broke CrowdSec, Element Web,
-Snipe-IT and NodeBB. Those recipes carried entrypoints and build steps whose only
-job was to put back what the declaration had removed. All of it is gone.
+Do not declare writable paths for a temporary application demo. Do not add
+volumes or temporary filesystems only to make an image path writable.
 
 Do not add `read_only: true` to an application's Compose service either. It
 describes a root filesystem the demo does not have, and the linter rejects it.
@@ -489,9 +450,8 @@ emulators:
 Available capabilities and outputs are listed in
 [`capabilities/v1.yaml`](../capabilities/v1.yaml).
 
-A capability may offer a reviewed `dataset`, and a recipe may layer its own content
-over one with `seed`. See [seeding](seeding.md); identities and credentials always
-come from the dataset.
+A capability can offer a reviewed `dataset`. The capability registry is the
+authority for available datasets and outputs.
 
 `access: server` is reachable only by the application. Use
 `access: server-and-browser` when the application and the visitor's browser must
@@ -530,10 +490,15 @@ that the recipe declares. It does not let a visitor submit any other environment
 name. The default one-click launch still uses the emulator.
 
 A visitor key is a launch-time secret. It must not reach the build, recipe,
-Postgres, an Oban job, logs, a public receipt, or a screenshot. A recipe must
-omit `byok` when real traffic is unsafe or does not improve the demo.
+Postgres, an Oban job, logs, a public receipt, or a screenshot. DropLive keeps it
+only for the selected session and excludes that session from public evidence and
+shared baselines. A recipe must omit `byok` when real traffic is unsafe or does
+not improve the demo.
 
 ## MCP servers
+
+Unknown keys in an MCP recipe fail the same JSON Schema validation as unknown
+keys in any recipe. This behavior is intentional and was not defective.
 
 See [MCP servers and skills](mcp-and-skills.md) for the classification rule,
 sandbox boundary, protocol checks, fixture use, and admission evidence.
@@ -640,26 +605,6 @@ skill:
 ```
 
 `entrypoint` is relative to the upstream repository root.
-
-## Application seed files
-
-> **Not in use.** No recipe seeds data yet, and `seed` is not read. Treat this
-> section and [seeding.md](seeding.md) as the intended design.
-
-Use `seed.sh` for realistic application data. See
-[seeding.md](seeding.md) before you add it.
-
-An archive is also available for applications with a stable file format:
-
-```yaml
-seed:
-  archive: seed.tar.zst
-  target: /app/data
-```
-
-Do not use an archive to construct a private database schema by hand. Do not use
-application seeds for external mailboxes, OAuth identities, tokens, or vendor
-data. Use a supported emulator capability.
 
 ## Build secrets
 
