@@ -8,4 +8,8 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
       org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
       org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
 
+ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
+
+COPY droplive-security.groovy /usr/share/jenkins/ref/init.groovy.d/01-droplive-security.groovy
+
 EXPOSE 8080

@@ -5,3 +5,10 @@ run:
   health: /login
   data:
   - /var/jenkins_home
+environment:
+  JENKINS_ADMIN_PASSWORD:
+    owner: droplive
+    format: alphanumeric
+    length: 24
+    login:
+      username: admin
