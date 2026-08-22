@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Status page for communicating incidents and service uptime"
+repository: https://github.com/CachetHQ/Cachet
 run:
   port: 8000
   health: /

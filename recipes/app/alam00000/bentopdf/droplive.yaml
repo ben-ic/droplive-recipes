@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "The Privacy First PDF Toolkit"
+repository: https://github.com/alam00000/bentopdf
 run:
   port: 8080
   health: /

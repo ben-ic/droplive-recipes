@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Low-code programming for event-driven applications"
+repository: https://github.com/node-red/node-red
 run:
   port: 1880
   health: /healthz

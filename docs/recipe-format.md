@@ -74,6 +74,45 @@ build:
 
 The image must be pinned by digest.
 
+## `description`
+
+Required. One line, 10 to 160 characters, saying what the application does. The
+catalog shows it beside the project name, so write it for somebody deciding
+whether to spend fifteen minutes on this, not for somebody who already knows the
+project.
+
+```yaml
+description: Network-wide DNS server that blocks ads and trackers
+```
+
+Most of these started as the upstream repository's own description, which is
+usually the clearest one-line summary a project has. Rewrite it when it is
+marketing, when it is truncated, or when it describes the repository instead of
+the software.
+
+## `repository`
+
+Required. The full URL of the upstream repository.
+
+```yaml
+repository: https://github.com/grafana/grafana
+```
+
+Give the real one, on whatever forge the project uses. GoToSocial is on Codeberg:
+
+```yaml
+repository: https://codeberg.org/superseriousbusiness/gotosocial
+```
+
+The folder is the recipe's address on disk; this URL is the project's identity.
+They must agree -- the last two path segments have to match
+`<owner>/<repo>` in the folder, and the linter enforces it.
+
+A recipe carries the description and this URL, and nothing else about the
+project. Star count, licence and homepage are facts about that repository, so
+DropLive reads them from the forge on a schedule and never from a committed
+copy. A star count in git is wrong the day after it is written.
+
 ## `run`
 
 Required for an app or API. `run.port` in particular: a recipe without it is

@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "SMTP server and web interface for viewing and testing email during development"
+repository: https://github.com/maildev/maildev
 run:
   port: 1080
   health: /

@@ -1,5 +1,7 @@
 version: 1
 kind: mcp
+description: "Chrome DevTools for coding agents"
+repository: https://github.com/ChromeDevTools/chrome-devtools-mcp
 emulators:
   browser:
     capability: browser.chromium.v1

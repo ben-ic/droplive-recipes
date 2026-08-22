@@ -1,7 +1,0 @@
-version: 1
-kind: app
-run:
-  port: 80
-  health: /
-  data:
-  - /config

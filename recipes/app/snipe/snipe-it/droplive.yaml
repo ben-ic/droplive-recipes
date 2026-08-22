@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "A free open source IT asset/license management system"
+repository: https://github.com/snipe/snipe-it
 run:
   port: 80
   health: /health

@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "The Open Source kanban, built with Meteor"
+repository: https://github.com/wekan/wekan
 run:
   port: 8080
   health: /

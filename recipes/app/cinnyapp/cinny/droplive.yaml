@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Yet another matrix client"
+repository: https://github.com/cinnyapp/cinny
 run:
   port: 80
   health: /

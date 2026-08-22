@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Save, annotate and archive bookmarks, keeping a copy of the page"
+repository: https://github.com/linkwarden/linkwarden
 run:
   port: 3000
   health: /login

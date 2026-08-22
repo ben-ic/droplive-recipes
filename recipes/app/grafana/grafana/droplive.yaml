@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "The open and composable observability and data visualization platform"
+repository: https://github.com/grafana/grafana
 run:
   port: 3000
   health: /api/health

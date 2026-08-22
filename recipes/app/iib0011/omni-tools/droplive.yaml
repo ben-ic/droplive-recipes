@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Collection of small web utilities for everyday conversion and formatting tasks"
+repository: https://github.com/iib0011/omni-tools
 run:
   port: 8080
   health: /

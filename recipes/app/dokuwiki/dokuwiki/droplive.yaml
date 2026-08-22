@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "The DokuWiki Open Source Wiki Engine"
+repository: https://github.com/dokuwiki/dokuwiki
 run:
   port: 80
   health: /

@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Search engine API with typo tolerance and fast full-text results"
+repository: https://github.com/meilisearch/meilisearch
 run:
   port: 7700
   health: /health

@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Real-time monitoring of systems, containers and applications, with per-second metrics"
+repository: https://github.com/netdata/netdata
 run:
   port: 19999
   health: /api/v1/info

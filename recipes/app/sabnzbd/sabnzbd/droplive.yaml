@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Usenet binary downloader that queues, repairs and unpacks automatically"
+repository: https://github.com/sabnzbd/sabnzbd
 run:
   port: 8080
   health: /

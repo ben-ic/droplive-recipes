@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Hierarchical note taking application for building a personal knowledge base"
+repository: https://github.com/TriliumNext/Trilium
 run:
   port: 8080
   health: /

@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "An open source personal productivity platform built on Markdown, turbo charged with the scripting power of Lua"
+repository: https://github.com/silverbulletmd/silverbullet
 run:
   port: 3000
   health: /.instance

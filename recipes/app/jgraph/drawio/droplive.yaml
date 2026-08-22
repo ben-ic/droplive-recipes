@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "draw.io is a JavaScript, client-side editor for general diagramming"
+repository: https://github.com/jgraph/drawio
 run:
   port: 8080
   health: /

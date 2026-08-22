@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Kanban project management software"
+repository: https://github.com/kanboard/kanboard
 run:
   port: 80
   health: /

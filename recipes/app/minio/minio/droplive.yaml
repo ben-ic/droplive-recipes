@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "S3-compatible object storage server with a web console"
+repository: https://github.com/minio/minio
 run:
   port: 9001
   health: /

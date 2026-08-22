@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Style and Grammar Checker for 25+ Languages"
+repository: https://github.com/languagetool-org/languagetool
 run:
   port: 8010
   health: /v2/languages

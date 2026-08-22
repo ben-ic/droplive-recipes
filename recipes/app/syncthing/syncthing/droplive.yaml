@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Open Source Continuous File Synchronization"
+repository: https://github.com/syncthing/syncthing
 run:
   port: 8384
   health: /rest/noauth/health

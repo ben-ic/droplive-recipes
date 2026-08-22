@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "An email and SMTP testing tool with API for developers"
+repository: https://github.com/axllent/mailpit
 run:
   port: 8025
   health: /

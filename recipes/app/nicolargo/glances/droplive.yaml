@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "System monitor showing CPU, memory, disk, network and running processes"
+repository: https://github.com/nicolargo/glances
 run:
   port: 61208
   health: /

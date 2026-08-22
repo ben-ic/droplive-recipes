@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Flat-file CMS that builds pages from Markdown, with no database"
+repository: https://github.com/getgrav/grav
 run:
   port: 80
   health: /

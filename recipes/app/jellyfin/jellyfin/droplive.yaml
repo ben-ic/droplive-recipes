@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "The Free Software Media System - Server Backend & API"
+repository: https://github.com/jellyfin/jellyfin
 run:
   port: 8096
   health: /health

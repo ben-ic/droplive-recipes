@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Indexer manager that feeds search indexers to Sonarr, Radarr and other *arr apps"
+repository: https://github.com/Prowlarr/Prowlarr
 run:
   port: 9696
   health: /

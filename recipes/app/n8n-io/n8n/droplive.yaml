@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Fair-code workflow automation platform with native AI capabilities. Combine visual building with custom code, self-host or cloud, 400+ integrations"
+repository: https://github.com/n8n-io/n8n
 run:
   port: 5678
   health: /healthz

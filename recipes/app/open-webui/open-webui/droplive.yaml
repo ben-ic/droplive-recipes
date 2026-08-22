@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "User-friendly AI Interface (Supports Ollama, OpenAI API, ...)"
+repository: https://github.com/open-webui/open-webui
 run:
   port: 8080
   health: /health

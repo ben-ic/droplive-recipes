@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Free and Open Source Machine Translation API. Self-hosted, offline capable and easy to setup"
+repository: https://github.com/LibreTranslate/LibreTranslate
 run:
   port: 5000
   health: /

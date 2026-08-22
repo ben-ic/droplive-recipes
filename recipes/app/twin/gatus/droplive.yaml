@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Automated developer-oriented status page with alerting and incident support"
+repository: https://github.com/twin/gatus
 run:
   port: 8080
   health:

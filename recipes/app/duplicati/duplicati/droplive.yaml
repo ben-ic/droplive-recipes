@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Scheduled, encrypted backups to local disk or cloud storage"
+repository: https://github.com/duplicati/duplicati
 run:
   port: 8200
   health: /

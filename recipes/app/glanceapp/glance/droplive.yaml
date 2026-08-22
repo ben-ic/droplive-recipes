@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "A self-hosted dashboard that puts all your feeds in one place"
+repository: https://github.com/glanceapp/glance
 run:
   port: 8080
   health: /api/healthz

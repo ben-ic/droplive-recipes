@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Track recurring subscriptions and what they cost each month"
+repository: https://github.com/ellite/wallos
 run:
   port: 80
   health:

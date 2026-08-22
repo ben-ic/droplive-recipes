@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Firefly III: a personal finances manager"
+repository: https://github.com/firefly-iii/firefly-iii
 run:
   port: 8080
   health: /

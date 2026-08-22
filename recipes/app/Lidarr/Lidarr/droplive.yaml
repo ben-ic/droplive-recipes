@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Looks and smells like Sonarr but made for music"
+repository: https://github.com/Lidarr/Lidarr
 run:
   port: 8686
   health: /

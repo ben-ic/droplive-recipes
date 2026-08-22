@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Manage Docker Compose stacks from a web interface"
+repository: https://github.com/louislam/dockge
 run:
   port: 5001
   health: /

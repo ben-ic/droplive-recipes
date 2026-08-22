@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Kanban boards with lists, cards, labels and due dates"
+repository: https://github.com/plankanban/planka
 run:
   port: 1337
   health: /

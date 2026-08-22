@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "The open source AI engineering platform for agents, LLMs, and ML models"
+repository: https://github.com/mlflow/mlflow
 run:
   port: 5000
   health: /

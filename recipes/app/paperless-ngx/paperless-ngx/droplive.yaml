@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "A community-supported supercharged document management system: scan, index and archive all your documents"
+repository: https://github.com/paperless-ngx/paperless-ngx
 run:
   port: 8000
   health: /

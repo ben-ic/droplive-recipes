@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Manage Nginx reverse proxy hosts and TLS certificates from a web interface"
+repository: https://github.com/NginxProxyManager/nginx-proxy-manager
 run:
   port: 81
   health: /

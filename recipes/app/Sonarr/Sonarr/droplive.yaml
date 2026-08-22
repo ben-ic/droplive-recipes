@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Smart PVR for newsgroup and bittorrent users"
+repository: https://github.com/Sonarr/Sonarr
 run:
   port: 8989
   health: /

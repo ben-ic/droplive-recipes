@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Team messaging with channels, threads and integrations"
+repository: https://github.com/mattermost/mattermost
 run:
   port: 8065
   health: /api/v4/system/ping

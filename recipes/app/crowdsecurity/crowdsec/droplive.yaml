@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Crowdsourced intrusion prevention that detects and blocks malicious IP addresses"
+repository: https://github.com/crowdsecurity/crowdsec
 run:
   port: 8080
   health: /health

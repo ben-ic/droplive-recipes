@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Track job applications through a pipeline, with notes and status at each stage"
+repository: https://github.com/DaKheera47/job-ops
 run:
   port: 3001
   health: /

@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Shared mailbox and help desk for handling support conversations as a team"
+repository: https://github.com/freescout-help-desk/freescout
 run:
   port: 80
   health: /

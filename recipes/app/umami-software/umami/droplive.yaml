@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Privacy-focused website analytics that does not use cookies"
+repository: https://github.com/umami-software/umami
 run:
   port: 3000
   health: /

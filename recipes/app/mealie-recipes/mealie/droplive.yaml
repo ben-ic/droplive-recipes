@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Recipe manager and meal planner with shopping lists and a recipe importer"
+repository: https://github.com/mealie-recipes/mealie
 run:
   port: 9000
   health: /api/app/about

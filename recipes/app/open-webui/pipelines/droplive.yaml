@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Plugin framework that adds custom Python steps to an OpenAI-compatible API"
+repository: https://github.com/open-webui/pipelines
 run:
   port: 9099
   health: /

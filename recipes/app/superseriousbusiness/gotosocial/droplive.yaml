@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Lightweight federated social network server that speaks ActivityPub"
+repository: https://codeberg.org/superseriousbusiness/gotosocial
 run:
   port: 8080
   health: /

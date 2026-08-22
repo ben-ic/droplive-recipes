@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Simple forum software for building great communities"
+repository: https://github.com/flarum/flarum
 run:
   port: 8888
   health: /

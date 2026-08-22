@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "A local-first personal finance app"
+repository: https://github.com/actualbudget/actual
 run:
   port: 5006
   health: /

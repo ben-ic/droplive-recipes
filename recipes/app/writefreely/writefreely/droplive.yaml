@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "A clean, Markdown-based publishing platform made for writers. Write together and build a community"
+repository: https://github.com/writefreely/writefreely
 run:
   port: 8080
   health: /

@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Renders an OpenAPI description as browsable, testable API documentation"
+repository: https://github.com/swagger-api/swagger-ui
 run:
   port: 8080
   health: /

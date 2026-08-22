@@ -1,5 +1,7 @@
 version: 1
 kind: mcp
+description: "Drives a real browser so a model can navigate pages and read them"
+repository: https://github.com/microsoft/playwright-mcp
 emulators:
   browser:
     capability: browser.chromium.v1

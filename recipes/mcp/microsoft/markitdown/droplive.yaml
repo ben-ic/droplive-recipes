@@ -1,5 +1,7 @@
 version: 1
 kind: mcp
+description: "Python tool for converting files and office documents to Markdown"
+repository: https://github.com/microsoft/markitdown
 mcp:
   transport: stdio
   package:

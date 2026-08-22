@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Chat with your own documents using a local or hosted language model"
+repository: https://github.com/Mintplex-Labs/anything-llm
 run:
   port: 3001
   health: /

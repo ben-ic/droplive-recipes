@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Share files through a link, with an expiry date and optional password"
+repository: https://github.com/stonith404/pingvin-share
 run:
   port: 3000
   health: /

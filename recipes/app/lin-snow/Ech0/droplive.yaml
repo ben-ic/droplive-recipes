@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Lightweight publishing platform for sharing short notes and ideas"
+repository: https://github.com/lin-snow/Ech0
 run:
   port: 6277
   health: /

@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Make Your Company Data Driven. Connect to any data source, easily visualize, dashboard and share your data"
+repository: https://github.com/getredash/redash
 run:
   port: 5000
   health: /

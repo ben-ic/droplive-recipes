@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Build language-model agents and workflows by wiring components on a canvas"
+repository: https://github.com/langflow-ai/langflow
 run:
   port: 7860
   health: /

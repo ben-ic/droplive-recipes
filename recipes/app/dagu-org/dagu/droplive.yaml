@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Self-hostable workflow orchestrator for teams whose main work isn't orchestration"
+repository: https://github.com/dagu-org/dagu
 run:
   port: 8080
   health:

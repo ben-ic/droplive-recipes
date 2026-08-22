@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Track personal income, spending and account balances"
+repository: https://github.com/mayswind/ezbookkeeping
 run:
   port: 8080
   health: /healthz.json

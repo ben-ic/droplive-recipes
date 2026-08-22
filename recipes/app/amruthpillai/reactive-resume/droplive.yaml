@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Build, edit and share a resume from the browser"
+repository: https://github.com/amruthpillai/reactive-resume
 run:
   port: 3000
   health:

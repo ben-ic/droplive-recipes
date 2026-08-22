@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Personal notes and checklists kept as plain files"
+repository: https://github.com/fccview/jotty
 run:
   port: 3000
   health: /

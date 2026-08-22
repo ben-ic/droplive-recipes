@@ -35,6 +35,8 @@ Rules:
      recipes/app/<owner>/<repo>/droplive.yaml
        version: 1
        kind: <kind>
+       description: <one line, 10-160 chars, what the application does>
+       repository: <full URL of the upstream repository>
        run:
          port: <container port>
          health: <path returning 200 only when ready>
@@ -44,7 +46,13 @@ Rules:
        FROM <published image>@sha256:<digest>
        EXPOSE <container port>
 
-   run.port is required. Do not use the build field; nothing reads it.
+   run.port and description are both required. Write the description for
+   somebody deciding whether to spend fifteen minutes on this. Start from the
+   repository's own description and rewrite it when it is marketing, truncated,
+   or about the repository rather than the software. Do not put a star count,
+   license, homepage or source URL in the recipe: DropLive reads those from the
+   forge, and a star count committed to git is wrong the next day.
+   Do not use the build field; nothing reads it.
 4. Find the published image the project itself publishes, and resolve its digest
    from the registry. Do not copy an upstream Dockerfile or Compose file.
 5. Run it before adding anything. Extend the pinned image in the Dockerfile when
@@ -122,8 +130,9 @@ Rules:
     bindings or an exact Compose database or cache image. Match the companion
     key to the Compose service name and declare `type` explicitly. Never infer
     type from the image or service name.
-13. Do not put a repository URL, branch, tag, commit, measurement, artifact
-    digest, or secret in droplive.yaml.
+13. Do not put a branch, tag, commit, measurement, artifact digest, star count,
+    or secret in droplive.yaml. The repository URL belongs there; the rest does
+    not.
 14. Do not change the source repository. Test changes in a temporary working
     copy. Recipe files can overlay that working copy for testing.
 15. When safe, add realistic sample data with seed.sh. Use the application's API,

@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Publishing platform for websites, blogs and content-driven applications"
+repository: https://github.com/WordPress/WordPress
 run:
   port: 80
   health:

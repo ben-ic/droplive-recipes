@@ -14,13 +14,26 @@ SCHEMA = json.loads((ROOT / "schema/droplive.recipe.v1.schema.json").read_text()
 VALIDATOR = Draft202012Validator(SCHEMA)
 
 
+# This file tests `kind`, not the root required fields. Filling them in keeps a
+# missing description from becoming the reason something is judged invalid --
+# without it every `invalid` case would pass for the wrong reason.
+ROOT_DEFAULTS = {
+    "description": "A fixture recipe used only by this test",
+    "repository": "https://github.com/example/project",
+}
+
+
+def complete(recipe):
+    return {**ROOT_DEFAULTS, **recipe}
+
+
 def valid(recipe):
-    errors = list(VALIDATOR.iter_errors(recipe))
+    errors = list(VALIDATOR.iter_errors(complete(recipe)))
     assert not errors, [error.message for error in errors]
 
 
 def invalid(recipe):
-    assert list(VALIDATOR.iter_errors(recipe))
+    assert list(VALIDATOR.iter_errors(complete(recipe)))
 
 
 def mcp(transport="stdio", **fields):

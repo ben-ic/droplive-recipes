@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Renders UML and other diagrams from a text description"
+repository: https://github.com/plantuml/plantuml-server
 run:
   port: 8080
   health: /

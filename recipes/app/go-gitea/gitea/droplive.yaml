@@ -1,5 +1,7 @@
 version: 1
 kind: app
+description: "Self-hosted Git service with pull requests, issues, releases and a package registry"
+repository: https://github.com/go-gitea/gitea
 run:
   port: 3000
   health: /api/healthz
