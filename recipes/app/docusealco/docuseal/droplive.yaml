@@ -1,0 +1,8 @@
+version: 1
+kind: app
+description: "Open source DocuSign alternative for creating, filling and signing documents"
+run:
+  port: 3000
+  health: /
+  data:
+  - /data
