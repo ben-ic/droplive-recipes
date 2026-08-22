@@ -88,10 +88,14 @@ readiness check.
 run:
   port: 3000
   health: /health
+  open: /admin/
 ```
 
 - `port` is the main container port.
 - `health` is an HTTP path. HTTP 200 means ready by default.
+- `open` is the optional page DropLive opens first. Use it when the useful
+  first-run or administration screen is not `/`. It must be an absolute path
+  without a query or fragment.
 - `working-directory` overrides a broken image working directory.
 
 A health check can also require response text:
