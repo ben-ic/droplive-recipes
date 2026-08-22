@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "A lightweight, self-hosted friendly RSS reader"
+repository: https://github.com/0x2E/fusion
 run:
   port: 8080
   health: /

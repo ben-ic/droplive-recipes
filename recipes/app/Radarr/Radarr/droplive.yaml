@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Movie organizer/manager for usenet and torrent users"
+repository: https://github.com/Radarr/Radarr
 run:
   port: 7878
   health: /

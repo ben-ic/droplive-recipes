@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Self-hosted internet speed test that runs entirely in the browser"
+repository: https://github.com/librespeed/speedtest
 run:
   port: 80
   health: /

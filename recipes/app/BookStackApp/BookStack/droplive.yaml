@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "NOW MANAGED ON CODEBERG"
+repository: https://github.com/BookStackApp/BookStack
 run:
   port: 80
   health: /

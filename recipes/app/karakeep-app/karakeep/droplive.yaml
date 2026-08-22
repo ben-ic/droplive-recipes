@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "A self-hostable bookmark-everything app (links, notes and images) with AI-based automatic tagging and full text search"
+repository: https://github.com/karakeep-app/karakeep
 run:
   port: 3000
   health:

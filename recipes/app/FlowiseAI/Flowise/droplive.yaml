@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Build AI Agents, Visually"
+repository: https://github.com/FlowiseAI/Flowise
 run:
   port: 3000
   health: /

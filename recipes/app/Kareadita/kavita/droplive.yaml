@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Kavita is a fast, feature rich, cross platform reading server"
+repository: https://github.com/Kareadita/kavita
 run:
   port: 5000
   health: /

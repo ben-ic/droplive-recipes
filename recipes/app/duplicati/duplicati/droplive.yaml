@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Store securely encrypted backups in the cloud!"
+repository: https://github.com/duplicati/duplicati
 run:
   port: 8200
   health: /

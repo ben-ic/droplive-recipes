@@ -1,6 +1,7 @@
 version: 1
 kind: mcp
 description: "Reads, writes and searches files inside directories the server is allowed to use"
+repository: https://github.com/modelcontextprotocol/servers
 product: filesystem
 mcp:
   transport: stdio

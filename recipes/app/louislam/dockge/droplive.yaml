@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "A fancy, easy-to-use and reactive self-hosted docker compose.yaml stack-oriented manager"
+repository: https://github.com/louislam/dockge
 run:
   port: 5001
   health: /

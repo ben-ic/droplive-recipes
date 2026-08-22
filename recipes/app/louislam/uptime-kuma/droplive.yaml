@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "A fancy self-hosted monitoring tool"
+repository: https://github.com/louislam/uptime-kuma
 run:
   port: 3001
   health:

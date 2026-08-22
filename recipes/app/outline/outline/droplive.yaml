@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "The fastest knowledge base for growing teams. Beautiful, realtime collaborative, feature packed, and markdown compatible"
+repository: https://github.com/outline/outline
 run:
   port: 3000
   health: /_health

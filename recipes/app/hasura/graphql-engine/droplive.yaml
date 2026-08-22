@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Blazing fast, instant realtime GraphQL APIs on all your data with fine grained access control, also trigger webhooks on database events"
+repository: https://github.com/hasura/graphql-engine
 run:
   port: 8080
   health: /healthz

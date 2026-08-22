@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Web app for browsing, reading and downloading eBooks in a Calibre library"
+repository: https://github.com/janeczku/calibre-web
 run:
   port: 8083
   health:

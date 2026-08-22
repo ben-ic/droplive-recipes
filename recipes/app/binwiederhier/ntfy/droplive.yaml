@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Send push notifications to your phone or desktop using PUT/POST"
+repository: https://github.com/binwiederhier/ntfy
 run:
   port: 8080
   health:

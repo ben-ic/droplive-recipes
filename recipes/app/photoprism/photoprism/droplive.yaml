@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "AI-Powered Photos App"
+repository: https://github.com/photoprism/photoprism
 run:
   port: 2342
   health: /

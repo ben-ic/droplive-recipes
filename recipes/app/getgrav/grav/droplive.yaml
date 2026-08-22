@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Modern, Crazy Fast, Ridiculously Easy and Amazingly Powerful Flat-File CMS powered by PHP, Markdown, Twig, and Symfony"
+repository: https://github.com/getgrav/grav
 run:
   port: 80
   health: /

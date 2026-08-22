@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "A highly customizable homepage (or startpage / application dashboard) with Docker and service API integrations"
+repository: https://github.com/gethomepage/homepage
 run:
   port: 3000
   health: /

@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "A self-hostable personal dashboard built for you. Includes status-checking, widgets, themes, icon packs, a UI editor and tons more!"
+repository: https://github.com/Lissy93/dashy
 run:
   port: 8080
   health: /

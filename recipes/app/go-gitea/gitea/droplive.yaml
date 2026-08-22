@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Git with a cup of tea! Painless self-hosted all-in-one software development service"
+repository: https://github.com/go-gitea/gitea
 run:
   port: 3000
   health: /api/healthz

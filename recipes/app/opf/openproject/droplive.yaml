@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "OpenProject is the leading open source project management software for product, project and portfolio management"
+repository: https://github.com/opf/openproject
 run:
   port: 8080
   health: /

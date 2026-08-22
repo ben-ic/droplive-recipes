@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Open Source realtime backend in 1 file"
+repository: https://github.com/pocketbase/pocketbase
 run:
   port: 8090
   health: /_/

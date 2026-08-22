@@ -21,6 +21,7 @@ recipes/app/<github-owner>/<github-repository>/
 version: 1
 kind: app
 description: Short line saying what the application does
+repository: https://github.com/example/project
 run:
   port: 3000
   health: /health
@@ -41,6 +42,8 @@ A few things matter:
 
 - `description` is required. One line, 10 to 160 characters, saying what the
   application does. It is what a visitor reads in the catalog.
+- `repository` is required. The full URL of the upstream repository, on whatever
+  forge it lives. GitHub is the common case, not an assumption.
 - `run.port` is required.
 - `health` must return 200 only when the application is ready.
 - `data` lists every directory the application writes at runtime. The root
@@ -104,9 +107,11 @@ run:
     - /app/data
 ```
 
-The recipe does not contain a GitHub URL, branch, tag, commit, license result,
-artifact digest, measurement, or secret. The folder identifies the GitHub
-repository. DropLive records the requested commit separately.
+Beyond `repository`, the recipe does not contain a branch, tag, commit, license
+result, star count, artifact digest, measurement, or secret. Those are facts
+about the repository, and DropLive reads them from the forge -- a star count
+committed to git is wrong the next day. DropLive records the requested commit
+separately.
 
 ## Environment ownership
 

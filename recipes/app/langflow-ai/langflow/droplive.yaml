@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Langflow is a powerful tool for building and deploying AI-powered agents and workflows"
+repository: https://github.com/langflow-ai/langflow
 run:
   port: 7860
   health: /

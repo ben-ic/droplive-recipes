@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "PairDrop: Transfer Files Cross-Platform. No Setup, No Signup"
+repository: https://github.com/schlagmichdoch/pairdrop
 run:
   port: 3000
   health: /

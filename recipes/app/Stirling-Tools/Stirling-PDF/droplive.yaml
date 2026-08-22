@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Edit, convert, split and merge PDF files from the browser"
+repository: https://github.com/Stirling-Tools/Stirling-PDF
 run:
   port: 8080
   health: /

@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "MinIO is a high-performance, S3 compatible object store, open sourced under GNU AGPLv3 license"
+repository: https://github.com/minio/minio
 run:
   port: 9001
   health: /

@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "The painless way to host your own Git service"
+repository: https://github.com/gogs/gogs
 run:
   port: 3000
   health: /install

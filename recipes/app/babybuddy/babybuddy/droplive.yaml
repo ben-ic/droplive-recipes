@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Track a baby's sleep, feeds, nappy changes and growth for caregivers"
+repository: https://github.com/babybuddy/babybuddy
 run:
   port: 8000
   health: /login/

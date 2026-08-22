@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "The minimalistic document archiving platform"
+repository: https://github.com/papra-hq/papra
 run:
   port: 1221
   health:

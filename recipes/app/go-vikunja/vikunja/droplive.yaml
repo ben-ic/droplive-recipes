@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "The task manager you actually own"
+repository: https://github.com/go-vikunja/vikunja
 run:
   port: 3456
   health:

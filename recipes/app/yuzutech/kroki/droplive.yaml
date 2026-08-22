@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Creates diagrams from textual descriptions!"
+repository: https://github.com/yuzutech/kroki
 run:
   port: 8000
   health: /

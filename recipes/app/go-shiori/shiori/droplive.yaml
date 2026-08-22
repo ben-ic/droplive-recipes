@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Simple bookmark manager built with Go"
+repository: https://github.com/go-shiori/shiori
 run:
   port: 8080
   health: /

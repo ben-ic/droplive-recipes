@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Prowlarr is an indexer manager/proxy built on the popular *arr .net/reactjs base stack to integrate with your various PVR apps"
+repository: https://github.com/Prowlarr/Prowlarr
 run:
   port: 9696
   health: /

@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "VS Code in the browser"
+repository: https://github.com/coder/code-server
 run:
   port: 8080
   health: /

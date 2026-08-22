@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "A free, self-hostable news aggregator\u2026"
+repository: https://github.com/FreshRSS/FreshRSS
 run:
   port: 80
   health: /

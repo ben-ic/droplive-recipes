@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Lightweight but powerful alternative for managing your personal, file based, notes and checklists"
+repository: https://github.com/fccview/jotty
 run:
   port: 3000
   health: /

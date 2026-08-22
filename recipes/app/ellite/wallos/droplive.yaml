@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Wallos: Open-source, self-hostable personal subscription tracker. Visualize your recurring expenses, manage your budget, and save money"
+repository: https://github.com/ellite/wallos
 run:
   port: 80
   health:

@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "An updated drop-in for statping"
+repository: https://github.com/statping-ng/statping-ng
 run:
   port: 8080
   health: /

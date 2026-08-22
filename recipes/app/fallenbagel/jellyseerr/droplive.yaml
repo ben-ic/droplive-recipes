@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Open-source media request and discovery manager for Jellyfin, Plex, and Emby"
+repository: https://github.com/fallenbagel/jellyseerr
 run:
   port: 5055
   health: /

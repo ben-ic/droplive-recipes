@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Cloud Database Manager"
+repository: https://github.com/dbeaver/cloudbeaver
 run:
   port: 8978
   health:

@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Your Personal Streaming Service"
+repository: https://github.com/navidrome/navidrome
 run:
   port: 4533
   health: /ping

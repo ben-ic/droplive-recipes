@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Online Accounting Software"
+repository: https://github.com/akaunting/akaunting
 run:
   port: 80
   health:

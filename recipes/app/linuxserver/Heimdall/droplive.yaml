@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "An Application dashboard and launcher"
+repository: https://github.com/linuxserver/Heimdall
 run:
   port: 80
   health: /

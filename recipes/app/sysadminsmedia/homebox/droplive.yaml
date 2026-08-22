@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "A continuation of HomeBox the inventory and organization system built for the Home User"
+repository: https://github.com/sysadminsmedia/homebox
 run:
   port: 7745
   health: /api/v1/status

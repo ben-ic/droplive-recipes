@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Open source DocuSign alternative for creating, filling and signing documents"
+repository: https://github.com/docusealco/docuseal
 run:
   port: 3000
   health: /

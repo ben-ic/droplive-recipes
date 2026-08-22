@@ -1,6 +1,7 @@
 version: 1
 kind: mcp
 description: "Fetches a web page and converts it to markdown for a model to read"
+repository: https://github.com/modelcontextprotocol/servers
 product: fetch
 mcp:
   transport: stdio

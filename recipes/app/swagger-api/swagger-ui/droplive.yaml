@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Swagger UI is a collection of HTML, JavaScript, and CSS assets that dynamically generate beautiful documentation from a Swagger-compliant API"
+repository: https://github.com/swagger-api/swagger-ui
 run:
   port: 8080
   health: /

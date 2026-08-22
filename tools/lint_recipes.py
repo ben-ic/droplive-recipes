@@ -455,6 +455,34 @@ def path_errors(recipe_file: Path, recipe: dict[str, Any]) -> list[str]:
     return errors
 
 
+def repository_errors(recipe_file: Path, recipe: dict[str, Any]) -> list[str]:
+    """The repository URL must name the same project the folder does.
+
+    The folder is the on-disk address and the URL is the identity of record. When
+    they disagree, one of them is wrong and nothing downstream can tell which --
+    `Recipes.Publish` builds the project from the path, and the forge refresher
+    reads the URL.
+    """
+
+    url = recipe.get("repository")
+    if not isinstance(url, str):
+        return []
+
+    # recipes/<kind>/<owner>/<repo>/... -- an MCP recipe adds a product below.
+    parts = recipe_file.relative_to(RECIPES).parts
+    if len(parts) < 3:
+        return []
+    owner, repo = parts[1], parts[2]
+
+    tail = url.rstrip("/").split("/")[-2:]
+    if len(tail) != 2 or [part.lower() for part in tail] != [owner.lower(), repo.lower()]:
+        return [
+            f"repository {url} does not name {owner}/{repo}, "
+            "which is the folder this recipe lives in"
+        ]
+    return []
+
+
 def main() -> int:
     schema = json.loads(SCHEMA.read_text())
     Draft202012Validator.check_schema(schema)
@@ -485,6 +513,7 @@ def main() -> int:
 
         checks = (
             path_errors(recipe_file, recipe)
+            + repository_errors(recipe_file, recipe)
             + entrypoint_errors(recipe_file, recipe)
             + build_errors(recipe_file, recipe)
             + capability_errors(recipe, capabilities)

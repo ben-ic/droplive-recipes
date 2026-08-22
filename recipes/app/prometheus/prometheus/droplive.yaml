@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "The Prometheus monitoring system and time series database"
+repository: https://github.com/prometheus/prometheus
 run:
   port: 9090
   health: /-/healthy

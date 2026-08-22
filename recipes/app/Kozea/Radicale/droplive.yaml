@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "A simple CalDAV (calendar) and CardDAV (contact) server"
+repository: https://github.com/Kozea/Radicale
 run:
   port: 5232
   health: /

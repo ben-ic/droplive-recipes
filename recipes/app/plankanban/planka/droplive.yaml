@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "PLANKA is the Kanban-style project mastering tool for everyone"
+repository: https://github.com/plankanban/planka
 run:
   port: 1337
   health: /

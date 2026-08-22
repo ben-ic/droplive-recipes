@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "A source-available invoice, quote, project and time-tracking app built with Laravel"
+repository: https://github.com/invoiceninja/invoiceninja
 run:
   port: 80
   health: /

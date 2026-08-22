@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "A lightweight Node.js private proxy registry"
+repository: https://github.com/verdaccio/verdaccio
 run:
   port: 4873
   health: /

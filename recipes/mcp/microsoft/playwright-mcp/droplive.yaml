@@ -1,6 +1,7 @@
 version: 1
 kind: mcp
 description: "Playwright MCP server"
+repository: https://github.com/microsoft/playwright-mcp
 emulators:
   browser:
     capability: browser.chromium.v1

@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Ech0 \u2013 An open-source, self-hosted lightweight publishing platform for personal idea sharing"
+repository: https://github.com/lin-snow/Ech0
 run:
   port: 6277
   health: /

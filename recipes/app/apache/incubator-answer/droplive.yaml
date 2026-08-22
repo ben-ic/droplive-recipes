@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "A Q&A platform software for teams at any scales"
+repository: https://github.com/apache/incubator-answer
 run:
   port: 80
   health: /

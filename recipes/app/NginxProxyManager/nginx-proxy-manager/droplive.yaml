@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Docker container for managing Nginx proxy hosts with a simple, powerful interface"
+repository: https://github.com/NginxProxyManager/nginx-proxy-manager
 run:
   port: 81
   health: /

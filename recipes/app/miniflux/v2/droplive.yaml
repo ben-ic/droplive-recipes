@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Minimalist and opinionated feed reader"
+repository: https://github.com/miniflux/v2
 run:
   port: 8080
   health:

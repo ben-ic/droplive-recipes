@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Application for managing recipes, planning meals, building shopping lists and much much more!"
+repository: https://github.com/TandoorRecipes/recipes
 run:
   port: 8080
   health: /

@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "A minimalist, self-hosted WakaTime-compatible backend for coding statistics"
+repository: https://github.com/muety/wakapi
 run:
   port: 3000
   health:

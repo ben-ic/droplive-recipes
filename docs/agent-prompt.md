@@ -36,6 +36,7 @@ Rules:
        version: 1
        kind: <kind>
        description: <one line, 10-160 chars, what the application does>
+       repository: <full URL of the upstream repository>
        run:
          port: <container port>
          health: <path returning 200 only when ready>
@@ -129,8 +130,9 @@ Rules:
     bindings or an exact Compose database or cache image. Match the companion
     key to the Compose service name and declare `type` explicitly. Never infer
     type from the image or service name.
-13. Do not put a repository URL, branch, tag, commit, measurement, artifact
-    digest, or secret in droplive.yaml.
+13. Do not put a branch, tag, commit, measurement, artifact digest, star count,
+    or secret in droplive.yaml. The repository URL belongs there; the rest does
+    not.
 14. Do not change the source repository. Test changes in a temporary working
     copy. Recipe files can overlay that working copy for testing.
 15. When safe, add realistic sample data with seed.sh. Use the application's API,

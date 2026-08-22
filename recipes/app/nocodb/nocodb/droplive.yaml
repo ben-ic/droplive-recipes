@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "A Free & Self-hostable Airtable Alternative"
+repository: https://github.com/nocodb/nocodb
 run:
   port: 8080
   health: /api/v1/health

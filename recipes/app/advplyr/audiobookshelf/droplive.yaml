@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Self-hosted audiobook and podcast server"
+repository: https://github.com/advplyr/audiobookshelf
 run:
   port: 80
   health:

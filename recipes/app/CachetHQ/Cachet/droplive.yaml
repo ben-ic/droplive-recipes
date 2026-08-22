@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Cachet, the open source, self-hosted status page system"
+repository: https://github.com/CachetHQ/Cachet
 run:
   port: 8000
   health: /

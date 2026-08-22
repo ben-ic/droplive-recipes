@@ -1,6 +1,7 @@
 version: 1
 kind: app
 description: "Wiki.js | A modern and powerful wiki app built on Node.js"
+repository: https://github.com/requarks/wiki
 run:
   port: 3000
   health: /
