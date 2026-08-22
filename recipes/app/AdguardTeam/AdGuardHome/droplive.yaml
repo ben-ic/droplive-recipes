@@ -2,4 +2,14 @@ version: 1
 kind: app
 run:
   port: 3000
-  health: /
+  health: /login.html
+  data:
+  - /opt/adguardhome/conf
+  - /opt/adguardhome/work
+environment:
+  ADGUARD_ADMIN_PASSWORD:
+    owner: droplive
+    format: alphanumeric
+    length: 24
+    login:
+      username: admin
