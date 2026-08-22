@@ -8,4 +8,8 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
       org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
       org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
 
+# Flowise 3.1.2 resolves connect-sqlite3 0.9.17, whose database API is not
+# compatible with this Flowise release. Use Flowise's supported PostgreSQL path.
+ENV DATABASE_TYPE=postgres
+
 EXPOSE 3000

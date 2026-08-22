@@ -5,3 +5,12 @@ repository: https://github.com/FlowiseAI/Flowise
 run:
   port: 3000
   health: /
+companions:
+  database:
+    type: postgres
+    bindings:
+      DATABASE_HOST: host
+      DATABASE_PORT: port
+      DATABASE_NAME: database
+      DATABASE_USER: username
+      DATABASE_PASSWORD: password
