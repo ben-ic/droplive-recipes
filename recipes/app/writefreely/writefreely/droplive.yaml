@@ -5,3 +5,16 @@ repository: https://github.com/writefreely/writefreely
 run:
   port: 8080
   health: /
+  data:
+  - /writefreely
+environment:
+  WRITEFREELY_ADMIN_PASSWORD:
+    owner: droplive
+    format: alphanumeric
+    length: 24
+    login:
+      username: droplive
+  WRITEFREELY_HASH_SEED:
+    owner: droplive
+    format: hex
+    length: 64
