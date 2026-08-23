@@ -6,5 +6,18 @@ repository: https://github.com/kimai/kimai
 run:
   port: 8001
   health: /
+  # Kimai opens on its own first-run wizard until somebody answers it. The
+  # entrypoint answers it, and this is where it sends a signed-in owner.
+  open: /en/timesheet/
 companions:
   database: mariadb
+environment:
+  # Kimai's image creates its first administrator only when it is given a
+  # password, so without this the demo starts perfectly and nobody can sign in.
+  # The address beside it is a literal in the Dockerfile.
+  ADMINPASS:
+    owner: droplive
+    format: password
+    length: 24
+    login:
+      username: maya@northstar-relay.invalid
