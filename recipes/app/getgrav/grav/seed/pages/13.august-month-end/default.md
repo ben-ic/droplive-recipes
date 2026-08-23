@@ -1,0 +1,33 @@
+---
+title: 'August month-end'
+date: '2026-08-21'
+taxonomy:
+    tag:
+        - project
+visible: false
+---
+# August month-end
+
+Close August books with complete expenses and clear customer balances.
+
+|   |   |
+|---|---|
+| Owner | Noor Alvarez |
+| Status | active |
+| Started | 2026-08-17 |
+| Target | 2026-09-03 |
+| Team | Noor Alvarez, Maya Chen, David Banerjee |
+
+### Tasks
+
+| Task | Owner | Status | Priority | Due |
+|---|---|---|---|---|
+| Collect missing August expenses | Noor Alvarez | in-progress | high | 2026-08-21 |
+| Review Lumen balance after due date | Noor Alvarez | backlog | normal | 2026-08-31 |
+| Reconcile operating cash | Noor Alvarez | ready | normal | 2026-09-02 |
+
+### Time logged
+
+| Date | Person | Minutes | Note |
+|---|---|---|---|
+| 2026-08-20 | Noor Alvarez | 65 | Matched card entries and requested three receipts. |
