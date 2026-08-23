@@ -7,4 +7,24 @@ run:
   port: 3000
   health: /api/health
 companions:
-  database: postgres
+  # Metabase reads its application database in parts, not as a single URL, and
+  # the seed points the demo's own reports back at this same server.
+  database:
+    type: postgres
+    bindings:
+      MB_DB_HOST: host
+      MB_DB_PORT: port
+      MB_DB_DBNAME: database
+      MB_DB_USER: username
+      MB_DB_PASS: password
+environment:
+  # Metabase has no owner until first-run setup creates one. The entrypoint runs
+  # that setup with this minted value and puts Maya on the sign-in card. Metabase
+  # refuses a password with no digit, which is what the pattern states.
+  METABASE_OWNER_PASSWORD:
+    owner: droplive
+    format: password
+    length: 24
+    pattern: '^[A-Za-z0-9!@#$%^&*_-]*[0-9][A-Za-z0-9!@#$%^&*_-]*$'
+    login:
+      username: maya@northstar-relay.invalid
