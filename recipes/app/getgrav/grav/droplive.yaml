@@ -3,6 +3,19 @@ kind: app
 tagline: "Flat-file CMS"
 description: "Flat-file CMS that builds pages from Markdown, with no database"
 repository: https://github.com/getgrav/grav
+# The company this demo is stocked with before the visitor arrives. Its pages are
+# in the application's own store, so there is no emulator to hang it off.
+world: business.saas_company.v1
 run:
   port: 80
   health: /
+environment:
+  # Grav's admin sends every request to its own registration screen until one
+  # account exists, so without this the demo opens on a form asking the visitor to
+  # invent a login. The init script writes the account with this value.
+  GRAV_ADMIN_PASSWORD:
+    owner: droplive
+    format: password
+    length: 24
+    login:
+      username: maya

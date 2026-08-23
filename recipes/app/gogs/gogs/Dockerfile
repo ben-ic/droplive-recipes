@@ -23,5 +23,12 @@ RUN mkdir -p /data /backup
 
 EXPOSE 3000
 
-ENTRYPOINT ["/app/gogs/docker/start.sh"]
-CMD ["/usr/bin/s6-svscan", "/app/gogs/docker/s6/"]
+# The Northstar repositories and their open issues, one complete request per
+# line, created through Gogs' own API.
+COPY --chmod=0444 seed/gogs.requests /usr/local/lib/droplive-gogs-seed.requests
+COPY --chmod=0555 droplive-entrypoint.sh /usr/local/bin/droplive-gogs
+
+# The upstream pair becomes the command, so the configuration and the seed wrap
+# the real startup rather than replacing it.
+ENTRYPOINT ["/usr/local/bin/droplive-gogs"]
+CMD ["/app/gogs/docker/start.sh", "/usr/bin/s6-svscan", "/app/gogs/docker/s6/"]

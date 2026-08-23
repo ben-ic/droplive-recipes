@@ -1,0 +1,15 @@
+title: Remove the partial object after cancellation
+tags: task exports bug release-blocker
+type: text/vnd.tiddlywiki
+created: 20260821090000000
+modified: 20260821090000000
+
+The worker lease closes, but the cancelled 75k-row run leaves a partial object. Add cleanup and prove idempotent retry.
+
+|Project|[[Release 2.8|Release 2.8]]|
+|Owner|Lucas Meyer|
+|Reported by|Jon Bell|
+|Status|blocked|
+|Priority|urgent|
+|Due|2026-08-24|
+|Labels|exports, bug, release-blocker|
