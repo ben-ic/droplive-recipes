@@ -1,0 +1,15 @@
+---
+tags: task, finance, customer
+modified: 2026-08-21
+---
+Invoice 4471 is open and not overdue. Review only if it remains open after 30 August.
+
+|   |   |
+|---|---|
+| Project | [[August month-end]] |
+| Owner | Noor Alvarez |
+| Reported by | Maya Chen |
+| Status | backlog |
+| Priority | normal |
+| Due | 2026-08-31 |
+| Labels | finance, customer |

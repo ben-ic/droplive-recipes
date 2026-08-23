@@ -1,0 +1,21 @@
+Message-ID: <mail-priya-export@northstar-relay.invalid>
+Date: Fri, 21 Aug 2026 07:42:00 +0000
+From: Priya Raman <priya@lumen-labs.invalid>
+To: Maya Chen <maya@northstar-relay.invalid>
+Subject: Export is still timing out on our scheduled account run
+X-Tags: Customers
+X-Northstar-Customer: Lumen Labs
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+Hi Maya,
+
+The manual retry Samira suggested finished, but last night's scheduled export=
+ stopped at exactly two minutes again. We are using the same saved export wit=
+h 52,184 rows.
+
+I have a renewal review on Tuesday. I do not need a final fix before then, bu=
+t I do need a clear workaround and an honest date.
+
+Priya

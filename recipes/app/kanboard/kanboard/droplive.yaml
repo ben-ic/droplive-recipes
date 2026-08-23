@@ -5,4 +5,18 @@ description: "Kanban project management software"
 repository: https://github.com/kanboard/kanboard
 run:
   port: 80
-  health: /
+  health: /login
+  # Kanboard keeps the requested page across sign-in, so the visitor lands on a
+  # worked-in board instead of an empty personal dashboard.
+  open: /board/1
+environment:
+  # Kanboard ships an admin/admin account and takes no password from the
+  # environment. The entrypoint creates Maya with this minted value, gives her the
+  # app-admin role, and retires the shipped account, so the only way in belongs to
+  # this session.
+  KANBOARD_OWNER_PASSWORD:
+    owner: droplive
+    format: password
+    length: 24
+    login:
+      username: maya

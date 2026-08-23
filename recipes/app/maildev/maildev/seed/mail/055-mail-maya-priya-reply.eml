@@ -1,0 +1,23 @@
+Message-ID: <mail-maya-priya-reply@northstar-relay.invalid>
+Date: Fri, 21 Aug 2026 08:26:00 +0000
+From: Maya Chen <maya@northstar-relay.invalid>
+To: Priya Raman <priya@lumen-labs.invalid>
+Subject: Re: Export is still timing out on our scheduled account run
+In-Reply-To: <mail-priya-export@northstar-relay.invalid>
+References: <mail-priya-export@northstar-relay.invalid>
+X-Tags: Customers
+X-Northstar-Customer: Lumen Labs
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+Hi Priya,
+
+We reproduced the difference between manual and scheduled runs. The scheduler=
+ is passing the old two-minute limit to the worker.
+
+We are testing the focused fix against larger exports and cancellation today.=
+ Samira will send you a safe workaround before 15:00, even if the release dat=
+e is not final by then.
+
+Maya

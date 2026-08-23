@@ -1,0 +1,8 @@
+date,person,task,minutes,note
+2026-08-20,Lucas Meyer,Run the 50k-row export test,95,Prepared the scheduled fixture and captured the baseline.
+2026-08-21,Lucas Meyer,Run the 50k-row export test,40,Ran the fix branch and checked worker memory.
+2026-08-21,Lucas Meyer,Run the 75k-row export test,55,Completed the large run and checked lease release.
+2026-08-21,Lucas Meyer,Remove the partial object after cancellation,70,Found the partial object left by cancellation.
+2026-08-20,Hana Ito,Correct the audit timezone label,35,Reproduced the suffix error and added a view test.
+2026-08-20,Elena Petrov,Write release notes for audit history,50,Drafted the audit history section.
+2026-08-19,Imani Brooks,Approve the audit empty state,45,Reviewed copy in the narrow and wide layouts.

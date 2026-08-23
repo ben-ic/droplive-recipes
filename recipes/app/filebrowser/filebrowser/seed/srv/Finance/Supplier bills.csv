@@ -1,0 +1,25 @@
+id,supplier,description,issued_on,amount_usd,status
+bill-202508-cloudharbor,CloudHarbor,"Compute, storage, and managed database",2025-08-02,731.00,paid
+bill-202508-cedar,Cedar Office,"Office, equipment, and meeting space",2025-08-12,184.00,paid
+bill-202509-cloudharbor,CloudHarbor,"Compute, storage, and managed database",2025-09-02,731.00,paid
+bill-202509-cedar,Cedar Office,"Office, equipment, and meeting space",2025-09-12,184.00,paid
+bill-202510-cloudharbor,CloudHarbor,"Compute, storage, and managed database",2025-10-02,731.00,paid
+bill-202510-cedar,Cedar Office,"Office, equipment, and meeting space",2025-10-12,184.00,paid
+bill-202511-cloudharbor,CloudHarbor,"Compute, storage, and managed database",2025-11-02,731.00,paid
+bill-202511-cedar,Cedar Office,"Office, equipment, and meeting space",2025-11-12,184.00,paid
+bill-202512-cloudharbor,CloudHarbor,"Compute, storage, and managed database",2025-12-02,731.00,paid
+bill-202512-cedar,Cedar Office,"Office, equipment, and meeting space",2025-12-12,184.00,paid
+bill-202601-cloudharbor,CloudHarbor,"Compute, storage, and managed database",2026-01-02,731.00,paid
+bill-202601-cedar,Cedar Office,"Office, equipment, and meeting space",2026-01-12,184.00,paid
+bill-202602-cloudharbor,CloudHarbor,"Compute, storage, and managed database",2026-02-02,731.00,paid
+bill-202602-cedar,Cedar Office,"Office, equipment, and meeting space",2026-02-12,184.00,paid
+bill-202603-cloudharbor,CloudHarbor,"Compute, storage, and managed database",2026-03-02,731.00,paid
+bill-202603-cedar,Cedar Office,"Office, equipment, and meeting space",2026-03-12,184.00,paid
+bill-202604-cloudharbor,CloudHarbor,"Compute, storage, and managed database",2026-04-02,731.00,paid
+bill-202604-cedar,Cedar Office,"Office, equipment, and meeting space",2026-04-12,184.00,paid
+bill-202605-cloudharbor,CloudHarbor,"Compute, storage, and managed database",2026-05-02,731.00,paid
+bill-202605-cedar,Cedar Office,"Office, equipment, and meeting space",2026-05-12,184.00,paid
+bill-202606-cloudharbor,CloudHarbor,"Compute, storage, and managed database",2026-06-02,731.00,paid
+bill-202606-cedar,Cedar Office,"Office, equipment, and meeting space",2026-06-12,184.00,paid
+bill-202607-cloudharbor,CloudHarbor,"Compute, storage, and managed database",2026-07-02,731.00,paid
+bill-202607-cedar,Cedar Office,"Office, equipment, and meeting space",2026-07-12,184.00,paid

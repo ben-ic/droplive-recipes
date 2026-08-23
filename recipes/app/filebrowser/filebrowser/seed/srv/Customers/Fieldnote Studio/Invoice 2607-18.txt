@@ -1,0 +1,21 @@
+NORTHSTAR RELAY
+northstar-relay.invalid
+
+INVOICE 2607-18
+
+Bill to      Fieldnote Studio
+             Marta Silva
+             marta@fieldnote-studio.invalid
+
+Issued       2026-07-08
+Due          2026-08-08
+
+Description                                              Amount
+Northstar Team plan                                      99.00
+                                                    ------------
+Total due                                                99.00 USD
+
+Status       PAID
+Paid         2026-08-08
+
+Questions about this invoice go to noor@northstar-relay.invalid.

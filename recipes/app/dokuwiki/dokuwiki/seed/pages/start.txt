@@ -1,0 +1,33 @@
+====== Northstar Relay ======
+
+A small software company that automates large operational data exports.
+
+==== What is happening this week ====
+
+  * **A renewal depends on an honest export answer** — Lumen's scheduled exports fail above 50,000 rows. The fix is known but still needs load and cancellation tests before the team can promise a release.
+  * **Release 2.8 has one risky late decision** — The audit page is ready. Engineering must decide whether the export timeout fix is safe enough for 2.8.
+  * **A new engineer starts while the team is busy** — Theo's first week is planned, but no one owns the staging access request yet.
+
+==== Customers ====
+
+  * [[lumen-labs|Lumen Labs]] — Northstar Scale plan, 412.00 USD a month
+  * [[ember-commerce|Ember Commerce]] — Northstar Growth plan, 289.00 USD a month
+  * [[fieldnote-studio|Fieldnote Studio]] — Northstar Team plan, 99.00 USD a month
+  * [[harbor-mobility|Harbor Mobility]] — Northstar Scale plan, 356.00 USD a month
+
+==== Work in flight ====
+
+  * [[lumen-renewal|Lumen renewal]] — active (target 2026-08-25)
+  * [[release-2-8|Release 2.8]] — at-risk (target 2026-08-27)
+  * [[theo-onboarding|Theo onboarding]] — active (target 2026-08-28)
+  * [[august-month-end|August month-end]] — active (target 2026-09-03)
+
+==== Also here ====
+
+  * [[the-team|The team]]
+  * [[this-week|This week]]
+  * [[open-issues|Open issues]]
+  * [[scheduled-export-stops-at-two-minutes|The export incident]]
+
+----
+//company//

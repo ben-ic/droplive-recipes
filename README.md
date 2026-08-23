@@ -91,6 +91,7 @@ unknown-key behavior is intentional.
 ## References
 
 - [Recipe reference](docs/recipe-format.md)
+- [Seeding a demo with the shared world](docs/seeding.md)
 - [Catalogue verification](docs/catalogue-verification.md)
 - [MCP and skill boundaries](docs/mcp-and-skills.md)
 - [Troubleshooting](docs/troubleshooting.md)
