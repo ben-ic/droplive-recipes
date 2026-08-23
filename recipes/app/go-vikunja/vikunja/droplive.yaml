@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Task manager"
 description: "The task manager you actually own"
 repository: https://github.com/go-vikunja/vikunja
 run:

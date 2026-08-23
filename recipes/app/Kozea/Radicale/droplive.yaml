@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Calendar and contacts"
 description: "A simple CalDAV (calendar) and CardDAV (contact) server"
 repository: https://github.com/Kozea/Radicale
 run:

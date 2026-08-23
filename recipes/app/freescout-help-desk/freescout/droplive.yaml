@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Shared inbox help desk"
 description: "Shared mailbox and help desk for handling support conversations as a team"
 repository: https://github.com/freescout-help-desk/freescout
 run:

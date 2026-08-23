@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Search engine"
 description: "Search engine API with typo tolerance and fast full-text results"
 repository: https://github.com/meilisearch/meilisearch
 run:

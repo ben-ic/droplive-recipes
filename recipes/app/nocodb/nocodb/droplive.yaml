@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Airtable alternative"
 description: "A Free & Self-hostable Airtable Alternative"
 repository: https://github.com/nocodb/nocodb
 run:

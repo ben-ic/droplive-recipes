@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Recipe manager"
 description: "Manage recipes, plan meals and build shopping lists"
 repository: https://github.com/TandoorRecipes/recipes
 run:

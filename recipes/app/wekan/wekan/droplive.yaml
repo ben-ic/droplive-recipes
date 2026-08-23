@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Open source kanban"
 description: "The Open Source kanban, built with Meteor"
 repository: https://github.com/wekan/wekan
 run:

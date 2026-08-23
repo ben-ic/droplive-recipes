@@ -1,0 +1,23 @@
+version: 1
+kind: mcp
+product: time
+tagline: "Clock and zone conversion"
+description: "Current time in any IANA timezone, and conversion between zones. Computes from bundled tzdata, so it reaches nothing."
+repository: https://github.com/modelcontextprotocol/servers
+mcp:
+  transport: stdio
+  package:
+    manager: pypi
+    name: "mcp-server-time"
+    version: "2026.8.18"
+    artifact: "mcp_server_time-2026.8.18-py3-none-any.whl"
+    integrity: "sha256:1407583af42dc0163909d855c9ef20114a12b4981c3975033721a7906cdd212a"
+  command: ["mcp-server-time"]
+  network: none
+  tools:
+    examples:
+      get_current_time: {timezone: "Europe/London"}
+      convert_time: {source_timezone: "Europe/London", time: "14:30", target_timezone: "America/New_York"}
+    smoke:
+      name: get_current_time
+      arguments: {timezone: "Europe/London"}

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Text extraction API"
 description: "The Apache Tika toolkit detects and extracts metadata and text from over a thousand different file types (such as PPT, XLS, and PDF)"
 repository: https://github.com/apache/tika
 run:

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Diagram editor"
 description: "draw.io is a JavaScript, client-side editor for general diagramming"
 repository: https://github.com/jgraph/drawio
 run:

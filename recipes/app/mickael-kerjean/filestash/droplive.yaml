@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Cloud file manager"
 description: "Universal file manager for S3, FTP, SFTP, WebDAV and other storage backends"
 repository: https://github.com/mickael-kerjean/filestash
 run:

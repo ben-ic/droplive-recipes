@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Diagram rendering API"
 description: "Renders diagrams from text for many diagram languages through one API"
 repository: https://github.com/yuzutech/kroki
 run:

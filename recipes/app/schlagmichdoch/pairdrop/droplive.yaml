@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Local file transfer"
 description: "Send files between devices on the same network, from the browser"
 repository: https://github.com/schlagmichdoch/pairdrop
 run:

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Knowledge base"
 description: "Knowledge base with Markdown and visual editors, page history and access rules"
 repository: https://github.com/requarks/wiki
 run:

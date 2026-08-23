@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Browser PDF tools"
 description: "The Privacy First PDF Toolkit"
 repository: https://github.com/alam00000/bentopdf
 run:

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Backend in one file"
 description: "Open Source realtime backend in 1 file"
 repository: https://github.com/pocketbase/pocketbase
 run:

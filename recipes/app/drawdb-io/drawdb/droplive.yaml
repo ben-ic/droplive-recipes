@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Database diagram editor"
 description: "Free, simple, and intuitive online database diagram editor and SQL generator"
 repository: https://github.com/drawdb-io/drawdb
 run:

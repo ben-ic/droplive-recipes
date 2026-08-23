@@ -1,5 +1,6 @@
 version: 1
 kind: mcp
+tagline: "Conversation knowledge graph"
 description: "Stores and recalls facts across a conversation in a local knowledge graph"
 repository: https://github.com/modelcontextprotocol/servers
 product: memory

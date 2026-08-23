@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "AI workflow canvas"
 description: "Build language-model agents and workflows by wiring components on a canvas"
 repository: https://github.com/langflow-ai/langflow
 run:

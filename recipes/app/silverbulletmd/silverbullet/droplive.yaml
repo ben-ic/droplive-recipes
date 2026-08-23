@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Markdown workspace"
 description: "An open source personal productivity platform built on Markdown, turbo charged with the scripting power of Lua"
 repository: https://github.com/silverbulletmd/silverbullet
 run:

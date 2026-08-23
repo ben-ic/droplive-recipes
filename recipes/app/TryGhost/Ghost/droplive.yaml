@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Publishing platform"
 description: "Independent technology for modern publishing, memberships, subscriptions and newsletters"
 repository: https://github.com/TryGhost/Ghost
 run:

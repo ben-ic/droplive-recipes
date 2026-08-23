@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Local mail catcher"
 description: "SMTP server and web interface for viewing and testing email during development"
 repository: https://github.com/maildev/maildev
 run:

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Self-contained wiki"
 description: "A self-contained JavaScript wiki for the browser, Node.js, AWS Lambda etc"
 repository: https://github.com/Jermolene/TiddlyWiki5
 run:

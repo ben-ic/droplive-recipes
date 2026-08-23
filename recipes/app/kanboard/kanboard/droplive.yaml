@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Kanban project boards"
 description: "Kanban project management software"
 repository: https://github.com/kanboard/kanboard
 run:

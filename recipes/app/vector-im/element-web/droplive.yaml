@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Matrix collaboration"
 description: "A glossy Matrix collaboration client for the web"
 repository: https://github.com/vector-im/element-web
 run:

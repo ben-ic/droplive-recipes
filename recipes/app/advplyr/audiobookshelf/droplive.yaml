@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Audiobook server"
 description: "Self-hosted audiobook and podcast server"
 repository: https://github.com/advplyr/audiobookshelf
 run:

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Realtime kanban boards"
 description: "Straightforward realtime kanban boards management for intuitive task tracking"
 repository: https://github.com/RARgames/4gaBoards
 run:

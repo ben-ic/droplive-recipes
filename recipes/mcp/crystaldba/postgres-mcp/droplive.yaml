@@ -1,5 +1,6 @@
 version: 1
 kind: mcp
+tagline: "Postgres access and tuning"
 description: "Postgres MCP Pro provides configurable read/write access and performance analysis for you and your AI agents"
 repository: https://github.com/crystaldba/postgres-mcp
 companions:

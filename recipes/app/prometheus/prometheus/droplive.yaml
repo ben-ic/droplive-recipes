@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Metrics and alerting"
 description: "The Prometheus monitoring system and time series database"
 repository: https://github.com/prometheus/prometheus
 run:

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "News aggregator"
 description: "A free, self-hostable news aggregator\u2026"
 repository: https://github.com/FreshRSS/FreshRSS
 run:

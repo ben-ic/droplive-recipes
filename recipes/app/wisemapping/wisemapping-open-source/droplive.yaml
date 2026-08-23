@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Mind mapping"
 description: "Open Source Mindmap Tool"
 repository: https://github.com/wisemapping/wisemapping-open-source
 run:

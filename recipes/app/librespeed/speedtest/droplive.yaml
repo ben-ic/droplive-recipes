@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Bandwidth test"
 description: "Self-hosted internet speed test that runs entirely in the browser"
 repository: https://github.com/librespeed/speedtest
 run:

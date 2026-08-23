@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Matrix chat client"
 description: "Yet another matrix client"
 repository: https://github.com/cinnyapp/cinny
 run:

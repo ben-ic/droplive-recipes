@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Compose stack manager"
 description: "Manage Docker Compose stacks from a web interface"
 repository: https://github.com/louislam/dockge
 run:

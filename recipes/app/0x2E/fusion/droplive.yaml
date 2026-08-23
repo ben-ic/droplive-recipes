@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "RSS reader"
 description: "A lightweight, self-hosted friendly RSS reader"
 repository: https://github.com/0x2E/fusion
 run:

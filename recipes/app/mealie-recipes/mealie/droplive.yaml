@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Recipe and meal planner"
 description: "Recipe manager and meal planner with shopping lists and a recipe importer"
 repository: https://github.com/mealie-recipes/mealie
 run:

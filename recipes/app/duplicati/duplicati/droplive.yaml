@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Encrypted backups"
 description: "Scheduled, encrypted backups to local disk or cloud storage"
 repository: https://github.com/duplicati/duplicati
 run:

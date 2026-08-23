@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Time series database"
 description: "Scalable datastore for metrics, events, and real-time analytics"
 repository: https://github.com/influxdata/influxdb
 run:

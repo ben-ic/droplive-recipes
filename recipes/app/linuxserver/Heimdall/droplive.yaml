@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Application launcher"
 description: "An Application dashboard and launcher"
 repository: https://github.com/linuxserver/Heimdall
 run:

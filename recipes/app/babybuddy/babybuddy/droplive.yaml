@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Baby activity tracker"
 description: "Track a baby's sleep, feeds, nappy changes and growth for caregivers"
 repository: https://github.com/babybuddy/babybuddy
 run:

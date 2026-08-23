@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Low-code event flows"
 description: "Low-code programming for event-driven applications"
 repository: https://github.com/node-red/node-red
 run:

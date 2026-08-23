@@ -1,5 +1,6 @@
 version: 1
 kind: mcp
+tagline: "Web page reader"
 description: "Fetches a web page and converts it to markdown for a model to read"
 repository: https://github.com/modelcontextprotocol/servers
 product: fetch

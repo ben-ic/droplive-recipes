@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Music streaming server"
 description: "Your Personal Streaming Service"
 repository: https://github.com/navidrome/navidrome
 run:

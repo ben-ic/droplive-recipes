@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Project boards"
 description: "Project and task boards in the style of Trello or Notion"
 repository: https://github.com/mattermost/focalboard
 run:

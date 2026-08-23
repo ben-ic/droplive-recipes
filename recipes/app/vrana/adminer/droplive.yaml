@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Single-file database admin"
 description: "Database management in a single PHP file"
 repository: https://github.com/vrana/adminer
 run:

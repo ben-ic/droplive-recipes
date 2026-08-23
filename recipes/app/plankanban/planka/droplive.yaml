@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Kanban boards"
 description: "Kanban boards with lists, cards, labels and due dates"
 repository: https://github.com/plankanban/planka
 run:

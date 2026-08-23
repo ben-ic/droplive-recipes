@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Workflow orchestrator"
 description: "Self-hostable workflow orchestrator for teams whose main work isn't orchestration"
 repository: https://github.com/dagu-org/dagu
 run:

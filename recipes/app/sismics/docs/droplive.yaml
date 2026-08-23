@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Document management"
 description: "Lightweight document management system packed with all the features you can expect from big expensive solutions"
 repository: https://github.com/sismics/docs
 run:

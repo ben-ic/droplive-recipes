@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Private metasearch"
 description: "A self-hosted, ad-free, privacy-respecting metasearch engine"
 repository: https://github.com/benbusby/whoogle-search
 run:

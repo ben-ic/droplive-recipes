@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Team messaging"
 description: "Team messaging with channels, threads and integrations"
 repository: https://github.com/mattermost/mattermost
 run:

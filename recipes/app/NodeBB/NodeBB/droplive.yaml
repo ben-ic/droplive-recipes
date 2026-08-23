@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Community forum"
 description: "Node.js based forum software built for the modern web"
 repository: https://github.com/NodeBB/NodeBB
 run:

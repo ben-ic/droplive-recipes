@@ -22,6 +22,12 @@
         "skill"
       ]
     },
+    "tagline": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 28,
+      "pattern": "^[^\\s].*[^.\\s]$"
+    },
     "description": {
       "type": "string",
       "minLength": 10,

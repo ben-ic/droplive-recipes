@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Usenet downloader"
 description: "Usenet downloader with a web interface and automatic post-processing"
 repository: https://github.com/nzbgetcom/nzbget
 run:

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "VS Code in the browser"
 description: "VS Code in the browser"
 repository: https://github.com/coder/code-server
 run:

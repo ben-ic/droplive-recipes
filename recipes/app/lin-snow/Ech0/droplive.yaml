@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Micro-publishing"
 description: "Lightweight publishing platform for sharing short notes and ideas"
 repository: https://github.com/lin-snow/Ech0
 run:

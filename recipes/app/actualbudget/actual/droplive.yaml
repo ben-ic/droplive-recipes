@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Budgeting app"
 description: "A local-first personal finance app"
 repository: https://github.com/actualbudget/actual
 run:

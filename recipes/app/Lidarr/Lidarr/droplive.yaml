@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Music collection manager"
 description: "Looks and smells like Sonarr but made for music"
 repository: https://github.com/Lidarr/Lidarr
 run:

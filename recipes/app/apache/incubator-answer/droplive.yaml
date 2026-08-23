@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Q&A platform"
 description: "A Q&A platform software for teams at any scales"
 repository: https://github.com/apache/incubator-answer
 run:

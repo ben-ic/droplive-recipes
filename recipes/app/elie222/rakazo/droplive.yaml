@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "AI teammate platform"
 description: Persistent AI teammates with memory, routines, tools, and a visible computer
 repository: https://github.com/elie222/rakazo
 run:
