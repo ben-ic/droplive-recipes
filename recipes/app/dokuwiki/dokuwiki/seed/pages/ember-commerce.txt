@@ -1,0 +1,30 @@
+====== Ember Commerce ======
+
+An online retailer that uses scheduled exports for fulfilment reporting.
+
+| Plan | Northstar Growth plan |
+| Monthly | 289.00 USD |
+| Contact | Ravi Okonkwo, Data operations manager |
+| Email | ravi@ember-commerce.invalid |
+| Invoiced on | day 5, due day 5 |
+
+==== Billing ====
+
+Nothing outstanding. The last invoice, 2607-42, was paid on 2026-08-05.
+
+^ Invoice ^ Issued ^ Due ^ Amount ^ Status ^
+| 2607-42 | 2026-07-05 | 2026-08-05 | 289.00 | paid |
+| 2606-42 | 2026-06-05 | 2026-07-05 | 289.00 | paid |
+| 2605-42 | 2026-05-05 | 2026-06-05 | 289.00 | paid |
+| 2604-42 | 2026-04-05 | 2026-05-05 | 289.00 | paid |
+| 2603-42 | 2026-03-05 | 2026-04-05 | 289.00 | paid |
+| 2602-42 | 2026-02-05 | 2026-03-05 | 289.00 | paid |
+
+==== Open cases ====
+
+[[csv-header-order-changed-after-connector-update|CSV header order changed after connector update]] — normal, waiting-customer. Owner Samira Okafor.
+
+Next action: Wait for the saved export id from Ravi.
+
+----
+//customer//

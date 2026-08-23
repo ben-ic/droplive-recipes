@@ -1,0 +1,34 @@
+====== Lumen Labs ======
+
+A growing operations analytics company and Northstar's largest upcoming renewal.
+
+| Plan | Northstar Scale plan |
+| Monthly | 412.00 USD |
+| Contact | Priya Raman, Director of operations |
+| Email | priya@lumen-labs.invalid |
+| Invoiced on | day 14, due day 30 |
+
+==== Billing ====
+
+Invoice **4471** is open for 412.00 USD and due 2026-08-30.
+
+^ Invoice ^ Issued ^ Due ^ Amount ^ Status ^
+| 4471 | 2026-08-14 | 2026-08-30 | 412.00 | open |
+| 2607-71 | 2026-07-14 | 2026-08-30 | 412.00 | paid |
+| 2606-71 | 2026-06-14 | 2026-07-30 | 412.00 | paid |
+| 2605-71 | 2026-05-14 | 2026-06-30 | 412.00 | paid |
+| 2604-71 | 2026-04-14 | 2026-05-30 | 412.00 | paid |
+| 2603-71 | 2026-03-14 | 2026-04-30 | 412.00 | paid |
+
+==== Open cases ====
+
+[[scheduled-export-stops-at-two-minutes|Scheduled export stops at two minutes]] — high, engineering. Owner Samira Okafor.
+
+Next action: Send workaround before 15:00 and update after cancellation test.
+
+==== Work ====
+
+  * [[lumen-renewal|Lumen renewal]] — active, target 2026-08-25
+
+----
+//customer//

@@ -1,0 +1,14 @@
+====== Review Lumen balance after due date ======
+
+Invoice 4471 is open and not overdue. Review only if it remains open after 30 August.
+
+| Project | [[august-month-end|August month-end]] |
+| Owner | Noor Alvarez |
+| Reported by | Maya Chen |
+| Status | backlog |
+| Priority | normal |
+| Due | 2026-08-31 |
+| Labels | finance, customer |
+
+----
+//task, finance, customer//

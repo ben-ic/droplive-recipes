@@ -1,0 +1,14 @@
+====== Prepare the connector architecture session ======
+
+Use the Ember CSV incident as a small example of why connector contracts are versioned.
+
+| Project | [[theo-onboarding|Theo onboarding]] |
+| Owner | Jon Bell |
+| Reported by | Imani Brooks |
+| Status | ready |
+| Priority | normal |
+| Due | 2026-08-24 |
+| Labels | onboarding, engineering |
+
+----
+//task, onboarding, engineering//

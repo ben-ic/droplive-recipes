@@ -1,0 +1,14 @@
+====== Send Priya the scheduled-export workaround ======
+
+Document manual retry as the temporary path. Do not promise a release date.
+
+| Project | [[lumen-renewal|Lumen renewal]] |
+| Owner | Samira Okafor |
+| Reported by | Maya Chen |
+| Status | ready |
+| Priority | urgent |
+| Due | 2026-08-21 |
+| Labels | support, customer |
+
+----
+//task, support, customer//
