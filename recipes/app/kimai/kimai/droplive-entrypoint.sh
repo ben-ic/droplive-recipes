@@ -178,6 +178,46 @@ seed() {
   echo "[droplive] seeded kimai with $written requests, $failed refused" >&2
 }
 
+# Kimai's own entrypoint runs `kimai:install` before it starts Apache, and that
+# command waits for the database in a loop that prints nothing. If the companion
+# is not accepting connections yet, the whole start sits in that loop until the
+# readiness probe gives up, and what the build log shows is a php process and a
+# `sleep 2` -- which reads as a slow install rather than as a missing database.
+# So the wait happens here instead, where it can say what it is waiting for and
+# give up out loud.
+wait_for_database() {
+  [ -n "${DATABASE_URL:-}" ] || return 0
+
+  # host:port out of scheme://user:pass@host:port/name?options, without needing
+  # a URL parser. The scheme goes first, then everything through the LAST @ --
+  # the last, because a generated password may contain one and the first @ would
+  # then leave half of it in the hostname.
+  rest=${DATABASE_URL#*://}
+  rest=${rest##*@}
+  hostport=${rest%%/*}
+  hostport=${hostport%%\?*}
+  host=${hostport%%:*}
+  port=${hostport##*:}
+  if [ "$port" = "$host" ]; then port=3306; fi
+  [ -n "$host" ] || return 0
+
+  waited=0
+  while [ "$waited" -lt 120 ]; do
+    if (exec 3<>"/dev/tcp/$host/$port") 2>/dev/null; then
+      if [ "$waited" -gt 0 ]; then
+        echo "[droplive] database answered after ${waited}s" >&2
+      fi
+      return 0
+    fi
+    sleep 1
+    waited=$((waited + 1))
+  done
+
+  echo "[droplive] no database at $host:$port after ${waited}s; starting anyway" >&2
+}
+
+wait_for_database
+
 "$@" &
 server_pid=$!
 trap 'kill -TERM "$server_pid" 2>/dev/null || true' TERM INT
