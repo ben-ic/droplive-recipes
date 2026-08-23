@@ -6,3 +6,6 @@ repository: https://github.com/simonw/datasette
 run:
   port: 8001
   health: /
+  # Datasette's index lists databases; the database page is where the tables, the
+  # saved queries, and the SQL editor are.
+  open: /northstar

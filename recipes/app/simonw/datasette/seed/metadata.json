@@ -1,0 +1,101 @@
+{
+  "title": "Northstar Relay",
+  "description": "A small software company that automates large operational data exports, as of 21 August 2026. Four customers, one export incident holding a renewal, one release with a late decision in it, and an engineer starting on Monday.",
+  "license": "Synthetic demonstration data",
+  "databases": {
+    "northstar": {
+      "description": "Everything the company knows about itself: its people and projects, the exports it runs for its customers, the money, and the conversation.",
+      "tables": {
+        "organizations": {
+          "description": "Northstar Relay, its four customers, and its two suppliers."
+        },
+        "people": {
+          "description": "Everyone at Northstar, and the contact at each customer and supplier."
+        },
+        "customers": {
+          "description": "The four subscriptions, what each one pays, and who to talk to."
+        },
+        "suppliers": {
+          "description": "Who Northstar buys from."
+        },
+        "projects": {
+          "description": "The four pieces of work in flight in late August."
+        },
+        "project_members": {
+          "description": "Who is on which project."
+        },
+        "tasks": {
+          "description": "Every task in those projects, with its status, owner and due date."
+        },
+        "time_entries": {
+          "description": "Time booked against a task."
+        },
+        "repositories": {
+          "description": "The three services the product is built from."
+        },
+        "issues": {
+          "description": "Open issues, including the export timeout behind the Lumen incident."
+        },
+        "support_cases": {
+          "description": "The two cases support is carrying."
+        },
+        "invoices": {
+          "description": "Twelve months of subscription billing."
+        },
+        "supplier_bills": {
+          "description": "Twelve months of compute and office costs."
+        },
+        "ledger_entries": {
+          "description": "The double-entry record behind every invoice, payment and bill."
+        },
+        "export_runs": {
+          "description": "Six months of export jobs -- the product's own operational record."
+        },
+        "calendar_events": {
+          "description": "The three meetings that decide this week."
+        },
+        "chat_messages": {
+          "description": "What the team said in general, lumen-renewal and release-2-8."
+        },
+        "email_messages": {
+          "description": "The mail behind the invoices and the incident."
+        },
+        "documents": {
+          "description": "The renewal brief and Theo's first-week plan."
+        }
+      },
+      "queries": {
+        "scheduled_export_timeouts": {
+          "title": "Scheduled exports that timed out",
+          "description": "Every scheduled run stopped by the legacy 120-second worker limit, newest first. This is the incident behind the Lumen Labs renewal.",
+          "sql": "select date(started_at) as day, customer_id, row_count, duration_s, failure_reason\nfrom export_runs\nwhere status = 'failed'\norder by started_at desc"
+        },
+        "export_volume_by_month": {
+          "title": "Export volume by customer, by month",
+          "description": "How much data each account moves, and how fast that is changing.",
+          "sql": "select substr(started_at, 1, 7) as month, customer_id,\n       count(*) as runs, sum(row_count) as rows_exported\nfrom export_runs\ngroup by 1, 2\norder by 1 desc, 4 desc"
+        },
+        "open_work": {
+          "title": "Open work, and who has it",
+          "description": "Every task that is not done, with the person carrying it.",
+          "sql": "select projects.name as project, tasks.title, tasks.status, tasks.priority,\n       assignee.name as assignee, tasks.due_on\nfrom tasks\njoin projects on projects.id = tasks.project_id\nleft join people as assignee on assignee.id = tasks.assignee_person_id\nwhere tasks.status != 'done'\norder by case tasks.priority when 'urgent' then 0 when 'high' then 1 else 2 end,\n         tasks.due_on"
+        },
+        "time_logged": {
+          "title": "Time logged, by person",
+          "description": "Everything booked against a task, newest first.",
+          "sql": "select time_entries.date, people.name as person, tasks.title as task,\n       time_entries.minutes, time_entries.note\nfrom time_entries\njoin people on people.id = time_entries.person_id\njoin tasks on tasks.id = time_entries.task_id\norder by time_entries.date desc, people.name"
+        },
+        "money_owed": {
+          "title": "Invoices that are still open",
+          "description": "What has been billed and not yet paid.",
+          "sql": "select number, customer_id, description, issued_on, due_on, amount_usd, status\nfrom invoices\nwhere status != 'paid'\norder by due_on"
+        },
+        "monthly_books": {
+          "title": "Invoiced against supplier costs, by month",
+          "description": "Subscription billing next to what the company paid out.",
+          "sql": "select months.month,\n       (select round(sum(amount_usd), 2) from invoices\n         where substr(issued_on, 1, 7) = months.month) as invoiced,\n       (select round(sum(amount_usd), 2) from supplier_bills\n         where substr(issued_on, 1, 7) = months.month) as supplier_costs\nfrom (select distinct substr(issued_on, 1, 7) as month from invoices) as months\norder by months.month desc"
+        }
+      }
+    }
+  }
+}
