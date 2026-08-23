@@ -7,6 +7,9 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
       org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
       org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
 
+# The Northstar company as twenty-five linked markdown pages. Kept out of the
+# volume on purpose -- the entrypoint copies them in, see there for why.
+COPY seed/space/ /usr/local/lib/droplive-silverbullet-space/
 COPY --chmod=0755 droplive-entrypoint.sh /usr/local/bin/droplive-entrypoint
 
 ENV SB_HOSTNAME=0.0.0.0 \

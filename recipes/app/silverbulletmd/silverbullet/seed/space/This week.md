@@ -1,0 +1,29 @@
+---
+tags: company
+modified: 2026-08-21
+---
+Three meetings decide the week of 24 August.
+
+### Welcome Theo
+
+2026-08-24 09:30:00 UTC to 10:00.
+
+Introductions, first-week plan, and access check.
+
+Attendees: theo@northstar-relay.invalid, imani@northstar-relay.invalid, jon@northstar-relay.invalid
+
+### 2.8 go or no-go
+
+2026-08-24 11:30:00 UTC to 12:00.
+
+Decide whether the export timeout fix enters 2.8.
+
+Attendees: jon@northstar-relay.invalid, elena@northstar-relay.invalid, lucas@northstar-relay.invalid
+
+### Lumen renewal review
+
+2026-08-25 13:00:00 UTC to 13:45.
+
+Renewal, export reliability, usage growth, and next-quarter plan.
+
+Attendees: maya@northstar-relay.invalid, david@northstar-relay.invalid, priya@lumen-labs.invalid

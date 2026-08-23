@@ -9,6 +9,19 @@ set -eu
 data_root=${SB_FOLDER:-/app/data}
 users_file="$data_root/users.json"
 spaces_file="$data_root/spaces.json"
+seed_space=/usr/local/lib/droplive-silverbullet-space
+
+# The Northstar pages are kept outside the data folder and copied in here rather
+# than baked into it. /app/data is a declared volume, and a managed block volume
+# can mount empty instead of applying Docker's named-volume copy-up, which would
+# leave the space blank. Copying at startup works either way, and only when the
+# folder is untouched: a space somebody has written to is never overwritten.
+if [ -d "$seed_space" ] &&
+   [ ! -e "$users_file" ] && [ ! -e "$spaces_file" ] && [ ! -e "$data_root/index.md" ]; then
+  mkdir -p "$data_root"
+  cp -a "$seed_space/." "$data_root/"
+  echo "[droplive] wrote the Northstar space" >&2
+fi
 
 # SilverBullet 2.10's non-interactive setup command is the same implementation
 # as its browser wizard. Guard it explicitly: a complete deployment is safe to

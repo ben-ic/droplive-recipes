@@ -1,0 +1,27 @@
+---
+tags: project
+modified: 2026-08-21
+---
+Give Theo a useful first week while the engineering team completes release work.
+
+|   |   |
+|---|---|
+| Owner | Imani Brooks |
+| Status | active |
+| Started | 2026-08-17 |
+| Target | 2026-08-28 |
+| Team | Imani Brooks, Theo Martin, Jon Bell, Hana Ito |
+
+### Tasks
+
+| Task | Owner | Status | Priority | Due |
+|---|---|---|---|---|
+| Create Theo's staging access | Jon Bell | backlog | high | 2026-08-25 |
+| Prepare the connector architecture session | Jon Bell | ready | normal | 2026-08-24 |
+| Choose Theo's first pairing issue | Hana Ito | done | normal | 2026-08-20 |
+
+### Time logged
+
+| Date | Person | Minutes | Note |
+|---|---|---|---|
+| 2026-08-20 | Hana Ito | 20 | Selected a small audit filter issue for Tuesday. |
