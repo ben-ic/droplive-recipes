@@ -61,8 +61,9 @@ The launch UI must provide every credential, setup value, and instruction that a
 visitor needs. Do not require private contributor or operator knowledge.
 
 BYOK is recipe-controlled. `byok: true` is accepted only for a reviewed
-capability that supports the Advanced real-provider flow. The default launch
-continues to use the emulator.
+capability that supports the real-provider flow, and the group must replace the
+provider's endpoint and its credential together -- a key pointed at the emulator
+is refused. The default launch continues to use the emulator.
 
 ## Listing is separate from build
 

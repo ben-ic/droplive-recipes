@@ -9,8 +9,10 @@ RUN tar -xzf /tmp/rakazo.tar.gz --strip-components=1 \
   && rm /tmp/rakazo.tar.gz
 
 COPY droplive-openrouter-base-url.patch /tmp/droplive-openrouter-base-url.patch
+COPY droplive-extra-display-deadlock.patch /tmp/droplive-extra-display-deadlock.patch
 RUN patch --fuzz=0 -p1 < /tmp/droplive-openrouter-base-url.patch \
-  && rm /tmp/droplive-openrouter-base-url.patch \
+  && patch --fuzz=0 -p1 < /tmp/droplive-extra-display-deadlock.patch \
+  && rm /tmp/droplive-openrouter-base-url.patch /tmp/droplive-extra-display-deadlock.patch \
   && pnpm install --frozen-lockfile=false \
   && pnpm --filter @rakazo/db generate \
   && RAKAZO_ALLOW_DEV_SECRETS=1 pnpm --filter @rakazo/web build \

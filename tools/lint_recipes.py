@@ -201,8 +201,20 @@ def capability_errors(recipe: dict[str, Any], capabilities: dict[str, Any]) -> l
         if emulator.get("byok") is True:
             if capability_id != "llm.openai_chat.v1":
                 errors.append(f"emulator {name} enables BYOK for unsupported capability {capability_id}")
-            elif "non_authenticating_api_key" not in emulator["bindings"].values():
-                errors.append(f"emulator {name} BYOK must bind non_authenticating_api_key")
+            else:
+                # Both halves, or neither. A recipe that offers the visitor's own
+                # key while leaving the base URL bound to the emulator sends that
+                # key to a fixture which ignores it, and the demo presents
+                # generated replies as the real provider's. DropLive refuses such
+                # a group at build and at launch; saying so here means the author
+                # finds out while editing the recipe.
+                bound = set(emulator["bindings"].values())
+                for output in ("api_base_url", "non_authenticating_api_key"):
+                    if output not in bound:
+                        errors.append(
+                            f"emulator {name} enables BYOK and must bind {output}: "
+                            "the provider endpoint and credential are replaced together"
+                        )
         dataset = emulator.get("dataset")
         if dataset and dataset not in definition["datasets"]:
             errors.append(f"capability {capability_id} does not support dataset {dataset}")

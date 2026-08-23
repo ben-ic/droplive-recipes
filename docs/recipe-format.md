@@ -523,9 +523,19 @@ emulators:
 ```
 
 `byok: true` is accepted only for `llm.openai_chat.v1`, and that group must bind
-`non_authenticating_api_key`. The control replaces the complete binding group
-that the recipe declares. It does not let a visitor submit any other environment
-name. The default one-click launch still uses the emulator.
+**both** `api_base_url` and `non_authenticating_api_key`. `model_name` is
+optional: pinning a model does not change where the request goes.
+
+Binding the credential without the endpoint is refused, by the linter, by the
+build, and by the launch. It is not a smaller substitution but a wrong one: the
+application would receive the visitor's real key while its base URL still named
+the emulator, so the key would be sent to a fixture that ignores it and the demo
+would present generated replies as the provider's. Both halves move together or
+neither does.
+
+The control replaces the complete binding group that the recipe declares. It does
+not let a visitor submit any other environment name. The default one-click launch
+still uses the emulator.
 
 A visitor key is a launch-time secret. It must not reach the build, recipe,
 Postgres, an Oban job, logs, a public receipt, or a screenshot. DropLive keeps it
