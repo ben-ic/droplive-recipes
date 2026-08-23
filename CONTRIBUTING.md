@@ -46,7 +46,8 @@ The launch UI must show all values and instructions that a visitor needs.
 - Use a typed companion or reviewed emulator for supported external services.
 - Never commit a password, token, private key, or API key.
 
-BYOK is allowed only on a reviewed capability whose schema permits `byok: true`.
+BYOK is allowed only on a reviewed capability whose schema permits `byok: true`,
+and the group must bind the provider's endpoint and credential together.
 The normal launch must still use the emulator. Never add a real key, a custom
 provider form, or an operator-input key variable to a recipe.
 
