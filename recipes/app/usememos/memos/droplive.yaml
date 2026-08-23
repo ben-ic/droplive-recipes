@@ -9,6 +9,15 @@ world: business.saas_company.v1
 run:
   port: 5230
   health: /healthz
+  # The Dockerfile labels this recipe for the sqlite backup adapter, and that
+  # adapter requires at least one explicit data dir. Without one the declared
+  # recipe is refused -- "a managed-data backup adapter requires at least one
+  # explicit data_dir" -- and the build falls through to the planner, which
+  # rebuilds the environment from scratch and does not produce the owner
+  # password below. The demo then starts perfectly, with an empty notebook and
+  # nobody able to sign in, and nothing in the launch says why.
+  data:
+  - /var/opt/memos
 environment:
   # Memos has no owner until one is created, and the first-user call is open
   # exactly once. DropLive mints the password per session and puts it on the
