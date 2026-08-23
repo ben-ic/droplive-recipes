@@ -15,6 +15,12 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
 COPY seed/mail/ /usr/local/lib/droplive-mailpit-mail/
 COPY --chmod=0555 droplive-entrypoint.sh /usr/local/bin/droplive-mailpit
 
+# What arrives while the visitor is watching. The timeline itself is not here:
+# it comes from the read-only world the platform mounts for the session, so this
+# is only the adapter that turns its events into mail.
+COPY --chmod=0444 seed/timeline.awk /usr/local/lib/droplive-mailpit-timeline.awk
+COPY --chmod=0555 seed/arrivals.sh /usr/local/lib/droplive-mailpit-arrivals.sh
+
 EXPOSE 8025
 
 # The upstream binary becomes the command, so the seeder wraps the real startup
