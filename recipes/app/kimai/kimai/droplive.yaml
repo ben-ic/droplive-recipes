@@ -13,7 +13,12 @@ run:
   # entrypoint answers it, and this is where it sends a signed-in owner.
   open: /en/timesheet/
 companions:
-  database: mariadb
+  # MariaDB speaks the MySQL protocol, but Doctrine has no driver called
+  # mariadb, and Kimai's cache warm-up dies on the name before it renders a
+  # single page: "The given 'driver' mariadb is unknown". The app boots, is
+  # reachable, and answers 500 to everything -- which is why four builds of this
+  # recipe were published and not one could be listed.
+  database: mysql
 environment:
   # Kimai's image creates its first administrator only when it is given a
   # password, so without this the demo starts perfectly and nobody can sign in.
