@@ -1,6 +1,6 @@
 version: 1
 kind: app
-tagline: "Health check status page"
+tagline: "Status page"
 description: "Automated developer-oriented status page with alerting and incident support"
 repository: https://github.com/twin/gatus
 run:

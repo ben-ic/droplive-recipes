@@ -1,6 +1,6 @@
 version: 1
 kind: app
-tagline: "Incident status page"
+tagline: "Status page"
 description: "Status page for communicating incidents and service uptime"
 repository: https://github.com/CachetHQ/Cachet
 run:

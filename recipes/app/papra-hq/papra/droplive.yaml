@@ -1,6 +1,6 @@
 version: 1
 kind: app
-tagline: "Document archive"
+tagline: "Document management"
 description: "The minimalistic document archiving platform"
 repository: https://github.com/papra-hq/papra
 run:

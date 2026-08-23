@@ -1,6 +1,6 @@
 version: 1
 kind: app
-tagline: "Content framework"
+tagline: "Content management"
 description: "Content management framework for websites and structured content"
 repository: https://github.com/drupal/drupal
 run:

@@ -1,6 +1,6 @@
 version: 1
 kind: app
-tagline: "Project portfolio manager"
+tagline: "Project management"
 description: "Project management with work packages, Gantt charts, wikis and time tracking"
 repository: https://github.com/opf/openproject
 run:
