@@ -46,9 +46,10 @@ The launch UI must show all values and instructions that a visitor needs.
 - Use a typed companion or reviewed emulator for supported external services.
 - Never commit a password, token, private key, or API key.
 
-BYOK is allowed only on a reviewed capability whose schema permits `byok: true`.
-The normal launch must still use the emulator. Never add a real key, a custom
-provider form, or an operator-input key variable to a recipe.
+Whether a visitor may use their own provider is decided by DropLive's registry,
+not by the recipe -- `byok: true` is no longer a recipe key. The normal launch
+still uses the emulator. Never add a real key, a custom provider form, or an
+operator-input key variable to a recipe.
 
 ## Validate and verify
 
@@ -77,6 +78,6 @@ reviewer must complete the public browser gate in
 - [ ] The visitor-facing service has a readiness check that proves it is ready.
 - [ ] The launch metadata provides every required credential and setup value.
 - [ ] No secret is committed.
-- [ ] Any BYOK opt-in uses a supported capability and keeps the emulator default.
+- [ ] No recipe tries to enable a real provider; it only binds the capability.
 - [ ] All validators pass.
 - [ ] The exact version remains unlisted until public browser verification passes.

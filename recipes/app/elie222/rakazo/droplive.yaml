@@ -32,7 +32,6 @@ emulators:
       DAYTONA_TARGET: target
   llm:
     capability: llm.openai_chat.v1
-    byok: true
     bindings:
       OPENROUTER_BASE_URL: api_base_url
       OPENROUTER_API_KEY: non_authenticating_api_key

@@ -505,33 +505,43 @@ URL, API key, and target. The SDK calls DropLive's local computer service; it
 does not call Daytona's infrastructure. The visitor can view and control the
 same screen through the application's normal web interface.
 
-### BYOK opt-in
+### Using a real provider instead of the emulator
 
-Real vendor credentials are not inferred from environment-variable names. A
-recipe must explicitly opt in for each emulator group before the launch page can
-offer **Advanced -> Use real provider**:
+**A recipe does not control this, and has no key for it.** Whether a visitor may
+hand an application their own provider credential is a decision about the
+*provider* — who it is, what it accepts, and what leaves DropLive to reach it —
+and the answer is the same for every recipe that binds the capability. DropLive's
+own registry decides it.
+
+What a recipe does is bind the capability, exactly as it would for the emulator:
 
 ```yaml
 emulators:
   llm:
     capability: llm.openai_chat.v1
-    byok: true
     bindings:
       OPENAI_BASE_URL: api_base_url
       OPENAI_MODEL: model_name
       OPENAI_API_KEY: non_authenticating_api_key
 ```
 
-`byok: true` is accepted only for `llm.openai_chat.v1`, and that group must bind
-`non_authenticating_api_key`. The control replaces the complete binding group
-that the recipe declares. It does not let a visitor submit any other environment
-name. The default one-click launch still uses the emulator.
+If the platform allows that capability to be real, the launch page offers the
+choice. If it does not, it offers nothing, and no recipe key changes that. There
+used to be `byok: true` here; the schema now refuses it as an unknown key.
+
+The offer is made only when the recipe binds **both** an endpoint and a
+credential for the capability. A group is substituted whole or not at all:
+replacing the key while leaving the base URL pointed at the fixture makes the
+demo report a generated reply as the real provider's answer. Binding a host and
+a port alone — which most capabilities do — simply means no choice is offered.
+
+The default one-click launch always uses the emulator.
 
 A visitor key is a launch-time secret. It must not reach the build, recipe,
 Postgres, an Oban job, logs, a public receipt, or a screenshot. DropLive keeps it
 only for the selected session and excludes that session from public evidence and
-shared baselines. A recipe must omit `byok` when real traffic is unsafe or does
-not improve the demo.
+shared baselines. The receipt says, per integration, whether the run used a real
+provider or the stand-in — never the provider's name, endpoint, or credential.
 
 ## MCP servers
 

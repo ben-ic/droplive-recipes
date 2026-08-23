@@ -100,8 +100,10 @@ Check [`capabilities/v1.yaml`](../capabilities/v1.yaml). If the capability is
 present, declare an emulator binding. If it is absent, state the missing
 capability in the pull request. Do not point the recipe at your own server.
 
-BYOK is not an automatic fallback. Use `byok: true` only when the reviewed
-capability supports it. The default launch must continue to use the emulator.
+A real provider is never an automatic fallback, and is not something a recipe
+turns on. `byok: true` is no longer a recipe key -- the schema refuses it. Bind
+the capability; DropLive's registry decides whether the launch page offers the
+choice, and the default launch always uses the emulator.
 
 ## The repository contains both an MCP server and a skill
 

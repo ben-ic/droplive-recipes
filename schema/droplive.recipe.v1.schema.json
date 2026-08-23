@@ -549,9 +549,6 @@
             "server-and-browser"
           ]
         },
-        "byok": {
-          "type": "boolean"
-        },
         "dataset": {
           "type": "string",
           "pattern": "^[a-z][a-z0-9_.-]*\\.v[0-9]+$"

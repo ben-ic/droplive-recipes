@@ -32,8 +32,9 @@ Rules:
     show. A visitor must not need private contributor knowledge.
 11. Use typed companions for databases and caches and reviewed emulators for
     supported external services.
-12. Do not commit a secret. Add `byok: true` only when the reviewed capability
-    schema supports it and the emulator remains the default launch.
+12. Do not commit a secret, and do not try to enable a real provider from the
+    recipe. Whether a capability may be a visitor's own provider is DropLive's
+    decision, not the recipe's; bind the capability and the platform decides.
 13. Do not use privileged mode, host networking, host mounts, or Docker socket
     access.
 14. Run all repository validators.

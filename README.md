@@ -60,9 +60,9 @@ launch sign-in card.
 The launch UI must provide every credential, setup value, and instruction that a
 visitor needs. Do not require private contributor or operator knowledge.
 
-BYOK is recipe-controlled. `byok: true` is accepted only for a reviewed
-capability that supports the Advanced real-provider flow. The default launch
-continues to use the emulator.
+Using a real provider is platform-controlled. A recipe binds a capability; the
+DropLive registry decides whether that capability may be a visitor's own
+provider. The default launch continues to use the emulator.
 
 ## Listing is separate from build
 
