@@ -38,6 +38,11 @@ WORKDIR /
 COPY --chmod=0444 seed/kanboard.jsonl /usr/local/lib/droplive-kanboard-seed.jsonl
 COPY --chmod=0555 droplive-entrypoint.sh /usr/local/bin/droplive-kanboard
 
+# What arrives while the visitor is watching. The timeline itself is not here:
+# it comes from the read-only world the platform mounts for the session, so this
+# is only the adapter that turns its events into comments.
+COPY --chmod=0444 seed/arrivals.php /usr/local/lib/droplive-kanboard-arrivals.php
+
 EXPOSE 80
 
 # The upstream entrypoint becomes the command, so the seeder wraps the real
