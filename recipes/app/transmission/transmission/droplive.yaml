@@ -1,6 +1,6 @@
 version: 1
 kind: app
-tagline: "Lightweight torrent client"
+tagline: "BitTorrent client"
 description: "Official Transmission BitTorrent client repository"
 repository: https://github.com/transmission/transmission
 run:

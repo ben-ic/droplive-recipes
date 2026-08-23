@@ -66,10 +66,11 @@ already printed beside it, so repeating it spends the cell twice.
 | `Ghost` | Repeats the name |
 | `Software` | Says nothing |
 
-Where two recipes would land on the same tagline, separate them on what a visitor
-would actually choose between -- `Bookmark manager` and `Simple bookmark manager`
-are not a useful distinction, but `Usenet downloader` and `Usenet download
-manager` are.
+Two recipes that are the same kind of thing should carry the **same** tagline.
+Five say `Kanban boards`, three say `Status page`, and that is correct -- the
+tagline names a category, and inventing `Realtime kanban boards` to avoid a
+repeat describes nothing real. Reach for a different one only when a visitor
+would genuinely be choosing between two different kinds of thing.
 
 The linter checks the length, the capital, the missing full stop, and the
 repeated name.

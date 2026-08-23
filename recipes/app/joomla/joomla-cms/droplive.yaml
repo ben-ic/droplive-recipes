@@ -1,6 +1,6 @@
 version: 1
 kind: app
-tagline: "Website CMS"
+tagline: "Content management"
 description: "Content management system for building websites and web applications"
 repository: https://github.com/joomla/joomla-cms
 run:

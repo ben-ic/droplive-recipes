@@ -1,6 +1,6 @@
 version: 1
 kind: app
-tagline: "Legacy knowledge base"
+tagline: "Personal knowledge base"
 description: "The original Trilium Notes hierarchical note taking application, continued as TriliumNext"
 repository: https://github.com/zadam/trilium
 run:
