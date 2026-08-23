@@ -40,4 +40,12 @@ trap 'kill -TERM "$server_pid" 2>/dev/null || true' TERM INT
 
 seed || echo "[droplive] seed failed; the app is still running" >&2
 
+# The mailbox was full when the visitor arrived; the world says more mail comes
+# after they get here. This runs in the background because it spends most of its
+# life asleep, and it exits after the last message rather than waiting for one
+# that will not come.
+if [ -x /usr/local/lib/droplive-mailpit-arrivals.sh ]; then
+  /usr/local/lib/droplive-mailpit-arrivals.sh &
+fi
+
 wait "$server_pid"
