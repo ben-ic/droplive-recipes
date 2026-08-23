@@ -38,6 +38,10 @@
       "pattern": "^https://[a-z0-9.-]+\\.[a-z]{2,}/[^/\\s]+/[^/\\s]+$",
       "maxLength": 300
     },
+    "world": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*\\.v[0-9]+$"
+    },
     "product": {
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9-]*$"

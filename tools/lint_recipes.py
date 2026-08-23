@@ -184,6 +184,27 @@ def build_errors(recipe_file: Path, recipe: dict[str, Any]) -> list[str]:
     return []
 
 
+def world_errors(recipe: dict[str, Any], capabilities: dict[str, Any]) -> list[str]:
+    """A demo that already holds its world names it at the top level.
+
+    There is no capability to validate it against -- that is the point of the
+    field -- so it is checked against the same reviewed ids an emulator dataset
+    may select. A world nothing has published is a typo, and a typo here means a
+    demo that silently claims to be stocked and is not.
+    """
+    declared = recipe.get("world")
+    if declared is None:
+        return []
+    reviewed = {
+        dataset
+        for definition in capabilities.values()
+        for dataset in (definition.get("datasets") or [])
+    }
+    if declared not in reviewed:
+        return [f"world {declared} has no reviewed publication"]
+    return []
+
+
 def capability_errors(recipe: dict[str, Any], capabilities: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     for name, emulator in (recipe.get("emulators") or {}).items():
@@ -586,6 +607,7 @@ def main() -> int:
             + entrypoint_errors(recipe_file, recipe)
             + build_errors(recipe_file, recipe)
             + capability_errors(recipe, capabilities)
+            + world_errors(recipe, capabilities)
             + companion_errors(recipe, companions)
             + mcp_errors(recipe, recipe_file)
         )

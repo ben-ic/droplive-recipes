@@ -3,6 +3,9 @@ kind: app
 tagline: "File-based wiki"
 description: "The DokuWiki Open Source Wiki Engine"
 repository: https://github.com/dokuwiki/dokuwiki
+# The company this demo is stocked with before the visitor arrives. Its data is
+# in the application's own store, so there is no emulator to hang it off.
+world: business.saas_company.v1
 run:
   port: 80
   health: /

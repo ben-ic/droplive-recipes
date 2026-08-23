@@ -3,6 +3,9 @@ kind: app
 tagline: "Markdown workspace"
 description: "An open source personal productivity platform built on Markdown, turbo charged with the scripting power of Lua"
 repository: https://github.com/silverbulletmd/silverbullet
+# The company this demo is stocked with before the visitor arrives. Its data is
+# in the application's own store, so there is no emulator to hang it off.
+world: business.saas_company.v1
 run:
   port: 3000
   health: /.instance

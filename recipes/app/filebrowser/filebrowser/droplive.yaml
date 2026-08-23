@@ -3,6 +3,9 @@ kind: app
 tagline: "File manager"
 description: "File Browser provides a file managing interface within a specified directory and it can be used to upload, delete, preview and edit your files"
 repository: https://github.com/filebrowser/filebrowser
+# The company this demo is stocked with before the visitor arrives. Its data is
+# in the application's own store, so there is no emulator to hang it off.
+world: business.saas_company.v1
 run:
   port: 80
   health: /health
