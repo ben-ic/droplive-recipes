@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "File sync and share"
 description: "Self-hosted file sync and share server with a web interface and WebDAV"
 repository: https://github.com/owncloud/core
 run:

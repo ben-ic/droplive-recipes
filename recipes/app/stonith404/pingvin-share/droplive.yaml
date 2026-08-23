@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "File sharing links"
 description: "Share files through a link, with an expiry date and optional password"
 repository: https://github.com/stonith404/pingvin-share
 run:

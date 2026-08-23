@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Coding time tracker"
 description: "A minimalist, self-hosted WakaTime-compatible backend for coding statistics"
 repository: https://github.com/muety/wakapi
 run:

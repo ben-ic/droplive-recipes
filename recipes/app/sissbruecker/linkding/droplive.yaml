@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Bookmark manager"
 description: "Self-hosted bookmark manager that is designed be to be minimal, fast, and easy to set up using Docker"
 repository: https://github.com/sissbruecker/linkding
 run:

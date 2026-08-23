@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Webmail client"
 description: "The Roundcube Webmail suite"
 repository: https://github.com/roundcube/roundcubemail
 run:

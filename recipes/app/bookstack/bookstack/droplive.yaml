@@ -1,0 +1,10 @@
+version: 1
+kind: app
+tagline: "Documentation wiki"
+description: "Platform for creating documentation and wiki content"
+repository: https://codeberg.org/bookstack/bookstack
+run:
+  port: 80
+  health: /
+companions:
+  database: mariadb

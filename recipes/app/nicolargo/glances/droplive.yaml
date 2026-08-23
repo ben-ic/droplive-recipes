@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "System monitor"
 description: "System monitor showing CPU, memory, disk, network and running processes"
 repository: https://github.com/nicolargo/glances
 run:

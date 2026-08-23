@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Instant GraphQL API"
 description: "Generates a realtime GraphQL API over a database, with row-level access control"
 repository: https://github.com/hasura/graphql-engine
 run:

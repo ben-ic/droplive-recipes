@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Comic and manga server"
 description: "Media server for comics/mangas/BDs/magazines/eBooks with API, OPDS, Kobo Sync and KOReader Sync support"
 repository: https://github.com/gotson/komga
 run:

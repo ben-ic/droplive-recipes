@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Identity and access"
 description: "Open Source Identity and Access Management For Modern Applications and Services"
 repository: https://github.com/keycloak/keycloak
 run:

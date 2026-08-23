@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Personal bookkeeping"
 description: "Track personal income, spending and account balances"
 repository: https://github.com/mayswind/ezbookkeeping
 run:

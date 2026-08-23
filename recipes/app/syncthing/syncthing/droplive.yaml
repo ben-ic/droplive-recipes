@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "File synchronisation"
 description: "Open Source Continuous File Synchronization"
 repository: https://github.com/syncthing/syncthing
 run:

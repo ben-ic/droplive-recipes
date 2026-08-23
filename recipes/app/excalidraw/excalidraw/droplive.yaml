@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Whiteboard and diagrams"
 description: "Virtual whiteboard for sketching hand-drawn like diagrams"
 repository: https://github.com/excalidraw/excalidraw
 run:

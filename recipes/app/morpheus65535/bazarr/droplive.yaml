@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Subtitle downloader"
 description: "Finds and downloads subtitles for the films and series Sonarr and Radarr manage"
 repository: https://github.com/morpheus65535/bazarr
 run:

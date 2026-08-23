@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Read-it-later archive"
 description: "Save web articles to read later, stripped down to readable text"
 repository: https://github.com/wallabag/wallabag
 run:

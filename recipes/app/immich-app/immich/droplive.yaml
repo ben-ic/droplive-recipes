@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Photo and video library"
 description: "High performance self-hosted photo and video management solution"
 repository: https://github.com/immich-app/immich
 run:

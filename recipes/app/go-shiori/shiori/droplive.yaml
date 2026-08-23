@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Simple bookmark manager"
 description: "Simple bookmark manager built with Go"
 repository: https://github.com/go-shiori/shiori
 run:

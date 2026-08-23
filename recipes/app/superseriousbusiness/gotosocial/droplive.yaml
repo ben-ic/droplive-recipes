@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "ActivityPub server"
 description: "Lightweight federated social network server that speaks ActivityPub"
 repository: https://codeberg.org/superseriousbusiness/gotosocial
 run:

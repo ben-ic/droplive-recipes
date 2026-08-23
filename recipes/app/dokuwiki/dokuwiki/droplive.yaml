@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "File-based wiki"
 description: "The DokuWiki Open Source Wiki Engine"
 repository: https://github.com/dokuwiki/dokuwiki
 run:

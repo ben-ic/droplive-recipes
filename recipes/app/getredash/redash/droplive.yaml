@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Data dashboards"
 description: "Make Your Company Data Driven. Connect to any data source, easily visualize, dashboard and share your data"
 repository: https://github.com/getredash/redash
 run:

@@ -503,6 +503,42 @@ def repository_errors(recipe_file: Path, recipe: dict[str, Any]) -> list[str]:
     return []
 
 
+def tagline_errors(recipe_file: Path, recipe: dict[str, Any]) -> list[str]:
+    """A tagline answers "what kind of thing is this", in a grid cell.
+
+    Length and shape are the schema's job. What it cannot check is the two ways a
+    tagline stops doing its work: repeating the name already printed above it, and
+    being written as a sentence.
+    """
+
+    tagline = recipe.get("tagline")
+    if not isinstance(tagline, str):
+        return []
+
+    errors: list[str] = []
+    parts = recipe_file.relative_to(RECIPES).parts
+    names = {parts[2].lower()} if len(parts) >= 3 else set()
+    if len(parts) >= 5:
+        names.add(parts[3].lower())
+
+    squashed = re.sub(r"[^a-z0-9]", "", tagline.lower())
+    for name in names:
+        flat = re.sub(r"[^a-z0-9]", "", name)
+        if flat and flat in squashed:
+            errors.append(
+                f"tagline {tagline!r} repeats the project name, which is already "
+                "shown beside it"
+            )
+            break
+
+    # Sentence case: one leading capital, and no capital elsewhere unless the word
+    # is capitalised in its own right (S3, GitHub, Markdown).
+    if tagline[:1].islower():
+        errors.append(f"tagline {tagline!r} must start with a capital")
+
+    return errors
+
+
 def main() -> int:
     schema = json.loads(SCHEMA.read_text())
     Draft202012Validator.check_schema(schema)
@@ -534,6 +570,7 @@ def main() -> int:
         checks = (
             path_errors(recipe_file, recipe)
             + repository_errors(recipe_file, recipe)
+            + tagline_errors(recipe_file, recipe)
             + entrypoint_errors(recipe_file, recipe)
             + build_errors(recipe_file, recipe)
             + capability_errors(recipe, capabilities)

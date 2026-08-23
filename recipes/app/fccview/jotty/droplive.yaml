@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Notes and checklists"
 description: "Personal notes and checklists kept as plain files"
 repository: https://github.com/fccview/jotty
 run:

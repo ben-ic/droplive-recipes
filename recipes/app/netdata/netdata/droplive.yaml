@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Real-time monitoring"
 description: "Real-time monitoring of systems, containers and applications, with per-second metrics"
 repository: https://github.com/netdata/netdata
 run:

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Code quality analysis"
 description: "Static analysis for code quality, bugs and security issues across many languages"
 repository: https://github.com/SonarSource/sonarqube
 run:

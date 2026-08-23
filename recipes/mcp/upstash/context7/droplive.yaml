@@ -1,5 +1,6 @@
 version: 1
 kind: mcp
+tagline: "Library documentation"
 description: "Serves current library documentation to a coding model"
 repository: https://github.com/upstash/context7
 mcp:

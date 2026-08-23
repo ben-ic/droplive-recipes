@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Home inventory"
 description: "A continuation of HomeBox the inventory and organization system built for the Home User"
 repository: https://github.com/sysadminsmedia/homebox
 run:

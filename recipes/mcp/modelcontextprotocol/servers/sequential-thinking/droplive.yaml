@@ -1,0 +1,23 @@
+version: 1
+kind: mcp
+product: sequential-thinking
+tagline: "Structured reasoning aid"
+description: "A structured reasoning tool. The model records numbered thoughts, revises earlier ones, and branches alternative lines of reasoning."
+repository: https://github.com/modelcontextprotocol/servers
+mcp:
+  transport: stdio
+  package:
+    manager: npm
+    name: "@modelcontextprotocol/server-sequential-thinking"
+    version: "2026.7.4"
+    integrity: "sha512-tmR/ieGaeweffLNBrDp1H1w4sn4M6TN5yWSbMS+YMfS+0GDyPjnNKzqCl2uqfdRiX3D44PJUhwiDGqtJp6tFhw=="
+  command: ["mcp-server-sequential-thinking"]
+  network: none
+  tools:
+    examples:
+      sequential_thinking:
+        {thought: "Check the workspace first", nextThoughtNeeded: true, thoughtNumber: 1, totalThoughts: 2}
+    smoke:
+      name: sequential_thinking
+      arguments:
+        {thought: "DropLive qualification step", nextThoughtNeeded: false, thoughtNumber: 1, totalThoughts: 1}

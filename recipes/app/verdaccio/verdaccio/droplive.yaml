@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Private npm registry"
 description: "A lightweight Node.js private proxy registry"
 repository: https://github.com/verdaccio/verdaccio
 run:

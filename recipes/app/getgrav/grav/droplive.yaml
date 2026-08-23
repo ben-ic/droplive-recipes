@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Flat-file CMS"
 description: "Flat-file CMS that builds pages from Markdown, with no database"
 repository: https://github.com/getgrav/grav
 run:

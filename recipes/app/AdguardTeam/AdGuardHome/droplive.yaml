@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Ad-blocking DNS server"
 description: "Network-wide ads & trackers blocking DNS server"
 repository: https://github.com/AdguardTeam/AdGuardHome
 run:

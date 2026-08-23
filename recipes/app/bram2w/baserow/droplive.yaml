@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "No-code database"
 description: "Build databases, automations, apps & agents with AI \u2014 no code"
 repository: https://github.com/bram2w/baserow
 run:

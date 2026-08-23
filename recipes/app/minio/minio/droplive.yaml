@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "S3 object storage"
 description: "S3-compatible object storage server with a web console"
 repository: https://github.com/minio/minio
 run:

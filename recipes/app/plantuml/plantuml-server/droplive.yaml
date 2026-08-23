@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Diagram rendering server"
 description: "Renders UML and other diagrams from a text description"
 repository: https://github.com/plantuml/plantuml-server
 run:

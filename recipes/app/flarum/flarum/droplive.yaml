@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Forum software"
 description: "Simple forum software for building great communities"
 repository: https://github.com/flarum/flarum
 run:

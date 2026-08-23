@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Ebook library"
 description: "Web app for browsing, reading and downloading eBooks in a Calibre library"
 repository: https://github.com/janeczku/calibre-web
 run:

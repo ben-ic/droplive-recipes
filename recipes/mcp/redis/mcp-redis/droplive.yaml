@@ -1,5 +1,6 @@
 version: 1
 kind: mcp
+tagline: "Redis access"
 description: "The official Redis MCP Server is a natural language interface designed for agentic applications to manage and search data in Redis efficiently"
 repository: https://github.com/redis/mcp-redis
 companions:

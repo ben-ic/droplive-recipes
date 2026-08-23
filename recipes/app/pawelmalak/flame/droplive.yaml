@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Server start page"
 description: "Start page for a server, listing its applications and bookmarks"
 repository: https://github.com/pawelmalak/flame
 run:

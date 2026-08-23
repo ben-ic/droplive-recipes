@@ -41,6 +41,39 @@ that service is selected.
 Pin every recipe-owned `FROM` and every image-only Compose service by digest.
 Use typed companions for platform-managed database and cache services.
 
+## `tagline`
+
+Optional, and at most 28 characters. It answers one question -- **what kind of
+thing is this** -- because that is the only question a grid of cards has room to
+answer.
+
+```yaml
+tagline: Business intelligence
+```
+
+Sentence case, no trailing period, and never the project's own name: the name is
+already printed beside it, so repeating it spends the cell twice.
+
+| Good | Why |
+|---|---|
+| `Publishing platform` | Names the category |
+| `Photo library` | Names the category |
+| `Airtable alternative` | Names the category by comparison, which is often clearest |
+
+| Bad | Why |
+|---|---|
+| `The best open source blogging platform` | A pitch, and too long |
+| `Ghost` | Repeats the name |
+| `Software` | Says nothing |
+
+Where two recipes would land on the same tagline, separate them on what a visitor
+would actually choose between -- `Bookmark manager` and `Simple bookmark manager`
+are not a useful distinction, but `Usenet downloader` and `Usenet download
+manager` are.
+
+The linter checks the length, the capital, the missing full stop, and the
+repeated name.
+
 ## `description`
 
 Required. One line, 10 to 160 characters, saying what the application does. The

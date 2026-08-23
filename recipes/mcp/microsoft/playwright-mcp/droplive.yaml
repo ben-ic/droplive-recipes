@@ -1,5 +1,6 @@
 version: 1
 kind: mcp
+tagline: "Browser automation"
 description: "Drives a real browser so a model can navigate pages and read them"
 repository: https://github.com/microsoft/playwright-mcp
 emulators:

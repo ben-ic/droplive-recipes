@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Minimalist feed reader"
 description: "Minimalist and opinionated feed reader"
 repository: https://github.com/miniflux/v2
 run:

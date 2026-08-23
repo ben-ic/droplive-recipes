@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Resume builder"
 description: "Build, edit and share a resume from the browser"
 repository: https://github.com/amruthpillai/reactive-resume
 run:

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Plex usage monitor"
 description: "A Python based monitoring and tracking tool for Plex Media Server"
 repository: https://github.com/Tautulli/Tautulli
 run:

@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Password manager server"
 description: "Unofficial Bitwarden compatible server written in Rust, formerly known as bitwarden_rs"
 repository: https://github.com/dani-garcia/vaultwarden
 run:

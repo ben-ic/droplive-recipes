@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Data conversion toolkit"
 description: "Encode, decode, encrypt, compress and analyse data in the browser"
 repository: https://github.com/gchq/cyberchef
 run:

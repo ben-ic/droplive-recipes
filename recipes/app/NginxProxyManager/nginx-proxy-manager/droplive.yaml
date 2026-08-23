@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Reverse proxy manager"
 description: "Manage Nginx reverse proxy hosts and TLS certificates from a web interface"
 repository: https://github.com/NginxProxyManager/nginx-proxy-manager
 run:

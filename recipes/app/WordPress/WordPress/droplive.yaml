@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Website publishing"
 description: "Publishing platform for websites, blogs and content-driven applications"
 repository: https://github.com/WordPress/WordPress
 run:

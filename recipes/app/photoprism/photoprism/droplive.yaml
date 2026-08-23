@@ -1,5 +1,6 @@
 version: 1
 kind: app
+tagline: "Photo library"
 description: "Browse, search and organise a personal photo library, with automatic tagging"
 repository: https://github.com/photoprism/photoprism
 run:
