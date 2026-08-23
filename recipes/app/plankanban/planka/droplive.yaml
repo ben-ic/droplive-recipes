@@ -3,8 +3,28 @@ kind: app
 tagline: "Kanban boards"
 description: "Kanban boards with lists, cards, labels and due dates"
 repository: https://github.com/plankanban/planka
+# The company this demo is stocked with before the visitor arrives. Its data is
+# in the application's own store, so there is no emulator to hang it off.
+world: business.saas_company.v1
 run:
   port: 1337
-  health: /
+  health: /api/terms
+  # Planka opens on a project list with an empty personal section above the
+  # team's four boards; the board the release is being run from is the screen
+  # worth landing on.
+  open: /
 companions:
   database: postgres
+environment:
+  # Planka creates its first administrator from the environment at startup and
+  # has no other way in, so Maya is made here with the value DropLive minted for
+  # this session. Everyone else on the boards is created by the seed with a
+  # throwaway secret; nobody signs in as them.
+  DEFAULT_ADMIN_PASSWORD:
+    owner: droplive
+    format: password
+    length: 24
+    # Planka refuses a password without a digit.
+    pattern: "^(?=.*[0-9]).{24}$"
+    login:
+      username: maya

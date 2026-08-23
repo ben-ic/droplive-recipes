@@ -1,0 +1,147 @@
+POST /api/users user:jon {"email":"jon@northstar-relay.invalid","password":"@secret:random@","username":"jon","name":"Jon Bell","role":"boardUser","language":"en-GB"}
+POST /api/users user:noor {"email":"noor@northstar-relay.invalid","password":"@secret:random@","username":"noor","name":"Noor Alvarez","role":"projectOwner","language":"en-GB"}
+POST /api/users user:elena {"email":"elena@northstar-relay.invalid","password":"@secret:random@","username":"elena","name":"Elena Petrov","role":"projectOwner","language":"en-GB"}
+POST /api/users user:samira {"email":"samira@northstar-relay.invalid","password":"@secret:random@","username":"samira","name":"Samira Okafor","role":"boardUser","language":"en-GB"}
+POST /api/users user:lucas {"email":"lucas@northstar-relay.invalid","password":"@secret:random@","username":"lucas","name":"Lucas Meyer","role":"boardUser","language":"en-GB"}
+POST /api/users user:hana {"email":"hana@northstar-relay.invalid","password":"@secret:random@","username":"hana","name":"Hana Ito","role":"boardUser","language":"en-GB"}
+POST /api/users user:david {"email":"david@northstar-relay.invalid","password":"@secret:random@","username":"david","name":"David Banerjee","role":"boardUser","language":"en-GB"}
+POST /api/users user:imani {"email":"imani@northstar-relay.invalid","password":"@secret:random@","username":"imani","name":"Imani Brooks","role":"projectOwner","language":"en-GB"}
+POST /api/users user:theo {"email":"theo@northstar-relay.invalid","password":"@secret:random@","username":"theo","name":"Theo Martin","role":"boardUser","language":"en-GB"}
+POST /api/projects project:release-28 {"type":"shared","name":"Release 2.8","description":"Ship the audit improvements without hiding the remaining export risk."}
+POST /api/projects/@project:release-28@/project-managers - {"userId":"@user:elena@"}
+POST /api/projects/@project:release-28@/boards board:release-28 {"name":"Release 2.8","position":65536}
+POST /api/boards/@board:release-28@/board-memberships - {"userId":"@user:elena@","role":"editor","canComment":true}
+POST /api/boards/@board:release-28@/board-memberships - {"userId":"@user:jon@","role":"editor","canComment":true}
+POST /api/boards/@board:release-28@/board-memberships - {"userId":"@user:lucas@","role":"editor","canComment":true}
+POST /api/boards/@board:release-28@/board-memberships - {"userId":"@user:hana@","role":"editor","canComment":true}
+POST /api/boards/@board:release-28@/board-memberships - {"userId":"@user:imani@","role":"editor","canComment":true}
+POST /api/boards/@board:release-28@/board-memberships - {"userId":"@user:samira@","role":"editor","canComment":true}
+POST /api/boards/@board:release-28@/labels label:release-28/exports {"name":"Exports","color":"berry-red","position":65536}
+POST /api/boards/@board:release-28@/labels label:release-28/audit-page {"name":"Audit page","color":"lilac-eyes","position":131072}
+POST /api/boards/@board:release-28@/labels label:release-28/release {"name":"Release","color":"lagoon-blue","position":196608}
+POST /api/boards/@board:release-28@/lists list:release-28/ready {"name":"Ready","type":"active","position":65536}
+POST /api/boards/@board:release-28@/lists list:release-28/work-in-progress {"name":"Work in progress","type":"active","position":131072}
+POST /api/boards/@board:release-28@/lists list:release-28/review {"name":"Review","type":"active","position":196608}
+POST /api/boards/@board:release-28@/lists list:release-28/blocked {"name":"Blocked","type":"active","position":262144}
+POST /api/boards/@board:release-28@/lists list:release-28/done {"name":"Done","type":"closed","position":327680}
+POST /api/lists/@list:release-28/ready@/cards card:issue-319 {"type":"project","name":"Add cancellation case to large-export load fixture","description":"Current fixture measures completion only. A cancelled 75k-row job must release its worker lease and partial object.\n\nOpened by Jon Bell in **exports-service**, issue 319. Needed before the cancellation fix can be called tested.","position":65536,"_as":"jon","_created":"2026-08-20T09:31:00Z"}
+POST /api/cards/@card:issue-319@/card-memberships - {"userId":"@user:hana@"}
+POST /api/cards/@card:issue-319@/card-labels - {"labelId":"@label:release-28/exports@"}
+POST /api/lists/@list:release-28/work-in-progress@/cards card:issue-318 {"type":"project","name":"Scheduled exports keep the legacy 120s worker timeout","description":"Lumen reproduced at 52,184 rows. Manual retry uses the account limit; scheduled execution still passes 120 seconds. Test 50k, 75k, and cancellation before merge.\n\nReported through the Lumen Labs support case *Scheduled export stops at two minutes* (Priya Raman). Tracked in **relay-core**, issue 318.","position":65536,"_as":"samira","_created":"2026-08-18T11:05:00Z"}
+POST /api/cards/@card:issue-318@/card-memberships - {"userId":"@user:lucas@"}
+POST /api/cards/@card:issue-318@/card-labels - {"labelId":"@label:release-28/exports@"}
+POST /api/cards/@card:issue-318@/comments - {"text":"I can reproduce it. The scheduler still passes the old timeout to the export worker. Fix is small; the load test is not.","_as":"lucas","_created":"2026-08-20T09:18:00Z"}
+POST /api/cards/@card:issue-318@/comments - {"text":"Please do not merge on the small fixture alone. Run 50k, 75k, and a cancelled job. If cancellation leaks workers, 2.8 waits.","_as":"jon","_created":"2026-08-20T09:31:00Z"}
+POST /api/lists/@list:release-28/work-in-progress@/cards card:task-release-notes {"type":"project","name":"Write release notes for audit history","description":"Explain local time display and the new export activity entries in customer language.","position":131072,"_as":"maya","_created":"2026-08-17T10:00:00Z","dueDate":"2026-08-25T17:00:00Z","isDueCompleted":false,"stopwatch":{"startedAt":null,"total":2988}}
+POST /api/cards/@card:task-release-notes@/card-memberships - {"userId":"@user:elena@"}
+POST /api/cards/@card:task-release-notes@/card-labels - {"labelId":"@label:release-28/release@"}
+POST /api/cards/@card:task-release-notes@/task-lists tasklist:task-release-notes {"name":"Checklist","position":65536,"showOnFrontOfCard":true}
+POST /api/task-lists/@tasklist:task-release-notes@/tasks - {"name":"Drafted the audit history section.","isCompleted":true,"position":65536}
+POST /api/task-lists/@tasklist:task-release-notes@/tasks - {"name":"Describe the new export activity entries","isCompleted":false,"position":131072}
+POST /api/cards/@card:task-release-notes@/comments - {"text":"Audit page copy is final. Export timeout is the only item that can still change the release date. I need a go or no-go by Monday noon.","_as":"elena","_created":"2026-08-20T13:10:00Z"}
+POST /api/lists/@list:release-28/review@/cards card:task-timezone-label {"type":"project","name":"Correct the audit timezone label","description":"The timestamp value is correct. The label says UTC after local conversion.\n\nTracked in **web-console**, issue 322. Visual only, and kept out of the export worker branch.","position":65536,"_as":"hana","_created":"2026-08-20T13:22:00Z","dueDate":"2026-08-25T17:00:00Z","isDueCompleted":false,"stopwatch":{"startedAt":null,"total":2088}}
+POST /api/cards/@card:task-timezone-label@/card-memberships - {"userId":"@user:hana@"}
+POST /api/cards/@card:task-timezone-label@/card-labels - {"labelId":"@label:release-28/audit-page@"}
+POST /api/cards/@card:task-timezone-label@/task-lists tasklist:task-timezone-label {"name":"Checklist","position":65536,"showOnFrontOfCard":true}
+POST /api/task-lists/@tasklist:task-timezone-label@/tasks - {"name":"Reproduced the suffix error and added a view test.","isCompleted":true,"position":65536}
+POST /api/cards/@card:task-timezone-label@/comments - {"text":"The audit page review found one timezone label bug. It is visual only; I opened 322 and kept it out of the export branch.","_as":"hana","_created":"2026-08-20T13:22:00Z"}
+POST /api/lists/@list:release-28/blocked@/cards card:task-cancel-cleanup {"type":"project","name":"Remove the partial object after cancellation","description":"The worker lease closes, but the cancelled 75k-row run leaves a partial object. Add cleanup and prove idempotent retry.","position":65536,"_as":"jon","_created":"2026-08-21T11:20:00Z","dueDate":"2026-08-24T17:00:00Z","isDueCompleted":false,"stopwatch":{"startedAt":null,"total":4212}}
+POST /api/cards/@card:task-cancel-cleanup@/card-memberships - {"userId":"@user:lucas@"}
+POST /api/cards/@card:task-cancel-cleanup@/card-labels - {"labelId":"@label:release-28/exports@"}
+POST /api/cards/@card:task-cancel-cleanup@/task-lists tasklist:task-cancel-cleanup {"name":"Checklist","position":65536,"showOnFrontOfCard":true}
+POST /api/task-lists/@tasklist:task-cancel-cleanup@/tasks - {"name":"Found the partial object left by cancellation.","isCompleted":true,"position":65536}
+POST /api/task-lists/@tasklist:task-cancel-cleanup@/tasks - {"name":"Delete the partial object when a job is cancelled","isCompleted":false,"position":131072}
+POST /api/task-lists/@tasklist:task-cancel-cleanup@/tasks - {"name":"Prove the retry is idempotent","isCompleted":false,"position":196608}
+POST /api/lists/@list:release-28/done@/cards card:task-load-50k {"type":"project","name":"Run the 50k-row export test","description":"Record duration and worker memory for the scheduled path on the fix branch.","position":65536,"_as":"jon","_created":"2026-08-19T09:15:00Z","dueDate":"2026-08-21T17:00:00Z","isDueCompleted":true,"stopwatch":{"startedAt":null,"total":8100}}
+POST /api/cards/@card:task-load-50k@/card-memberships - {"userId":"@user:lucas@"}
+POST /api/cards/@card:task-load-50k@/card-labels - {"labelId":"@label:release-28/exports@"}
+POST /api/cards/@card:task-load-50k@/task-lists tasklist:task-load-50k {"name":"Checklist","position":65536,"showOnFrontOfCard":true}
+POST /api/task-lists/@tasklist:task-load-50k@/tasks - {"name":"Prepared the scheduled fixture and captured the baseline.","isCompleted":true,"position":65536}
+POST /api/task-lists/@tasklist:task-load-50k@/tasks - {"name":"Ran the fix branch and checked worker memory.","isCompleted":true,"position":131072}
+POST /api/lists/@list:release-28/done@/cards card:task-load-75k {"type":"project","name":"Run the 75k-row export test","description":"Use the production-like object size and confirm the worker lease closes.","position":131072,"_as":"jon","_created":"2026-08-19T09:16:00Z","dueDate":"2026-08-21T17:00:00Z","isDueCompleted":true,"stopwatch":{"startedAt":null,"total":3312}}
+POST /api/cards/@card:task-load-75k@/card-memberships - {"userId":"@user:lucas@"}
+POST /api/cards/@card:task-load-75k@/card-labels - {"labelId":"@label:release-28/exports@"}
+POST /api/cards/@card:task-load-75k@/task-lists tasklist:task-load-75k {"name":"Checklist","position":65536,"showOnFrontOfCard":true}
+POST /api/task-lists/@tasklist:task-load-75k@/tasks - {"name":"Completed the large run and checked lease release.","isCompleted":true,"position":65536}
+POST /api/lists/@list:release-28/done@/cards card:task-audit-empty-state {"type":"project","name":"Approve the audit empty state","description":"Use the short copy. Do not show an error when a new workspace has no export history.","position":196608,"_as":"elena","_created":"2026-08-13T14:00:00Z","dueDate":"2026-08-19T17:00:00Z","isDueCompleted":true,"stopwatch":{"startedAt":null,"total":2700}}
+POST /api/cards/@card:task-audit-empty-state@/card-memberships - {"userId":"@user:imani@"}
+POST /api/cards/@card:task-audit-empty-state@/card-labels - {"labelId":"@label:release-28/audit-page@"}
+POST /api/cards/@card:task-audit-empty-state@/task-lists tasklist:task-audit-empty-state {"name":"Checklist","position":65536,"showOnFrontOfCard":true}
+POST /api/task-lists/@tasklist:task-audit-empty-state@/tasks - {"name":"Reviewed copy in the narrow and wide layouts.","isCompleted":true,"position":65536}
+POST /api/projects project:lumen-renewal {"type":"shared","name":"Lumen renewal","description":"Prepare the renewal with an accurate account record and a safe export workaround."}
+POST /api/projects/@project:lumen-renewal@/boards board:lumen-renewal {"name":"Lumen renewal","position":65536}
+POST /api/boards/@board:lumen-renewal@/board-memberships - {"userId":"@user:david@","role":"editor","canComment":true}
+POST /api/boards/@board:lumen-renewal@/board-memberships - {"userId":"@user:samira@","role":"editor","canComment":true}
+POST /api/boards/@board:lumen-renewal@/board-memberships - {"userId":"@user:jon@","role":"editor","canComment":true}
+POST /api/boards/@board:lumen-renewal@/board-memberships - {"userId":"@user:lucas@","role":"editor","canComment":true}
+POST /api/boards/@board:lumen-renewal@/board-memberships - {"userId":"@user:noor@","role":"editor","canComment":true}
+POST /api/boards/@board:lumen-renewal@/labels label:lumen-renewal/customer {"name":"Customer","color":"lagoon-blue","position":65536}
+POST /api/boards/@board:lumen-renewal@/labels label:lumen-renewal/support {"name":"Support","color":"pumpkin-orange","position":131072}
+POST /api/boards/@board:lumen-renewal@/lists list:lumen-renewal/ready {"name":"Ready","type":"active","position":65536}
+POST /api/boards/@board:lumen-renewal@/lists list:lumen-renewal/work-in-progress {"name":"Work in progress","type":"active","position":131072}
+POST /api/boards/@board:lumen-renewal@/lists list:lumen-renewal/done {"name":"Done","type":"closed","position":196608}
+POST /api/lists/@list:lumen-renewal/ready@/cards card:task-safe-workaround {"type":"project","name":"Send Priya the scheduled-export workaround","description":"Document manual retry as the temporary path. Do not promise a release date.","position":65536,"_as":"maya","_created":"2026-08-18T12:40:00Z","dueDate":"2026-08-21T17:00:00Z","isDueCompleted":false}
+POST /api/cards/@card:task-safe-workaround@/card-memberships - {"userId":"@user:samira@"}
+POST /api/cards/@card:task-safe-workaround@/card-labels - {"labelId":"@label:lumen-renewal/support@"}
+POST /api/cards/@card:task-safe-workaround@/task-lists tasklist:task-safe-workaround {"name":"Checklist","position":65536,"showOnFrontOfCard":true}
+POST /api/task-lists/@tasklist:task-safe-workaround@/tasks - {"name":"Write the manual retry steps for Priya","isCompleted":false,"position":65536}
+POST /api/cards/@card:task-safe-workaround@/comments - {"text":"Account note: invoice 4471 is open, but it is not overdue until the 30th. Keep billing out of the incident reply unless Priya asks.","_as":"noor","_created":"2026-08-20T10:02:00Z"}
+POST /api/lists/@list:lumen-renewal/work-in-progress@/cards card:task-renewal-brief {"type":"project","name":"Finish the renewal brief","description":"Replace the marked technical paragraph after engineering gives a tested status. Keep invoice 4471 separate from the incident.\n\nFrom the working draft: usage is up 38% since February, and the compliance workspace was added in June. Invoice 4471 is 412.00 USD, open, due 30 August, and is not overdue.","position":65536,"_as":"david","_created":"2026-08-11T09:30:00Z","dueDate":"2026-08-24T17:00:00Z","isDueCompleted":false,"stopwatch":{"startedAt":null,"total":2088}}
+POST /api/cards/@card:task-renewal-brief@/card-memberships - {"userId":"@user:maya@"}
+POST /api/cards/@card:task-renewal-brief@/card-labels - {"labelId":"@label:lumen-renewal/customer@"}
+POST /api/cards/@card:task-renewal-brief@/task-lists tasklist:task-renewal-brief {"name":"Checklist","position":65536,"showOnFrontOfCard":true}
+POST /api/task-lists/@tasklist:task-renewal-brief@/tasks - {"name":"Reviewed usage and billing facts with David.","isCompleted":true,"position":65536}
+POST /api/task-lists/@tasklist:task-renewal-brief@/tasks - {"name":"Replace the marked technical paragraph after go or no-go","isCompleted":false,"position":131072}
+POST /api/lists/@list:lumen-renewal/work-in-progress@/cards card:case-lumen-export {"type":"project","name":"Scheduled export stops at two minutes","description":"Support case for **Lumen Labs**, opened 18 August by Priya Raman, Director of operations.\n\nState: with engineering.\n\nNext action: Send workaround before 15:00 and update after cancellation test.","position":131072,"_as":"samira","_created":"2026-08-18T10:21:00Z"}
+POST /api/cards/@card:case-lumen-export@/card-memberships - {"userId":"@user:samira@"}
+POST /api/cards/@card:case-lumen-export@/card-labels - {"labelId":"@label:lumen-renewal/support@"}
+POST /api/cards/@card:case-lumen-export@/comments - {"text":"Priya sent a useful boundary: 48k rows finishes in 1m34s; 52k reaches the two-minute worker limit. Interactive retry works, scheduled retry does not.","_as":"samira","_created":"2026-08-20T09:06:00Z"}
+POST /api/projects project:theo-onboarding {"type":"shared","name":"Theo onboarding","description":"Give Theo a useful first week while the engineering team completes release work."}
+POST /api/projects/@project:theo-onboarding@/project-managers - {"userId":"@user:imani@"}
+POST /api/projects/@project:theo-onboarding@/boards board:theo-onboarding {"name":"Theo onboarding","position":65536}
+POST /api/boards/@board:theo-onboarding@/board-memberships - {"userId":"@user:imani@","role":"editor","canComment":true}
+POST /api/boards/@board:theo-onboarding@/board-memberships - {"userId":"@user:theo@","role":"editor","canComment":true}
+POST /api/boards/@board:theo-onboarding@/board-memberships - {"userId":"@user:jon@","role":"editor","canComment":true}
+POST /api/boards/@board:theo-onboarding@/board-memberships - {"userId":"@user:hana@","role":"editor","canComment":true}
+POST /api/boards/@board:theo-onboarding@/labels label:theo-onboarding/onboarding {"name":"Onboarding","color":"sunny-grass","position":65536}
+POST /api/boards/@board:theo-onboarding@/labels label:theo-onboarding/access {"name":"Access","color":"pumpkin-orange","position":131072}
+POST /api/boards/@board:theo-onboarding@/lists list:theo-onboarding/backlog {"name":"Backlog","type":"active","position":65536}
+POST /api/boards/@board:theo-onboarding@/lists list:theo-onboarding/ready {"name":"Ready","type":"active","position":131072}
+POST /api/boards/@board:theo-onboarding@/lists list:theo-onboarding/done {"name":"Done","type":"closed","position":196608}
+POST /api/lists/@list:theo-onboarding/backlog@/cards card:task-staging-access {"type":"project","name":"Create Theo's staging access","description":"Owner is not assigned. Access must be ready before Tuesday pairing, not before the Monday welcome call.","position":65536,"_as":"imani","_created":"2026-08-17T09:20:00Z","dueDate":"2026-08-25T17:00:00Z","isDueCompleted":false}
+POST /api/cards/@card:task-staging-access@/card-labels - {"labelId":"@label:theo-onboarding/access@"}
+POST /api/cards/@card:task-staging-access@/comments - {"text":"Theo's onboarding page is ready. Staging access is the only unchecked item; I left the owner blank because I do not know whether Jon or Lucas is handling it.","_as":"imani","_created":"2026-08-19T15:42:00Z"}
+POST /api/lists/@list:theo-onboarding/ready@/cards card:task-architecture-session {"type":"project","name":"Prepare the connector architecture session","description":"Use the Ember CSV incident as a small example of why connector contracts are versioned.","position":65536,"_as":"imani","_created":"2026-08-17T09:25:00Z","dueDate":"2026-08-24T17:00:00Z","isDueCompleted":false}
+POST /api/cards/@card:task-architecture-session@/card-memberships - {"userId":"@user:jon@"}
+POST /api/cards/@card:task-architecture-session@/card-labels - {"labelId":"@label:theo-onboarding/onboarding@"}
+POST /api/cards/@card:task-architecture-session@/task-lists tasklist:task-architecture-session {"name":"Checklist","position":65536,"showOnFrontOfCard":true}
+POST /api/task-lists/@tasklist:task-architecture-session@/tasks - {"name":"Use the Ember CSV header incident as the example","isCompleted":false,"position":65536}
+POST /api/lists/@list:theo-onboarding/done@/cards card:task-pairing-plan {"type":"project","name":"Choose Theo's first pairing issue","description":"Pick a bounded audit-page issue. Do not use the Lumen release blocker as an onboarding task.","position":65536,"_as":"imani","_created":"2026-08-17T09:30:00Z","dueDate":"2026-08-20T17:00:00Z","isDueCompleted":true,"stopwatch":{"startedAt":null,"total":1188}}
+POST /api/cards/@card:task-pairing-plan@/card-memberships - {"userId":"@user:hana@"}
+POST /api/cards/@card:task-pairing-plan@/card-labels - {"labelId":"@label:theo-onboarding/onboarding@"}
+POST /api/cards/@card:task-pairing-plan@/task-lists tasklist:task-pairing-plan {"name":"Checklist","position":65536,"showOnFrontOfCard":true}
+POST /api/task-lists/@tasklist:task-pairing-plan@/tasks - {"name":"Selected a small audit filter issue for Tuesday.","isCompleted":true,"position":65536}
+POST /api/projects project:month-end {"type":"shared","name":"August month-end","description":"Close August books with complete expenses and clear customer balances."}
+POST /api/projects/@project:month-end@/project-managers - {"userId":"@user:noor@"}
+POST /api/projects/@project:month-end@/boards board:month-end {"name":"August month-end","position":65536}
+POST /api/boards/@board:month-end@/board-memberships - {"userId":"@user:noor@","role":"editor","canComment":true}
+POST /api/boards/@board:month-end@/board-memberships - {"userId":"@user:david@","role":"editor","canComment":true}
+POST /api/boards/@board:month-end@/labels label:month-end/finance {"name":"Finance","color":"lagoon-blue","position":65536}
+POST /api/boards/@board:month-end@/labels label:month-end/reconciliation {"name":"Reconciliation","color":"lilac-eyes","position":131072}
+POST /api/boards/@board:month-end@/lists list:month-end/backlog {"name":"Backlog","type":"active","position":65536}
+POST /api/boards/@board:month-end@/lists list:month-end/ready {"name":"Ready","type":"active","position":131072}
+POST /api/boards/@board:month-end@/lists list:month-end/work-in-progress {"name":"Work in progress","type":"active","position":196608}
+POST /api/boards/@board:month-end@/lists list:month-end/done {"name":"Done","type":"closed","position":262144}
+POST /api/lists/@list:month-end/backlog@/cards card:task-lumen-balance {"type":"project","name":"Review Lumen balance after due date","description":"Invoice 4471 is open and not overdue. Review only if it remains open after 30 August.\n\nInvoice 4471, 412.00 USD, Northstar Scale plan for August. Issued 14 August, due 30 August.","position":65536,"_as":"maya","_created":"2026-08-17T08:40:00Z","dueDate":"2026-08-31T17:00:00Z","isDueCompleted":false}
+POST /api/cards/@card:task-lumen-balance@/card-memberships - {"userId":"@user:noor@"}
+POST /api/cards/@card:task-lumen-balance@/card-labels - {"labelId":"@label:month-end/finance@"}
+POST /api/lists/@list:month-end/ready@/cards card:task-cash-reconcile {"type":"project","name":"Reconcile operating cash","description":"Match August customer receipts and supplier payments before the close review.","position":65536,"_as":"noor","_created":"2026-08-17T08:45:00Z","dueDate":"2026-09-02T17:00:00Z","isDueCompleted":false}
+POST /api/cards/@card:task-cash-reconcile@/card-memberships - {"userId":"@user:noor@"}
+POST /api/cards/@card:task-cash-reconcile@/card-labels - {"labelId":"@label:month-end/reconciliation@"}
+POST /api/lists/@list:month-end/work-in-progress@/cards card:task-august-expenses {"type":"project","name":"Collect missing August expenses","description":"Three entries have an amount but no receipt. Ask owners today and leave unresolved receipts marked pending.","position":65536,"_as":"noor","_created":"2026-08-17T08:50:00Z","dueDate":"2026-08-21T17:00:00Z","isDueCompleted":false,"stopwatch":{"startedAt":null,"total":3888}}
+POST /api/cards/@card:task-august-expenses@/card-memberships - {"userId":"@user:noor@"}
+POST /api/cards/@card:task-august-expenses@/card-labels - {"labelId":"@label:month-end/finance@"}
+POST /api/cards/@card:task-august-expenses@/task-lists tasklist:task-august-expenses {"name":"Checklist","position":65536,"showOnFrontOfCard":true}
+POST /api/task-lists/@tasklist:task-august-expenses@/tasks - {"name":"Matched card entries and requested three receipts.","isCompleted":true,"position":65536}
+POST /api/task-lists/@tasklist:task-august-expenses@/tasks - {"name":"Chase the three entries that still have no receipt","isCompleted":false,"position":131072}
+POST /api/cards/@card:task-august-expenses@/comments - {"text":"Friday reminder: please submit August expenses before 16:00. Missing receipts can wait until Monday; the amount and customer still need to be entered today.","_as":"noor","_created":"2026-08-20T08:17:00Z"}
