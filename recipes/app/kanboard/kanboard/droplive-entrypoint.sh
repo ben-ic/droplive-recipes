@@ -174,4 +174,12 @@ trap 'kill -TERM "$server_pid" 2>/dev/null || true' TERM INT
 
 seed || echo "[droplive] seed failed; the app is still running" >&2
 
+# The boards were worked-in when the visitor arrived; the world says a few more
+# things happen after they get here. This runs in the background because it
+# spends most of its life asleep, and it exits after the last one rather than
+# waiting for something that will not come.
+if [ -r /usr/local/lib/droplive-kanboard-arrivals.php ]; then
+  php /usr/local/lib/droplive-kanboard-arrivals.php &
+fi
+
 wait "$server_pid"

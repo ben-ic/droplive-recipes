@@ -154,6 +154,40 @@ correct the date columns once its server has stopped, and copy the finished
 database into the image. Nothing is added to what ships. The cost is that those
 dates are then fixed at build time, so say so in the recipe.
 
+## Arrivals, for the demo that changes while it is watched
+
+The platform mounts one read-only world artifact per session and points
+`DROPLIVE_WORLD_PATH` at it. That artifact carries `timeline.json`: a short list
+of things that happen after the demo opens, each with its own `after_seconds`.
+An adapter that delivers them is recipe-local, small, and lives beside the seed.
+Kanboard and Memos have one; the shape they share is:
+
+- run it from the existing entrypoint, in the background, after the seed;
+- read the timeline at runtime and take the timing from it -- never copy a delay
+  into the recipe, because the world owns when things happen;
+- deliver through the same public API the seed uses;
+- record delivered ids on the writable data volume, so a restart is quiet;
+- stop after the last event rather than waiting for one that will not come;
+- say something short and carry on if the world is missing or has nothing
+  supported, because a demo with no arrivals is still a demo.
+
+**Support only the kinds the application can say honestly, and write down why.**
+This is the whole design decision. Memos supports all three kinds, because
+everything in Memos is a note written by the owner and a note recording what
+arrived is what a person actually does with one. Kanboard supports only
+`chat-message`: the payload names the work it is about, and the board already
+carries that person's earlier messages on that card. It refuses `incoming-email`,
+because a board is not a mailbox and the sender is not a board user, and it
+refuses `webhook`, because every Kanboard comment needs an author and a webhook
+has none. Showing all three would be a better demo and a worse record.
+
+Each recipe carries `seed/check-arrivals.sh`, which runs the real image against a
+world with short delays and asserts that nothing arrives early, that a supported
+event arrives late, that a restart does not double it, and that an unsupported
+kind is skipped without stopping the app. Measure from the moment the seed
+finishes, not from `docker run`: otherwise the check is timing the image pull and
+will tell you an event was early when it was not.
+
 ## What may be generated
 
 The world fixes the last few days of a company's life, not its history. A time

@@ -3,6 +3,20 @@ kind: app
 tagline: "Quick note capture"
 description: "Open-source, self-hosted note-taking tool built for quick capture. Markdown-native, lightweight, and fully yours"
 repository: https://github.com/usememos/memos
+# The company this notebook is about. The platform mounts this world read-only
+# for the session, which is also where the arrivals adapter reads its timeline.
+world: business.saas_company.v1
 run:
   port: 5230
   health: /healthz
+environment:
+  # Memos has no owner until one is created, and the first-user call is open
+  # exactly once. DropLive mints the password per session and puts it on the
+  # sign-in card; the entrypoint uses the same value to create the account and to
+  # write the notebook.
+  MEMOS_OWNER_PASSWORD:
+    owner: droplive
+    format: password
+    length: 24
+    login:
+      username: maya
