@@ -52,10 +52,14 @@ LABEL org.droplive.source.commit="${DROPLIVE_SOURCE_COMMIT}" \
       org.droplive.runtime.contract="vikunja-2.4.0"
 
 COPY --link --from=recipe-files /layer/ /
-# No --chmod here. This copy creates /usr/local/lib on the way, and a mode
-# meant for a file takes the traverse bit off the directory, which makes the
-# file unreachable rather than unwritable.
-COPY --link --from=seeded --chown=1000:1000 /build/vikunja.db /usr/local/lib/droplive-vikunja.db
+# Into a directory that already exists, and with no --chown or --chmod.
+#
+# A COPY applies both to every parent directory it has to create on the way, and
+# a --link layer then replaces the originals when the image is flattened. Writing
+# this file to /usr/local/lib therefore re-owned /usr and /usr/local to uid 1000
+# and, with --chmod, took the traverse bit off /usr/local/lib as well. One file
+# copied, two system directories quietly rewritten.
+COPY --link --from=seeded /build/vikunja.db /app/droplive-vikunja.db
 
 # Keep SQLite and every user-uploaded attachment inside one managed boundary.
 # The entrypoint creates the files subdirectory because a managed block volume

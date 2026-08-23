@@ -52,7 +52,7 @@ export VIKUNJA_SERVICE_SECRET="$SECRET_KEY_BASE"
 owner_check=/tmp/droplive-vikunja-owner.$$.txt
 owner_username=maya
 owner_email=maya@northstar-relay.invalid
-seeded=/usr/local/lib/droplive-vikunja.db
+seeded=/app/droplive-vikunja.db
 cleanup() {
   rm -f "$owner_check"
 }
