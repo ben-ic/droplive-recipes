@@ -34,7 +34,19 @@ module.exports = {
         next();
     },
     editorTheme: {
-        projects: { enabled: false }
+        projects: { enabled: false },
+        // A visitor gets one session and meets a release tour before they can
+        // see anything, every time. There is nothing to tour them through.
+        tours: false
+    },
+    // The other thing a visitor meets is a prompt asking them to turn on update
+    // checks, which sends data to nodered.org. Left unset, Node-RED asks; asked
+    // in a demo, it is a choice being made on somebody else's behalf by
+    // somebody who will not be here in an hour. Declared, so it neither asks
+    // nor sends.
+    telemetry: {
+        enabled: false,
+        updateNotification: false
     },
     logging: {
         console: {

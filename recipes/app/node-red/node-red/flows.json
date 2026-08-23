@@ -1,92 +1,584 @@
 [
-  {
-    "id": "droplive-starter-tab",
-    "type": "tab",
-    "label": "DropLive starter",
-    "disabled": false,
-    "info": "A small starter flow that provides health and hello endpoints."
-  },
-  {
-    "id": "droplive-health-in",
-    "type": "http in",
-    "z": "droplive-starter-tab",
-    "name": "Health check",
-    "url": "/healthz",
-    "method": "get",
-    "upload": false,
-    "swaggerDoc": "",
-    "x": 150,
-    "y": 80,
-    "wires": [["droplive-health-body"]]
-  },
-  {
-    "id": "droplive-health-body",
-    "type": "change",
-    "z": "droplive-starter-tab",
-    "name": "Healthy JSON",
-    "rules": [
-      {"t": "set", "p": "statusCode", "pt": "msg", "to": "200", "tot": "num"},
-      {"t": "set", "p": "payload", "pt": "msg", "to": "{\"status\":\"ok\",\"app\":\"node-red\",\"flow\":\"droplive-starter\"}", "tot": "json"}
-    ],
-    "action": "",
-    "property": "",
-    "from": "",
-    "to": "",
-    "reg": false,
-    "x": 370,
-    "y": 80,
-    "wires": [["droplive-health-out"]]
-  },
-  {
-    "id": "droplive-health-out",
-    "type": "http response",
-    "z": "droplive-starter-tab",
-    "name": "Health response",
-    "statusCode": "",
-    "headers": {},
-    "x": 600,
-    "y": 80,
-    "wires": []
-  },
-  {
-    "id": "droplive-hello-in",
-    "type": "http in",
-    "z": "droplive-starter-tab",
-    "name": "Hello endpoint",
-    "url": "/hello",
-    "method": "get",
-    "upload": false,
-    "swaggerDoc": "",
-    "x": 150,
-    "y": 160,
-    "wires": [["droplive-hello-body"]]
-  },
-  {
-    "id": "droplive-hello-body",
-    "type": "change",
-    "z": "droplive-starter-tab",
-    "name": "Hello JSON",
-    "rules": [
-      {"t": "set", "p": "payload", "pt": "msg", "to": "{\"message\":\"Node-RED is running\",\"source\":\"DropLive starter flow\"}", "tot": "json"}
-    ],
-    "action": "",
-    "property": "",
-    "from": "",
-    "to": "",
-    "reg": false,
-    "x": 370,
-    "y": 160,
-    "wires": [["droplive-hello-out"]]
-  },
-  {
-    "id": "droplive-hello-out",
-    "type": "http response",
-    "z": "droplive-starter-tab",
-    "name": "Hello response",
-    "statusCode": "",
-    "headers": {},
-    "x": 600,
-    "y": 160,
-    "wires": []
-  }
+    {
+        "id": "northstar-exports",
+        "type": "tab",
+        "label": "Scheduled exports",
+        "disabled": false,
+        "info": "The nightly run that builds every customer's scheduled export.\n\nSince 3 August a job over 50,000 rows has been handed to the legacy worker, which still carries a 120 second timeout. Lumen Labs reproduced it at 52,184 rows. The fix is in 2.8 and is not merged."
+    },
+    {
+        "id": "exports-nightly",
+        "type": "inject",
+        "z": "northstar-exports",
+        "name": "02:00 nightly",
+        "x": 120,
+        "y": 80,
+        "wires": [
+            [
+                "exports-claim"
+            ]
+        ],
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 02 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "scheduled-export-run",
+        "payload": "",
+        "payloadType": "date"
+    },
+    {
+        "id": "exports-now",
+        "type": "inject",
+        "z": "northstar-exports",
+        "name": "Run one now",
+        "x": 120,
+        "y": 160,
+        "wires": [
+            [
+                "exports-claim"
+            ]
+        ],
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "manual-export-run",
+        "payload": "",
+        "payloadType": "date"
+    },
+    {
+        "id": "exports-claim",
+        "type": "function",
+        "z": "northstar-exports",
+        "name": "Claim due jobs",
+        "x": 300,
+        "y": 120,
+        "wires": [
+            [
+                "exports-route"
+            ]
+        ],
+        "func": "// One row per scheduled export that is due. Row counts are the estimate the\n// planner returns before the job is built, not a count(*).\nconst jobs = [\n    {\n        \"id\": \"exp-9114\",\n        \"account\": \"Lumen Labs\",\n        \"dataset\": \"events\",\n        \"rows\": 52184\n    },\n    {\n        \"id\": \"exp-9115\",\n        \"account\": \"Ember Commerce\",\n        \"dataset\": \"events\",\n        \"rows\": 18402\n    },\n    {\n        \"id\": \"exp-9116\",\n        \"account\": \"Lumen Labs\",\n        \"dataset\": \"invoices\",\n        \"rows\": 1291\n    },\n    {\n        \"id\": \"exp-9117\",\n        \"account\": \"Harbor Mobility\",\n        \"dataset\": \"events\",\n        \"rows\": 74910\n    },\n    {\n        \"id\": \"exp-9118\",\n        \"account\": \"Fieldnote Studio\",\n        \"dataset\": \"attachments\",\n        \"rows\": 640\n    }\n];\nnode.status({ fill: 'blue', shape: 'dot', text: jobs.length + ' due' });\nreturn [jobs.map(job => ({ payload: job, topic: job.id }))];\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": []
+    },
+    {
+        "id": "exports-route",
+        "type": "switch",
+        "z": "northstar-exports",
+        "name": "Over 50k rows?",
+        "x": 480,
+        "y": 120,
+        "wires": [
+            [
+                "exports-legacy"
+            ],
+            [
+                "exports-stream"
+            ]
+        ],
+        "property": "payload.rows",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "50000",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2
+    },
+    {
+        "id": "exports-stream",
+        "type": "function",
+        "z": "northstar-exports",
+        "name": "Stream out",
+        "x": 650,
+        "y": 200,
+        "wires": [
+            [
+                "exports-delivered"
+            ]
+        ],
+        "func": "// Under the limit the job is streamed straight out and never touches a worker.\nconst job = msg.payload;\nmsg.payload = {\n    ...job,\n    route: 'streaming',\n    object: `s3://northstar-exports/${job.account.toLowerCase().replace(/ /g, '-')}/${job.id}.csv.gz`,\n    seconds: Math.round(job.rows / 9000),\n    status: 'delivered',\n};\nnode.status({ fill: 'green', shape: 'dot', text: job.id + ' delivered' });\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": []
+    },
+    {
+        "id": "exports-legacy",
+        "type": "function",
+        "z": "northstar-exports",
+        "name": "Legacy worker",
+        "x": 650,
+        "y": 60,
+        "wires": [
+            [
+                "exports-incident"
+            ],
+            [
+                "exports-delivered"
+            ]
+        ],
+        "func": "// Above the limit the planner falls back to the batch worker, which still\n// carries the 120 second timeout the scheduler was supposed to have replaced.\n// relay-core issue 318.\nconst job = msg.payload;\nconst seconds = Math.round(job.rows / 430);\nmsg.payload = {\n    ...job,\n    route: 'legacy-worker',\n    timeoutSeconds: 120,\n    estimatedSeconds: seconds,\n    status: seconds > 120 ? 'timed out' : 'delivered',\n};\nnode.status({\n    fill: seconds > 120 ? 'red' : 'green',\n    shape: 'dot',\n    text: `${job.id} ${seconds}s`,\n});\n// First output is the run that ran out of time; second is the one that made it.\nreturn seconds > 120 ? [msg, null] : [null, msg];\n",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": []
+    },
+    {
+        "id": "exports-incident",
+        "type": "function",
+        "z": "northstar-exports",
+        "name": "Raise incident",
+        "x": 830,
+        "y": 60,
+        "wires": [
+            [
+                "exports-incident-out"
+            ]
+        ],
+        "func": "// What the support case Lumen opened on 18 August was raised from.\nconst job = msg.payload;\nmsg.payload = {\n    case: 'scheduled export stops at two minutes',\n    account: job.account,\n    job: job.id,\n    rows: job.rows,\n    reachedSeconds: job.timeoutSeconds,\n    neededSeconds: job.estimatedSeconds,\n    tracked: 'relay-core#318',\n    workaround: 'run the export in two halves by date range',\n};\nnode.warn(`${job.account}: ${job.id} stopped at ${job.timeoutSeconds}s, needed ${job.estimatedSeconds}s`);\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": []
+    },
+    {
+        "id": "exports-incident-out",
+        "type": "debug",
+        "z": "northstar-exports",
+        "name": "Incident",
+        "x": 1010,
+        "y": 60,
+        "wires": [],
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto"
+    },
+    {
+        "id": "exports-delivered",
+        "type": "debug",
+        "z": "northstar-exports",
+        "name": "Delivered",
+        "x": 840,
+        "y": 200,
+        "wires": [],
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto"
+    },
+    {
+        "id": "exports-catch",
+        "type": "catch",
+        "z": "northstar-exports",
+        "name": "Anything that throws",
+        "x": 160,
+        "y": 320,
+        "wires": [
+            [
+                "exports-failure"
+            ]
+        ],
+        "scope": null,
+        "uncaught": false
+    },
+    {
+        "id": "exports-failure",
+        "type": "debug",
+        "z": "northstar-exports",
+        "name": "Run failure",
+        "x": 400,
+        "y": 320,
+        "wires": [],
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "error",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto"
+    },
+    {
+        "id": "northstar-billing",
+        "type": "tab",
+        "label": "Billing watch",
+        "disabled": false,
+        "info": "Watches every open invoice and says which ones need chasing.\n\nInvoice 4471 belongs to the Lumen Labs renewal and is deliberately left alone until the renewal review: it is open, not overdue, and the account is mid-conversation about the export incident. Every other account is settled."
+    },
+    {
+        "id": "billing-daily",
+        "type": "inject",
+        "z": "northstar-billing",
+        "name": "08:30 weekdays",
+        "x": 120,
+        "y": 80,
+        "wires": [
+            [
+                "billing-open"
+            ]
+        ],
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "30 08 * * 1-5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "billing-sweep",
+        "payload": "",
+        "payloadType": "date"
+    },
+    {
+        "id": "billing-now",
+        "type": "inject",
+        "z": "northstar-billing",
+        "name": "Check now",
+        "x": 120,
+        "y": 160,
+        "wires": [
+            [
+                "billing-open"
+            ]
+        ],
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "billing-sweep",
+        "payload": "",
+        "payloadType": "date"
+    },
+    {
+        "id": "billing-open",
+        "type": "function",
+        "z": "northstar-billing",
+        "name": "Open invoices",
+        "x": 300,
+        "y": 120,
+        "wires": [
+            [
+                "billing-route"
+            ]
+        ],
+        "func": "// Every invoice worth looking at this morning, sorted into what should happen\n// to it. Days are counted from today, so an invoice that was fine yesterday\n// turns up in a different bucket on its own.\nconst today = new Date();\nconst invoices = [\n    {\n        \"number\": \"4471\",\n        \"account\": \"Lumen Labs\",\n        \"amount\": 412.0,\n        \"due\": \"2026-08-30\",\n        \"status\": \"open\"\n    },\n    {\n        \"number\": \"2607-63\",\n        \"account\": \"Harbor Mobility\",\n        \"amount\": 356.0,\n        \"due\": \"2026-08-11\",\n        \"status\": \"paid\"\n    },\n    {\n        \"number\": \"2607-18\",\n        \"account\": \"Fieldnote Studio\",\n        \"amount\": 99.0,\n        \"due\": \"2026-08-08\",\n        \"status\": \"paid\"\n    },\n    {\n        \"number\": \"2607-42\",\n        \"account\": \"Ember Commerce\",\n        \"amount\": 289.0,\n        \"due\": \"2026-08-05\",\n        \"status\": \"paid\"\n    }\n];\nnode.status({ fill: 'blue', shape: 'dot', text: invoices.length + ' open' });\nreturn [invoices.map(invoice => {\n    const days = Math.round((new Date(invoice.due) - today) / 86400000);\n    const bucket = invoice.status === 'paid' ? 'settled'\n        : days < 0 ? 'overdue'\n        : days <= 10 ? 'due-soon'\n        : 'later';\n    return { topic: invoice.number, payload: { ...invoice, daysToDue: days, bucket } };\n})];\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": []
+    },
+    {
+        "id": "billing-route",
+        "type": "switch",
+        "z": "northstar-billing",
+        "name": "What to do",
+        "x": 480,
+        "y": 120,
+        "wires": [
+            [
+                "billing-overdue"
+            ],
+            [
+                "billing-soon"
+            ],
+            [
+                "billing-fine"
+            ],
+            [
+                "billing-settled"
+            ]
+        ],
+        "property": "payload.bucket",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "overdue",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "due-soon",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "later",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 4
+    },
+    {
+        "id": "billing-overdue",
+        "type": "function",
+        "z": "northstar-billing",
+        "name": "Chase it",
+        "x": 660,
+        "y": 40,
+        "wires": [
+            [
+                "billing-out"
+            ]
+        ],
+        "func": "const invoice = msg.payload;\nmsg.payload = {\n    ...msg.payload,\n    action: 'send the reminder',\n    to: 'accounts@' + invoice.account.toLowerCase().replace(/ /g, '') + '.invalid',\n};\nnode.status({ fill: 'red', shape: 'dot', text: invoice.number + ' overdue' });\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": []
+    },
+    {
+        "id": "billing-soon",
+        "type": "function",
+        "z": "northstar-billing",
+        "name": "Due this week",
+        "x": 670,
+        "y": 120,
+        "wires": [
+            [
+                "billing-out"
+            ]
+        ],
+        "func": "// 4471 is held back on purpose. The account is mid-conversation about the\n// export incident and the renewal review is next week; a reminder in the middle\n// of that reads as a threat.\nconst invoice = msg.payload;\nconst held = invoice.number === '4471';\nmsg.payload = {\n    ...invoice,\n    action: held ? 'hold until the renewal review' : 'send the friendly notice',\n    reason: held ? 'Lumen renewal in progress' : undefined,\n};\nnode.status({\n    fill: held ? 'yellow' : 'grey',\n    shape: held ? 'ring' : 'dot',\n    text: invoice.number + (held ? ' held' : ' notice'),\n});\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": []
+    },
+    {
+        "id": "billing-fine",
+        "type": "function",
+        "z": "northstar-billing",
+        "name": "Not due yet",
+        "x": 665,
+        "y": 200,
+        "wires": [
+            [
+                "billing-out"
+            ]
+        ],
+        "func": "node.status({ fill: 'grey', shape: 'ring', text: msg.payload.number + ' not due' });\nmsg.payload = { ...msg.payload, action: 'leave it' };\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": []
+    },
+    {
+        "id": "billing-settled",
+        "type": "function",
+        "z": "northstar-billing",
+        "name": "Settled",
+        "x": 650,
+        "y": 280,
+        "wires": [
+            [
+                "billing-out"
+            ]
+        ],
+        "func": "node.status({ fill: 'green', shape: 'ring', text: msg.payload.number + ' settled' });\nmsg.payload = { ...msg.payload, action: 'nothing, it is paid' };\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": []
+    },
+    {
+        "id": "billing-out",
+        "type": "debug",
+        "z": "northstar-billing",
+        "name": "Billing decisions",
+        "x": 880,
+        "y": 160,
+        "wires": [],
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto"
+    },
+    {
+        "id": "droplive-starter-tab",
+        "type": "tab",
+        "label": "DropLive starter",
+        "disabled": false,
+        "info": "A small starter flow that provides health and hello endpoints."
+    },
+    {
+        "id": "droplive-health-in",
+        "type": "http in",
+        "z": "droplive-starter-tab",
+        "name": "Health check",
+        "url": "/healthz",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 150,
+        "y": 80,
+        "wires": [
+            [
+                "droplive-health-body"
+            ]
+        ]
+    },
+    {
+        "id": "droplive-health-body",
+        "type": "change",
+        "z": "droplive-starter-tab",
+        "name": "Healthy JSON",
+        "rules": [
+            {
+                "t": "set",
+                "p": "statusCode",
+                "pt": "msg",
+                "to": "200",
+                "tot": "num"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{\"status\":\"ok\",\"app\":\"node-red\",\"flow\":\"droplive-starter\"}",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 370,
+        "y": 80,
+        "wires": [
+            [
+                "droplive-health-out"
+            ]
+        ]
+    },
+    {
+        "id": "droplive-health-out",
+        "type": "http response",
+        "z": "droplive-starter-tab",
+        "name": "Health response",
+        "statusCode": "",
+        "headers": {},
+        "x": 600,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "droplive-hello-in",
+        "type": "http in",
+        "z": "droplive-starter-tab",
+        "name": "Hello endpoint",
+        "url": "/hello",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 150,
+        "y": 160,
+        "wires": [
+            [
+                "droplive-hello-body"
+            ]
+        ]
+    },
+    {
+        "id": "droplive-hello-body",
+        "type": "change",
+        "z": "droplive-starter-tab",
+        "name": "Hello JSON",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{\"message\":\"Node-RED is running\",\"source\":\"DropLive starter flow\"}",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 370,
+        "y": 160,
+        "wires": [
+            [
+                "droplive-hello-out"
+            ]
+        ]
+    },
+    {
+        "id": "droplive-hello-out",
+        "type": "http response",
+        "z": "droplive-starter-tab",
+        "name": "Hello response",
+        "statusCode": "",
+        "headers": {},
+        "x": 600,
+        "y": 160,
+        "wires": []
+    }
 ]
