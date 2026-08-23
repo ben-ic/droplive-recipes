@@ -8,6 +8,11 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
       org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
       org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
 
+# The Northstar notebook, one complete API request body per line. Read by the
+# entrypoint and posted through the public API, so nothing here touches SQLite.
+COPY --chmod=0444 seed/memos.jsonl /usr/local/lib/droplive-memos-seed.jsonl
+COPY --chmod=0555 droplive-entrypoint.sh /usr/local/bin/droplive-memos
+
 # Repeat the official writable data path explicitly.
 VOLUME ["/var/opt/memos"]
 
@@ -16,3 +21,8 @@ VOLUME ["/var/opt/memos"]
 # additionally requires a readable database, so it is the stronger of the two.
 LABEL io.droplive.data-backup=sqlite
 EXPOSE 5230
+
+# The upstream entrypoint pair becomes the command, so the seeder wraps the real
+# startup rather than replacing it.
+ENTRYPOINT ["/usr/local/bin/droplive-memos"]
+CMD ["/usr/local/memos/entrypoint.sh", "/usr/local/memos/memos"]
