@@ -8,6 +8,10 @@ ENV LISTMONK_app__address=0.0.0.0:9000 \
     LISTMONK_db__ssl_mode=disable \
     LISTMONK_ADMIN_USER=admin
 
+# The Northstar mailing lists, one complete request per line: three lists,
+# sixteen subscribers who are all real people from the world, and the two
+# campaigns that are still drafts because neither has gone out.
+COPY --chmod=0444 seed/listmonk.requests /usr/local/lib/droplive-listmonk-seed.requests
 COPY --chmod=0755 entrypoint.sh /usr/local/bin/droplive-listmonk
 ENTRYPOINT ["/usr/local/bin/droplive-listmonk"]
 CMD []

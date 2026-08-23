@@ -3,6 +3,9 @@ kind: app
 tagline: "Newsletter manager"
 description: "High performance, self-hosted, newsletter and mailing list manager with a modern dashboard. Single binary app"
 repository: https://github.com/knadh/listmonk
+# The company this demo is stocked with before the visitor arrives. Its lists are
+# in the application's own store, so there is no emulator to hang it off.
+world: business.saas_company.v1
 run:
   port: 9000
   health: /health
