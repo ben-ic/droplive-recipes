@@ -9,7 +9,10 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
 
 # A year of the Northstar company's mail, one RFC 822 file per message, handed to
 # Mailpit's own ingest command over SMTP.
-COPY --chmod=0444 seed/mail/ /usr/local/lib/droplive-mailpit-mail/
+# A directory copied with an explicit mode loses its execute bit, and then a
+# non-root process cannot read anything inside it. The generated tree is already
+# 0644 files in 0755 directories.
+COPY seed/mail/ /usr/local/lib/droplive-mailpit-mail/
 COPY --chmod=0555 droplive-entrypoint.sh /usr/local/bin/droplive-mailpit
 
 EXPOSE 8025
