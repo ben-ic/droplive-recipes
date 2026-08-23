@@ -116,6 +116,21 @@ data beats a demo that will not boot.
 **Watch for content the app parses.** Memos turned `#318` into a tag and polluted
 the tag sidebar. Kanboard turns `#123` into a task link. Write "issue 318".
 
+**Do not put `--chmod` on a COPY that creates a directory.** The mode is applied
+to the directory too, so a file mode takes the traverse bit off it and the file
+becomes unreachable rather than merely unwritable. This has now cost three
+recipes an afternoon each — MailDev, mailpit, and Vikunja, where the symptom was
+a database that `docker export` could see and the running container could not.
+Use `--chown` and leave the mode alone.
+
+**A declared VOLUME is not a directory here.** DropLive gives a session one
+private writable root and does not do Docker's named-volume copy-up, so a path
+the image declares as a volume arrives as an empty mount rather than as the
+directory the image describes. Kanboard's nginx crash-looped on a certificate its
+entrypoint never got to generate, and Kimai returned 500 on an empty cache
+directory. Create the paths in a stage and flatten the result, or create them in
+the entrypoint.
+
 **Look at what you wrote.** Open it in a browser. If the first screen is not
 obviously a working company's app, it is not done.
 
@@ -130,6 +145,14 @@ entrypoint — and say so in the commit message.
 
 Use the world's own absolute dates. They are internally consistent with every
 other Northstar demo.
+
+Some applications will not accept a date by any route. Vikunja ignores `created`
+on its task API and its own file migrator stamps every imported task with the
+moment of the import. Where that is true and the runtime image has no database
+tool to lend, seed in a build stage instead: run the real application there,
+correct the date columns once its server has stopped, and copy the finished
+database into the image. Nothing is added to what ships. The cost is that those
+dates are then fixed at build time, so say so in the recipe.
 
 ## What may be generated
 

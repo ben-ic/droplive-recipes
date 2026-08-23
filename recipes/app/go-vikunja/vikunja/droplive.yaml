@@ -3,9 +3,16 @@ kind: app
 tagline: "Task manager"
 description: "The task manager you actually own"
 repository: https://github.com/go-vikunja/vikunja
+# The company this demo is stocked with before the visitor arrives. Its data is
+# in the application's own store, so there is no emulator to hang it off.
+world: business.saas_company.v1
 run:
   port: 3456
   health:
     path: /api/v2/health
     contains:
     - '"status":"OK"'
+  # Vikunja opens on a personal overview. The one worth landing on is the
+  # release the whole company is in the middle of, in the view that shows it as
+  # a board. Both numbers are fixed: the database ships built.
+  open: /projects/11/44
