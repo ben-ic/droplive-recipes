@@ -1,0 +1,127 @@
+CLI /user-create user:jon {"username":"jon","email":"jon@northstar-relay.invalid","name":"Jon Bell"}
+CLI /user-create user:noor {"username":"noor","email":"noor@northstar-relay.invalid","name":"Noor Alvarez"}
+CLI /user-create user:elena {"username":"elena","email":"elena@northstar-relay.invalid","name":"Elena Petrov"}
+CLI /user-create user:samira {"username":"samira","email":"samira@northstar-relay.invalid","name":"Samira Okafor"}
+CLI /user-create user:lucas {"username":"lucas","email":"lucas@northstar-relay.invalid","name":"Lucas Meyer"}
+CLI /user-create user:hana {"username":"hana","email":"hana@northstar-relay.invalid","name":"Hana Ito"}
+CLI /user-create user:david {"username":"david","email":"david@northstar-relay.invalid","name":"David Banerjee"}
+CLI /user-create user:imani {"username":"imani","email":"imani@northstar-relay.invalid","name":"Imani Brooks"}
+CLI /user-create user:theo {"username":"theo","email":"theo@northstar-relay.invalid","name":"Theo Martin"}
+PUT /api/v1/labels label:exports {"title":"Exports","hex_color":"e74c3c"}
+PUT /api/v1/labels label:audit-page {"title":"Audit page","hex_color":"9b59b6"}
+PUT /api/v1/labels label:release {"title":"Release","hex_color":"3498db"}
+PUT /api/v1/labels label:customer {"title":"Customer","hex_color":"3498db"}
+PUT /api/v1/labels label:support {"title":"Support","hex_color":"e67e22"}
+PUT /api/v1/labels label:onboarding {"title":"Onboarding","hex_color":"27ae60"}
+PUT /api/v1/labels label:access {"title":"Access","hex_color":"e67e22"}
+PUT /api/v1/labels label:finance {"title":"Finance","hex_color":"3498db"}
+PUT /api/v1/labels label:reconciliation {"title":"Reconciliation","hex_color":"9b59b6"}
+PUT /api/v1/projects project:release-28 {"title":"Release 2.8","description":"<p>Ship the audit improvements without hiding the remaining export risk.</p>","_created":"2026-07-27T17:00:00Z"}
+PUT /api/v1/projects/@project:release-28@/users - {"username":"elena","permission":2}
+PUT /api/v1/projects/@project:release-28@/users - {"username":"jon","permission":2}
+PUT /api/v1/projects/@project:release-28@/users - {"username":"lucas","permission":2}
+PUT /api/v1/projects/@project:release-28@/users - {"username":"hana","permission":2}
+PUT /api/v1/projects/@project:release-28@/users - {"username":"imani","permission":2}
+PUT /api/v1/projects/@project:release-28@/users - {"username":"samira","permission":2}
+GET /api/v1/projects/@project:release-28@/views view:release-28 {}
+GET /api/v1/projects/@project:release-28@/views/@view:release-28@/buckets buckets:release-28 {}
+POST /api/v1/projects/@project:release-28@/views/@view:release-28@/buckets/@bucket:release-28/first@ lane:release-28/ready {"title":"Ready","position":100}
+POST /api/v1/projects/@project:release-28@/views/@view:release-28@/buckets/@bucket:release-28/second@ lane:release-28/work-in-progress {"title":"Work in progress","position":200}
+POST /api/v1/projects/@project:release-28@/views/@view:release-28@/buckets/@bucket:release-28/last@ lane:release-28/done {"title":"Done","position":300}
+PUT /api/v1/projects/@project:release-28@/views/@view:release-28@/buckets lane:release-28/review {"title":"Review","position":220}
+PUT /api/v1/projects/@project:release-28@/views/@view:release-28@/buckets lane:release-28/blocked {"title":"Blocked","position":240}
+PUT /api/v1/projects/@project:release-28@/tasks task:issue-319 {"title":"Add cancellation case to large-export load fixture","description":"<p>Current fixture measures completion only. A cancelled 75k-row job must release its worker lease and partial object.</p><p>Opened by Jon Bell in <strong>exports-service</strong>, issue 319. Needed before the cancellation fix can be called tested.</p>","priority":3,"done":false,"_as":"jon","_created":"2026-08-20T09:31:00Z","_bucket":"/api/v1/projects/@project:release-28@/views/@view:release-28@/buckets/@lane:release-28/ready@"}
+PUT /api/v1/tasks/@task:issue-319@/assignees - {"user_id":"@user:hana@"}
+PUT /api/v1/tasks/@task:issue-319@/labels - {"label_id":"@label:exports@"}
+PUT /api/v1/projects/@project:release-28@/tasks task:issue-318 {"title":"Scheduled exports keep the legacy 120s worker timeout","description":"<p>Lumen reproduced at 52,184 rows. Manual retry uses the account limit; scheduled execution still passes 120 seconds. Test 50k, 75k, and cancellation before merge.</p><p>Reported through the Lumen Labs support case <em>Scheduled export stops at two minutes</em> (Priya Raman). Tracked in <strong>relay-core</strong>, issue 318.</p>","priority":4,"done":false,"_as":"samira","_created":"2026-08-18T11:05:00Z","_bucket":"/api/v1/projects/@project:release-28@/views/@view:release-28@/buckets/@lane:release-28/work-in-progress@","start_date":"2026-08-20T09:20:00Z"}
+PUT /api/v1/tasks/@task:issue-318@/assignees - {"user_id":"@user:lucas@"}
+PUT /api/v1/tasks/@task:issue-318@/labels - {"label_id":"@label:exports@"}
+PUT /api/v1/tasks/@task:issue-318@/comments - {"comment":"<p>I can reproduce it. The scheduler still passes the old timeout to the export worker. Fix is small; the load test is not.</p>","_as":"lucas","_created":"2026-08-20T09:18:00Z"}
+PUT /api/v1/tasks/@task:issue-318@/comments - {"comment":"<p>Please do not merge on the small fixture alone. Run 50k, 75k, and a cancelled job. If cancellation leaks workers, 2.8 waits.</p>","_as":"jon","_created":"2026-08-20T09:31:00Z"}
+PUT /api/v1/projects/@project:release-28@/tasks task:task-release-notes {"title":"Write release notes for audit history","description":"<p>Explain local time display and the new export activity entries in customer language.</p><p><strong>Checklist</strong></p><ul><li><s>Drafted the audit history section.</s></li><li>Describe the new export activity entries</li></ul>","priority":2,"done":false,"_as":"maya","_created":"2026-08-17T10:00:00Z","_bucket":"/api/v1/projects/@project:release-28@/views/@view:release-28@/buckets/@lane:release-28/work-in-progress@","due_date":"2026-08-25T17:00:00Z","start_date":"2026-08-20T09:45:00Z","percent_done":0.5}
+PUT /api/v1/tasks/@task:task-release-notes@/assignees - {"user_id":"@user:elena@"}
+PUT /api/v1/tasks/@task:task-release-notes@/labels - {"label_id":"@label:release@"}
+PUT /api/v1/tasks/@task:task-release-notes@/comments - {"comment":"<p>Audit page copy is final. Export timeout is the only item that can still change the release date. I need a go or no-go by Monday noon.</p>","_as":"elena","_created":"2026-08-20T13:10:00Z"}
+PUT /api/v1/projects/@project:release-28@/tasks task:task-timezone-label {"title":"Correct the audit timezone label","description":"<p>The timestamp value is correct. The label says UTC after local conversion.</p><p>Tracked in <strong>web-console</strong>, issue 322. Visual only, and kept out of the export worker branch.</p><p><strong>Checklist</strong></p><ul><li><s>Reproduced the suffix error and added a view test.</s></li></ul>","priority":2,"done":false,"_as":"hana","_created":"2026-08-20T13:22:00Z","_bucket":"/api/v1/projects/@project:release-28@/views/@view:release-28@/buckets/@lane:release-28/review@","due_date":"2026-08-25T17:00:00Z","start_date":"2026-08-20T14:00:00Z","percent_done":1.0}
+PUT /api/v1/tasks/@task:task-timezone-label@/assignees - {"user_id":"@user:hana@"}
+PUT /api/v1/tasks/@task:task-timezone-label@/labels - {"label_id":"@label:audit-page@"}
+PUT /api/v1/tasks/@task:task-timezone-label@/comments - {"comment":"<p>The audit page review found one timezone label bug. It is visual only; I opened 322 and kept it out of the export branch.</p>","_as":"hana","_created":"2026-08-20T13:22:00Z"}
+PUT /api/v1/projects/@project:release-28@/tasks task:task-cancel-cleanup {"title":"Remove the partial object after cancellation","description":"<p>The worker lease closes, but the cancelled 75k-row run leaves a partial object. Add cleanup and prove idempotent retry.</p><p><strong>Checklist</strong></p><ul><li><s>Found the partial object left by cancellation.</s></li><li>Delete the partial object when a job is cancelled</li><li>Prove the retry is idempotent</li></ul>","priority":4,"done":false,"_as":"jon","_created":"2026-08-21T11:20:00Z","_bucket":"/api/v1/projects/@project:release-28@/views/@view:release-28@/buckets/@lane:release-28/blocked@","due_date":"2026-08-24T17:00:00Z","start_date":"2026-08-21T11:30:00Z","percent_done":0.33}
+PUT /api/v1/tasks/@task:task-cancel-cleanup@/assignees - {"user_id":"@user:lucas@"}
+PUT /api/v1/tasks/@task:task-cancel-cleanup@/labels - {"label_id":"@label:exports@"}
+PUT /api/v1/projects/@project:release-28@/tasks task:task-load-50k {"title":"Run the 50k-row export test","description":"<p>Record duration and worker memory for the scheduled path on the fix branch.</p><p><strong>Checklist</strong></p><ul><li><s>Prepared the scheduled fixture and captured the baseline.</s></li><li><s>Ran the fix branch and checked worker memory.</s></li></ul>","priority":3,"done":true,"_as":"jon","_created":"2026-08-19T09:15:00Z","_bucket":"/api/v1/projects/@project:release-28@/views/@view:release-28@/buckets/@lane:release-28/done@","due_date":"2026-08-21T17:00:00Z","start_date":"2026-08-20T10:00:00Z","done_at":"2026-08-21T10:05:00Z","percent_done":1.0}
+PUT /api/v1/tasks/@task:task-load-50k@/assignees - {"user_id":"@user:lucas@"}
+PUT /api/v1/tasks/@task:task-load-50k@/labels - {"label_id":"@label:exports@"}
+PUT /api/v1/projects/@project:release-28@/tasks task:task-load-75k {"title":"Run the 75k-row export test","description":"<p>Use the production-like object size and confirm the worker lease closes.</p><p><strong>Checklist</strong></p><ul><li><s>Completed the large run and checked lease release.</s></li></ul>","priority":3,"done":true,"_as":"jon","_created":"2026-08-19T09:16:00Z","_bucket":"/api/v1/projects/@project:release-28@/views/@view:release-28@/buckets/@lane:release-28/done@","due_date":"2026-08-21T17:00:00Z","start_date":"2026-08-21T13:00:00Z","done_at":"2026-08-21T14:30:00Z","percent_done":1.0}
+PUT /api/v1/tasks/@task:task-load-75k@/assignees - {"user_id":"@user:lucas@"}
+PUT /api/v1/tasks/@task:task-load-75k@/labels - {"label_id":"@label:exports@"}
+PUT /api/v1/projects/@project:release-28@/tasks task:task-audit-empty-state {"title":"Approve the audit empty state","description":"<p>Use the short copy. Do not show an error when a new workspace has no export history.</p><p><strong>Checklist</strong></p><ul><li><s>Reviewed copy in the narrow and wide layouts.</s></li></ul>","priority":2,"done":true,"_as":"elena","_created":"2026-08-13T14:00:00Z","_bucket":"/api/v1/projects/@project:release-28@/views/@view:release-28@/buckets/@lane:release-28/done@","due_date":"2026-08-19T17:00:00Z","start_date":"2026-08-19T10:00:00Z","done_at":"2026-08-19T16:20:00Z","percent_done":1.0}
+PUT /api/v1/tasks/@task:task-audit-empty-state@/assignees - {"user_id":"@user:imani@"}
+PUT /api/v1/tasks/@task:task-audit-empty-state@/labels - {"label_id":"@label:audit-page@"}
+PUT /api/v1/projects project:lumen-renewal {"title":"Lumen renewal","description":"<p>Prepare the renewal with an accurate account record and a safe export workaround.</p>","_created":"2026-08-11T17:00:00Z"}
+PUT /api/v1/projects/@project:lumen-renewal@/users - {"username":"david","permission":2}
+PUT /api/v1/projects/@project:lumen-renewal@/users - {"username":"samira","permission":2}
+PUT /api/v1/projects/@project:lumen-renewal@/users - {"username":"jon","permission":2}
+PUT /api/v1/projects/@project:lumen-renewal@/users - {"username":"lucas","permission":2}
+PUT /api/v1/projects/@project:lumen-renewal@/users - {"username":"noor","permission":2}
+GET /api/v1/projects/@project:lumen-renewal@/views view:lumen-renewal {}
+GET /api/v1/projects/@project:lumen-renewal@/views/@view:lumen-renewal@/buckets buckets:lumen-renewal {}
+POST /api/v1/projects/@project:lumen-renewal@/views/@view:lumen-renewal@/buckets/@bucket:lumen-renewal/first@ lane:lumen-renewal/ready {"title":"Ready","position":100}
+POST /api/v1/projects/@project:lumen-renewal@/views/@view:lumen-renewal@/buckets/@bucket:lumen-renewal/second@ lane:lumen-renewal/work-in-progress {"title":"Work in progress","position":200}
+POST /api/v1/projects/@project:lumen-renewal@/views/@view:lumen-renewal@/buckets/@bucket:lumen-renewal/last@ lane:lumen-renewal/done {"title":"Done","position":300}
+PUT /api/v1/projects/@project:lumen-renewal@/tasks task:task-safe-workaround {"title":"Send Priya the scheduled-export workaround","description":"<p>Document manual retry as the temporary path. Do not promise a release date.</p><p><strong>Checklist</strong></p><ul><li>Write the manual retry steps for Priya</li></ul>","priority":4,"done":false,"_as":"maya","_created":"2026-08-18T12:40:00Z","_bucket":"/api/v1/projects/@project:lumen-renewal@/views/@view:lumen-renewal@/buckets/@lane:lumen-renewal/ready@","due_date":"2026-08-21T17:00:00Z","percent_done":0.0}
+PUT /api/v1/tasks/@task:task-safe-workaround@/assignees - {"user_id":"@user:samira@"}
+PUT /api/v1/tasks/@task:task-safe-workaround@/labels - {"label_id":"@label:support@"}
+PUT /api/v1/tasks/@task:task-safe-workaround@/comments - {"comment":"<p>Account note: invoice 4471 is open, but it is not overdue until the 30th. Keep billing out of the incident reply unless Priya asks.</p>","_as":"noor","_created":"2026-08-20T10:02:00Z"}
+PUT /api/v1/projects/@project:lumen-renewal@/tasks task:task-renewal-brief {"title":"Finish the renewal brief","description":"<p>Replace the marked technical paragraph after engineering gives a tested status. Keep invoice 4471 separate from the incident.</p><p>From the working draft: usage is up 38% since February, and the compliance workspace was added in June. Invoice 4471 is 412.00 USD, open, due 30 August, and is not overdue.</p><p><strong>Checklist</strong></p><ul><li><s>Reviewed usage and billing facts with David.</s></li><li>Replace the marked technical paragraph after go or no-go</li></ul>","priority":3,"done":false,"_as":"david","_created":"2026-08-11T09:30:00Z","_bucket":"/api/v1/projects/@project:lumen-renewal@/views/@view:lumen-renewal@/buckets/@lane:lumen-renewal/work-in-progress@","due_date":"2026-08-24T17:00:00Z","start_date":"2026-08-20T11:00:00Z","percent_done":0.5}
+PUT /api/v1/tasks/@task:task-renewal-brief@/assignees - {"user_id":"@user:maya@"}
+PUT /api/v1/tasks/@task:task-renewal-brief@/labels - {"label_id":"@label:customer@"}
+PUT /api/v1/projects/@project:lumen-renewal@/tasks task:case-lumen-export {"title":"Scheduled export stops at two minutes","description":"<p>Support case for <strong>Lumen Labs</strong>, opened 18 August by Priya Raman, Director of operations.</p><p>State: with engineering.</p><p>Next action: Send workaround before 15:00 and update after cancellation test.</p>","priority":3,"done":false,"_as":"samira","_created":"2026-08-18T10:21:00Z","_bucket":"/api/v1/projects/@project:lumen-renewal@/views/@view:lumen-renewal@/buckets/@lane:lumen-renewal/work-in-progress@","start_date":"2026-08-18T10:30:00Z"}
+PUT /api/v1/tasks/@task:case-lumen-export@/assignees - {"user_id":"@user:samira@"}
+PUT /api/v1/tasks/@task:case-lumen-export@/labels - {"label_id":"@label:support@"}
+PUT /api/v1/tasks/@task:case-lumen-export@/comments - {"comment":"<p>Priya sent a useful boundary: 48k rows finishes in 1m34s; 52k reaches the two-minute worker limit. Interactive retry works, scheduled retry does not.</p>","_as":"samira","_created":"2026-08-20T09:06:00Z"}
+PUT /api/v1/projects project:theo-onboarding {"title":"Theo onboarding","description":"<p>Give Theo a useful first week while the engineering team completes release work.</p>","_created":"2026-08-17T17:00:00Z"}
+PUT /api/v1/projects/@project:theo-onboarding@/users - {"username":"imani","permission":2}
+PUT /api/v1/projects/@project:theo-onboarding@/users - {"username":"theo","permission":2}
+PUT /api/v1/projects/@project:theo-onboarding@/users - {"username":"jon","permission":2}
+PUT /api/v1/projects/@project:theo-onboarding@/users - {"username":"hana","permission":2}
+GET /api/v1/projects/@project:theo-onboarding@/views view:theo-onboarding {}
+GET /api/v1/projects/@project:theo-onboarding@/views/@view:theo-onboarding@/buckets buckets:theo-onboarding {}
+POST /api/v1/projects/@project:theo-onboarding@/views/@view:theo-onboarding@/buckets/@bucket:theo-onboarding/first@ lane:theo-onboarding/backlog {"title":"Backlog","position":100}
+POST /api/v1/projects/@project:theo-onboarding@/views/@view:theo-onboarding@/buckets/@bucket:theo-onboarding/second@ lane:theo-onboarding/ready {"title":"Ready","position":200}
+POST /api/v1/projects/@project:theo-onboarding@/views/@view:theo-onboarding@/buckets/@bucket:theo-onboarding/last@ lane:theo-onboarding/done {"title":"Done","position":300}
+PUT /api/v1/projects/@project:theo-onboarding@/tasks task:task-staging-access {"title":"Create Theo's staging access","description":"<p>Owner is not assigned. Access must be ready before Tuesday pairing, not before the Monday welcome call.</p>","priority":3,"done":false,"_as":"imani","_created":"2026-08-17T09:20:00Z","_bucket":"/api/v1/projects/@project:theo-onboarding@/views/@view:theo-onboarding@/buckets/@lane:theo-onboarding/backlog@","due_date":"2026-08-25T17:00:00Z"}
+PUT /api/v1/tasks/@task:task-staging-access@/labels - {"label_id":"@label:access@"}
+PUT /api/v1/tasks/@task:task-staging-access@/comments - {"comment":"<p>Theo's onboarding page is ready. Staging access is the only unchecked item; I left the owner blank because I do not know whether Jon or Lucas is handling it.</p>","_as":"imani","_created":"2026-08-19T15:42:00Z"}
+PUT /api/v1/projects/@project:theo-onboarding@/tasks task:task-architecture-session {"title":"Prepare the connector architecture session","description":"<p>Use the Ember CSV incident as a small example of why connector contracts are versioned.</p><p><strong>Checklist</strong></p><ul><li>Use the Ember CSV header incident as the example</li></ul>","priority":2,"done":false,"_as":"imani","_created":"2026-08-17T09:25:00Z","_bucket":"/api/v1/projects/@project:theo-onboarding@/views/@view:theo-onboarding@/buckets/@lane:theo-onboarding/ready@","due_date":"2026-08-24T17:00:00Z","percent_done":0.0}
+PUT /api/v1/tasks/@task:task-architecture-session@/assignees - {"user_id":"@user:jon@"}
+PUT /api/v1/tasks/@task:task-architecture-session@/labels - {"label_id":"@label:onboarding@"}
+PUT /api/v1/projects/@project:theo-onboarding@/tasks task:task-pairing-plan {"title":"Choose Theo's first pairing issue","description":"<p>Pick a bounded audit-page issue. Do not use the Lumen release blocker as an onboarding task.</p><p><strong>Checklist</strong></p><ul><li><s>Selected a small audit filter issue for Tuesday.</s></li></ul>","priority":2,"done":true,"_as":"imani","_created":"2026-08-17T09:30:00Z","_bucket":"/api/v1/projects/@project:theo-onboarding@/views/@view:theo-onboarding@/buckets/@lane:theo-onboarding/done@","due_date":"2026-08-20T17:00:00Z","start_date":"2026-08-20T16:00:00Z","done_at":"2026-08-20T16:45:00Z","percent_done":1.0}
+PUT /api/v1/tasks/@task:task-pairing-plan@/assignees - {"user_id":"@user:hana@"}
+PUT /api/v1/tasks/@task:task-pairing-plan@/labels - {"label_id":"@label:onboarding@"}
+PUT /api/v1/projects project:month-end {"title":"August month-end","description":"<p>Close August books with complete expenses and clear customer balances.</p>","_created":"2026-08-17T17:00:00Z"}
+PUT /api/v1/projects/@project:month-end@/users - {"username":"noor","permission":2}
+PUT /api/v1/projects/@project:month-end@/users - {"username":"david","permission":2}
+GET /api/v1/projects/@project:month-end@/views view:month-end {}
+GET /api/v1/projects/@project:month-end@/views/@view:month-end@/buckets buckets:month-end {}
+POST /api/v1/projects/@project:month-end@/views/@view:month-end@/buckets/@bucket:month-end/first@ lane:month-end/backlog {"title":"Backlog","position":100}
+POST /api/v1/projects/@project:month-end@/views/@view:month-end@/buckets/@bucket:month-end/second@ lane:month-end/ready {"title":"Ready","position":200}
+POST /api/v1/projects/@project:month-end@/views/@view:month-end@/buckets/@bucket:month-end/last@ lane:month-end/done {"title":"Done","position":300}
+PUT /api/v1/projects/@project:month-end@/views/@view:month-end@/buckets lane:month-end/work-in-progress {"title":"Work in progress","position":220}
+PUT /api/v1/projects/@project:month-end@/tasks task:task-lumen-balance {"title":"Review Lumen balance after due date","description":"<p>Invoice 4471 is open and not overdue. Review only if it remains open after 30 August.</p><p>Invoice 4471, 412.00 USD, Northstar Scale plan for August. Issued 14 August, due 30 August.</p>","priority":2,"done":false,"_as":"maya","_created":"2026-08-17T08:40:00Z","_bucket":"/api/v1/projects/@project:month-end@/views/@view:month-end@/buckets/@lane:month-end/backlog@","due_date":"2026-08-31T17:00:00Z"}
+PUT /api/v1/tasks/@task:task-lumen-balance@/assignees - {"user_id":"@user:noor@"}
+PUT /api/v1/tasks/@task:task-lumen-balance@/labels - {"label_id":"@label:finance@"}
+PUT /api/v1/projects/@project:month-end@/tasks task:task-cash-reconcile {"title":"Reconcile operating cash","description":"<p>Match August customer receipts and supplier payments before the close review.</p>","priority":2,"done":false,"_as":"noor","_created":"2026-08-17T08:45:00Z","_bucket":"/api/v1/projects/@project:month-end@/views/@view:month-end@/buckets/@lane:month-end/ready@","due_date":"2026-09-02T17:00:00Z"}
+PUT /api/v1/tasks/@task:task-cash-reconcile@/assignees - {"user_id":"@user:noor@"}
+PUT /api/v1/tasks/@task:task-cash-reconcile@/labels - {"label_id":"@label:reconciliation@"}
+PUT /api/v1/projects/@project:month-end@/tasks task:task-august-expenses {"title":"Collect missing August expenses","description":"<p>Three entries have an amount but no receipt. Ask owners today and leave unresolved receipts marked pending.</p><p><strong>Checklist</strong></p><ul><li><s>Matched card entries and requested three receipts.</s></li><li>Chase the three entries that still have no receipt</li></ul>","priority":3,"done":false,"_as":"noor","_created":"2026-08-17T08:50:00Z","_bucket":"/api/v1/projects/@project:month-end@/views/@view:month-end@/buckets/@lane:month-end/work-in-progress@","due_date":"2026-08-21T17:00:00Z","start_date":"2026-08-20T08:35:00Z","percent_done":0.5}
+PUT /api/v1/tasks/@task:task-august-expenses@/assignees - {"user_id":"@user:noor@"}
+PUT /api/v1/tasks/@task:task-august-expenses@/labels - {"label_id":"@label:finance@"}
+PUT /api/v1/tasks/@task:task-august-expenses@/comments - {"comment":"<p>Friday reminder: please submit August expenses before 16:00. Missing receipts can wait until Monday; the amount and customer still need to be entered today.</p>","_as":"noor","_created":"2026-08-20T08:17:00Z"}
+PUT /api/v1/tasks/@task:issue-318@/relations - {"other_task_id":"@task:task-load-50k@","relation_kind":"related"}
+PUT /api/v1/tasks/@task:issue-318@/relations - {"other_task_id":"@task:task-load-75k@","relation_kind":"related"}
+PUT /api/v1/tasks/@task:issue-318@/relations - {"other_task_id":"@task:task-cancel-cleanup@","relation_kind":"related"}
+PUT /api/v1/tasks/@task:issue-319@/relations - {"other_task_id":"@task:task-cancel-cleanup@","relation_kind":"related"}
+PUT /api/v1/tasks/@task:case-lumen-export@/relations - {"other_task_id":"@task:issue-318@","relation_kind":"related"}
+PUT /api/v1/tasks/@task:task-safe-workaround@/relations - {"other_task_id":"@task:case-lumen-export@","relation_kind":"related"}
+PUT /api/v1/tasks/@task:task-renewal-brief@/relations - {"other_task_id":"@task:task-lumen-balance@","relation_kind":"related"}

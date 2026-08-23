@@ -4,7 +4,7 @@ set -eu
 # Use the platform's canonical generated names, then map them to Vikunja. This
 # keeps the recipe generic and makes the owner password directly revealable.
 # droplive: generate=hex96 ownership=app purpose=owner-bootstrap lifecycle=stable rotation=app name=SECRET_KEY_BASE
-# droplive: generate=hex96 ownership=app purpose=owner-bootstrap lifecycle=stable rotation=app name=APP_ADMIN_PASSWORD capability=owner-login username=owner
+# droplive: generate=hex96 ownership=app purpose=owner-bootstrap lifecycle=stable rotation=app name=APP_ADMIN_PASSWORD capability=owner-login username=maya
 : "${SECRET_KEY_BASE:?DropLive must generate SECRET_KEY_BASE}"
 : "${APP_ADMIN_PASSWORD:?DropLive must generate APP_ADMIN_PASSWORD}"
 : "${APP_BASE_URL:?DropLive must derive APP_BASE_URL from the public origin}"
@@ -49,10 +49,10 @@ test -w /tmp
 export VIKUNJA_SERVICE_PUBLICURL="${APP_BASE_URL%/}/"
 export VIKUNJA_SERVICE_SECRET="$SECRET_KEY_BASE"
 
-marker=/data/.droplive-owner-v1
 owner_check=/tmp/droplive-vikunja-owner.$$.txt
-owner_username=owner
-owner_email=owner@local.invalid
+owner_username=maya
+owner_email=maya@northstar-relay.invalid
+seeded=/usr/local/lib/droplive-vikunja.db
 cleanup() {
   rm -f "$owner_check"
 }
@@ -66,24 +66,26 @@ verify_owner() {
   grep -F "$owner_email" "$owner_check" >/dev/null
 }
 
-if ! test -f "$marker"; then
-  if test -s /data/vikunja.db; then
-    if ! verify_owner; then
-      echo "existing Vikunja database has no matching DropLive owner; refusing unsafe bootstrap" >&2
-      exit 65
-    fi
-  else
-    /app/vikunja/vikunja user create \
-      --username "$owner_username" \
-      --email "$owner_email" \
-      --password "$APP_ADMIN_PASSWORD"
-    verify_owner
-  fi
-  touch "$marker"
+# The company's boards were built into a database when the image was built.
+# The first start puts that database in place; every start after this one finds
+# it already there and leaves whatever the visitor has done to it alone.
+if ! test -s /data/vikunja.db; then
+  test -s "$seeded"
+  cp "$seeded" /data/vikunja.db
 fi
 
+verify_owner || {
+  echo "the Vikunja database has no Northstar owner; refusing unsafe bootstrap" >&2
+  exit 65
+}
+
+# The seeded database carries a build-time password that authenticates nothing.
+# The account is handed the value DropLive minted for this session, before the
+# app is reachable. Vikunja will only read a password from a terminal, so it goes
+# in the argument list -- inside a microVM whose only processes are this session's.
+/app/vikunja/vikunja user reset-password 1 --direct --password "$APP_ADMIN_PASSWORD" >/dev/null
+
 test -s /data/vikunja.db
-verify_owner
 cleanup
 trap - EXIT HUP INT TERM
 
