@@ -25,7 +25,7 @@ RUN rm -f /etc/sudoers.d/99-dagu /usr/bin/sudo && \
 COPY --chmod=0555 droplive-entrypoint.sh /usr/local/bin/droplive-entrypoint
 COPY --chmod=0555 healthcheck.sh /usr/local/bin/droplive-healthcheck
 COPY --chown=1000:1000 --chmod=0444 seed/ /opt/droplive/dags/
-RUN chmod 0755 /opt/droplive
+RUN chmod 0755 /opt/droplive /opt/droplive/dags
 
 LABEL org.opencontainers.image.version="2.7.5" \
       org.opencontainers.image.revision="e8ba3ef2387cc93cbcf609e15fd0b3f249f0e51e" \
