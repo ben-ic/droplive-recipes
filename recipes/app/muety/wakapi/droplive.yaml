@@ -3,6 +3,7 @@ kind: app
 tagline: "Coding time tracker"
 description: "A minimalist, self-hosted WakaTime-compatible backend for coding statistics"
 repository: https://github.com/muety/wakapi
+world: business.saas_company.v1
 run:
   port: 3000
   data:
