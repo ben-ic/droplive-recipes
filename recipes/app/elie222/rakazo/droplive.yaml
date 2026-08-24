@@ -3,6 +3,7 @@ kind: app
 tagline: "AI teammate platform"
 description: Persistent AI teammates with memory, routines, tools, and a visible computer
 repository: https://github.com/elie222/rakazo
+world: business.saas_company.v1
 run:
   port: 5173
   health:
