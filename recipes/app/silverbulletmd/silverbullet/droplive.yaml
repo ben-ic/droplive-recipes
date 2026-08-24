@@ -8,4 +8,6 @@ repository: https://github.com/silverbulletmd/silverbullet
 world: business.saas_company.v1
 run:
   port: 3000
+  data:
+  - /app/data
   health: /.instance

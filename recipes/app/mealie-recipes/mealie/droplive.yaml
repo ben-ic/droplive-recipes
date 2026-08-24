@@ -5,4 +5,6 @@ description: "Recipe manager and meal planner with shopping lists and a recipe i
 repository: https://github.com/mealie-recipes/mealie
 run:
   port: 9000
+  data:
+  - /app/data
   health: /api/app/about

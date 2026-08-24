@@ -5,4 +5,6 @@ description: "Track personal income, spending and account balances"
 repository: https://github.com/mayswind/ezbookkeeping
 run:
   port: 8080
+  data:
+  - /data
   health: /healthz.json

@@ -8,6 +8,8 @@ repository: https://github.com/go-vikunja/vikunja
 world: business.saas_company.v1
 run:
   port: 3456
+  data:
+  - /data
   health:
     path: /api/v2/health
     contains:

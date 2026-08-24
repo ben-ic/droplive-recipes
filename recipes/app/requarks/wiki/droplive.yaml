@@ -5,6 +5,8 @@ description: "Knowledge base with Markdown and visual editors, page history and 
 repository: https://github.com/requarks/wiki
 run:
   port: 3000
+  data:
+  - /wiki/data
   health: /
 companions:
   database: postgres

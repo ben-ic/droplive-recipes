@@ -5,4 +5,6 @@ description: "LubeLogger is a web-based vehicle maintenance and fuel mileage tra
 repository: https://github.com/hargata/lubelog
 run:
   port: 8080
+  data:
+  - /App/data
   health: /health
