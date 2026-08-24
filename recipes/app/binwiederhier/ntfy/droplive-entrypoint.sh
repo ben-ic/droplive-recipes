@@ -24,6 +24,7 @@ esac
 data_dir=/var/lib/ntfy
 auth_file=$data_dir/auth.db
 marker=$data_dir/.droplive-initialized-v1
+seed_marker=$data_dir/.droplive-company-seed-v1
 runtime_dir=/run/ntfy
 users_file=$runtime_dir/users.txt
 
@@ -71,7 +72,6 @@ fi
 
 test -w "$data_dir"
 test -w "$data_dir/attachments"
-unset NTFY_ADMIN_PASSWORD
 
 echo '[ntfy-runtime] Starting the official ntfy process on port 8080.'
 shutdown_started=0
@@ -89,6 +89,27 @@ trap 'test -n "$ntfy_pid" && kill -HUP "$ntfy_pid" 2>/dev/null || true' HUP
 
 /usr/bin/ntfy serve &
 ntfy_pid=$!
+
+if ! test -f "$seed_marker"; then
+  seed_ready=0
+  for attempt in $(seq 1 30); do
+    if /usr/bin/ntfy publish --user "admin:$NTFY_ADMIN_PASSWORD" --title "Northstar Relay" --tags "rocket" http://127.0.0.1:8080/northstar-relay "Release readiness review starts at 10:00 UTC."; then
+      seed_ready=1
+      break
+    fi
+    sleep 1
+  done
+  if test "$seed_ready" -ne 1; then
+    echo '[ntfy-init] Could not publish the initial company notification.' >&2
+    exit 65
+  fi
+  /usr/bin/ntfy publish --user "admin:$NTFY_ADMIN_PASSWORD" --title "Customer notes" --tags "memo" http://127.0.0.1:8080/northstar-relay "Three customer interviews are ready for review."
+  /usr/bin/ntfy publish --user "admin:$NTFY_ADMIN_PASSWORD" --title "Support queue" --tags "warning" http://127.0.0.1:8080/northstar-relay "Two priority support items need an owner."
+  touch "$seed_marker"
+  chmod 0600 "$seed_marker"
+fi
+
+unset NTFY_ADMIN_PASSWORD
 set +e
 wait "$ntfy_pid"
 ntfy_status=$?

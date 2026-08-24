@@ -3,6 +3,7 @@ kind: app
 tagline: "Push notifications"
 description: "Send push notifications to your phone or desktop using PUT/POST"
 repository: https://github.com/binwiederhier/ntfy
+world: business.saas_company.v1
 run:
   port: 8080
   data:
