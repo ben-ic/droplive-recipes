@@ -1,0 +1,24 @@
+{
+  "uid": "northstar-relay",
+  "title": "Northstar Relay — Release Readiness",
+  "tags": ["northstar", "release"],
+  "schemaVersion": 41,
+  "version": 1,
+  "time": {"from": "now-7d", "to": "now"},
+  "panels": [
+    {
+      "id": 1,
+      "type": "text",
+      "title": "Release readiness",
+      "gridPos": {"h": 7, "w": 12, "x": 0, "y": 0},
+      "options": {"mode": "markdown", "content": "## Ready for review\n\n- Confirm release owner\n- Check customer communication\n- Review support queue"}
+    },
+    {
+      "id": 2,
+      "type": "text",
+      "title": "Customer notes",
+      "gridPos": {"h": 7, "w": 12, "x": 12, "y": 0},
+      "options": {"mode": "markdown", "content": "## Three interviews ready\n\nCustomer feedback is prepared for the release review."}
+    }
+  ]
+}
