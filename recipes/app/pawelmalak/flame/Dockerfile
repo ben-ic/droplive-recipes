@@ -8,4 +8,9 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
       org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
       org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
 
+COPY --chmod=0555 droplive-entrypoint.sh /usr/local/bin/droplive-flame-entrypoint
+COPY --chmod=0444 seed.js /opt/droplive/flame-seed.js
+
+ENTRYPOINT ["/usr/local/bin/droplive-flame-entrypoint"]
+CMD ["sh", "-c", "chown -R node /app/data && node server.js"]
 EXPOSE 5005
