@@ -3,6 +3,7 @@ kind: app
 tagline: "Household inventory"
 description: "ERP beyond your fridge - Grocy is a web-based self-hosted groceries & household management solution for your home"
 repository: https://github.com/grocy/grocy
+world: business.saas_company.v1
 run:
   port: 8080
   data:

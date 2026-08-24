@@ -3,6 +3,7 @@ kind: app
 tagline: "Collaborative notes"
 description: "Collaborative Markdown notes several people can edit at once"
 repository: https://github.com/hedgedoc/hedgedoc
+world: business.saas_company.v1
 run:
   port: 3000
   data:

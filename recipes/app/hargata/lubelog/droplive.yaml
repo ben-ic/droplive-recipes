@@ -3,6 +3,7 @@ kind: app
 tagline: "Vehicle maintenance log"
 description: "LubeLogger is a web-based vehicle maintenance and fuel mileage tracker"
 repository: https://github.com/hargata/lubelog
+world: business.saas_company.v1
 run:
   port: 8080
   data:
