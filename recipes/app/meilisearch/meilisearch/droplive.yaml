@@ -3,6 +3,13 @@ kind: app
 tagline: "Search engine"
 description: "Search engine API with typo tolerance and fast full-text results"
 repository: https://github.com/meilisearch/meilisearch
+world: business.saas_company.v1
 run:
   port: 7700
+  data:
+  - /meili_data
   health: /health
+environment:
+  MEILI_MASTER_KEY:
+    owner: droplive
+    format: url-safe
