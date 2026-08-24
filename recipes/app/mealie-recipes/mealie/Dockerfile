@@ -13,6 +13,7 @@ LABEL io.droplive.data-backup=files
 
 COPY --chmod=0555 droplive-entrypoint.sh /usr/local/bin/droplive-mealie-entrypoint
 COPY --chmod=0444 bootstrap_owner.py /usr/local/lib/droplive-mealie-bootstrap-owner.py
+COPY --chmod=0444 seed_recipes.py /usr/local/lib/droplive-mealie-seed-recipes.py
 
 # The official image normally starts as root only to chown /app and then drops
 # to uid/gid 911. DropLive owns the fresh managed directory, so make ownership

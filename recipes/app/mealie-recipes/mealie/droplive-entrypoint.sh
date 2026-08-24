@@ -25,6 +25,19 @@ umask 077
 timeout -s TERM 300 python -m mealie.db.init_db
 timeout -s TERM 60 python /usr/local/lib/droplive-mealie-bootstrap-owner.py
 
+# Add the demonstration recipes only to an empty recipe collection. The seed
+# uses the supported local API after the service starts, so it does not depend
+# on Mealie's private database schema.
+if [ ! -e /app/data/droplive-recipes-seed-v1 ]; then
+  "$@" &
+  mealie_pid=$!
+  trap 'kill "$mealie_pid" 2>/dev/null || true; wait "$mealie_pid" 2>/dev/null || true' EXIT INT TERM
+  timeout -s TERM 120 python /usr/local/lib/droplive-mealie-seed-recipes.py
+  touch /app/data/droplive-recipes-seed-v1
+  wait "$mealie_pid"
+  exit $?
+fi
+
 # The application retains only the password hash. Remove bootstrap inputs from
 # the long-running process environment; BASE_URL remains required at runtime.
 unset MEALIE_BOOTSTRAP_PASSWORD MEALIE_BOOTSTRAP_EMAIL
