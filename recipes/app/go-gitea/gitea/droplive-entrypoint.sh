@@ -85,7 +85,7 @@ owner_record=$(printf '%s\n' "$all_users" | awk -v name="$GITEA_ADMIN_USERNAME" 
 if test "$user_count" -eq 0; then
   echo "[gitea-init] Creating the first administrator '$GITEA_ADMIN_USERNAME'."
   admin_password=$GITEA_ADMIN_PASSWORD
-  unset GITEA_ADMIN_PASSWORD
+  : # Keep the generated password only long enough to pass it to the seed service.
   timeout -s TERM 60 su-exec "$USER" /usr/local/bin/gitea admin user create \
     --username "$GITEA_ADMIN_USERNAME" \
     --password "$admin_password" \
@@ -95,13 +95,16 @@ if test "$user_count" -eq 0; then
   unset admin_password
 elif test "$owner_record" = "$GITEA_ADMIN_USERNAME	$GITEA_ADMIN_EMAIL	true"; then
   echo "[gitea-init] Existing administrator '$GITEA_ADMIN_USERNAME' matches the managed bootstrap identity."
-  unset GITEA_ADMIN_PASSWORD
+  : # Keep the generated password only long enough to pass it to the seed service.
 else
   echo '[gitea-init] Refusing to overwrite a non-empty database whose managed administrator identity does not match.' >&2
   exit 65
 fi
 
-unset all_users user_count owner_record GITEA_ADMIN_EMAIL
+umask 077
+printf '%s' "$GITEA_ADMIN_PASSWORD" > /run/droplive-gitea-seed-password
+chmod 0600 /run/droplive-gitea-seed-password
+unset GITEA_ADMIN_PASSWORD all_users user_count owner_record GITEA_ADMIN_EMAIL
 
 echo '[gitea-runtime] Starting the official Gitea web process on port 3000; SSH and Actions are disabled.'
 exec /usr/bin/s6-svscan /etc/s6-droplive

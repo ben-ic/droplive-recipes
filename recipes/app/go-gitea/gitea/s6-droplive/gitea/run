@@ -1,3 +1,23 @@
 #!/bin/sh
 cd /app/gitea
-exec su-exec "$USER" /usr/local/bin/gitea web
+
+seed_password_file=/run/droplive-gitea-seed-password
+seed_marker=/data/gitea/.droplive-company-seed-v1
+su-exec "$USER" /usr/local/bin/gitea web &
+gitea_pid=$!
+trap 'kill "$gitea_pid" 2>/dev/null || true; wait "$gitea_pid" 2>/dev/null || true' EXIT INT TERM
+
+if ! test -f "$seed_marker"; then
+  for attempt in $(seq 1 60); do
+    if curl --fail --silent http://127.0.0.1:3000/api/healthz >/dev/null; then break; fi
+    sleep 1
+  done
+  curl --fail --silent http://127.0.0.1:3000/api/healthz >/dev/null
+  seed_password=$(cat "$seed_password_file")
+  curl --fail --silent --user "owner:$seed_password" --header 'Content-Type: application/json' --data '{"name":"northstar-relay","description":"Northstar Relay release coordination","private":true,"auto_init":true,"readme":"Default"}' http://127.0.0.1:3000/api/v1/user/repos >/dev/null
+  curl --fail --silent --user "owner:$seed_password" --header 'Content-Type: application/json' --data '{"title":"Release readiness","body":"Confirm owner, scope, and customer communication before release."}' http://127.0.0.1:3000/api/v1/repos/owner/northstar-relay/issues >/dev/null
+  unset seed_password
+  touch "$seed_marker"
+fi
+rm -f "$seed_password_file"
+wait "$gitea_pid"
