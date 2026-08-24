@@ -3,6 +3,7 @@ kind: app
 tagline: "Application dashboard"
 description: "A highly customizable homepage (or startpage / application dashboard) with Docker and service API integrations"
 repository: https://github.com/gethomepage/homepage
+world: business.saas_company.v1
 run:
   port: 3000
   health: /
