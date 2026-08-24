@@ -3,6 +3,7 @@ kind: app
 tagline: "Git hosting service"
 description: "Self-hosted Git service with pull requests, issues, releases and a package registry"
 repository: https://github.com/go-gitea/gitea
+world: business.saas_company.v1
 run:
   port: 3000
   data:
