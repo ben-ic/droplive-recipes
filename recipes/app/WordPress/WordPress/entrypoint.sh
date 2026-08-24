@@ -29,6 +29,30 @@ trap 'kill 0 2>/dev/null || true' INT TERM EXIT
 
 while :; do
   if curl -fsSL http://127.0.0.1/wp-login.php | grep -q 'name="log"'; then
+    # The installer has completed. Add useful first-run content only to the
+    # site this recipe creates; an existing site keeps all of its own content.
+    php -r '
+      require "/var/www/html/wp-load.php";
+      if (get_option("blogname") !== "Northstar Relay" || get_option("droplive_seed_version")) {
+        exit(0);
+      }
+      $first = get_posts(["numberposts" => 1, "post_status" => "publish"]);
+      if ($first) {
+        wp_update_post([
+          "ID" => $first[0]->ID,
+          "post_title" => "Northstar Relay is live",
+          "post_content" => "Welcome to the operating journal for Northstar Relay. This site tracks product direction, customer work, and release readiness.",
+        ]);
+      }
+      foreach ([
+        ["Product direction", "Northstar Relay helps operations teams keep customer commitments, product decisions, and release work in one clear flow."],
+        ["Release readiness", "The current release review covers customer impact, support preparation, and the final rollout checklist."],
+        ["Customer notes", "This space records feedback themes and account follow-ups for the next operating review."],
+      ] as [$title, $content]) {
+        wp_insert_post(["post_type" => "page", "post_status" => "publish", "post_title" => $title, "post_content" => $content]);
+      }
+      update_option("droplive_seed_version", "northstar-v1", false);
+    '
     trap - EXIT
     wait
     exit 0
@@ -56,7 +80,7 @@ while :; do
 
   if curl -fsS 'http://127.0.0.1/wp-admin/install.php?step=1&language=en_US' | grep -q 'weblog_title'; then
     curl -fsS -o /dev/null \
-      --data-urlencode 'weblog_title=DropLive Demo' \
+      --data-urlencode 'weblog_title=Northstar Relay' \
       --data-urlencode 'user_name=admin' \
       --data-urlencode "admin_password=${WORDPRESS_ADMIN_PASSWORD}" \
       --data-urlencode "admin_password2=${WORDPRESS_ADMIN_PASSWORD}" \

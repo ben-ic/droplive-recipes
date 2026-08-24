@@ -3,6 +3,7 @@ kind: app
 tagline: "Publishing platform"
 description: "Publishing platform for websites, blogs and content-driven applications"
 repository: https://github.com/WordPress/WordPress
+world: business.saas_company.v1
 run:
   port: 80
   health:
