@@ -3,6 +3,9 @@ kind: app
 tagline: "Bookmark manager"
 description: "Simple bookmark manager built with Go"
 repository: https://github.com/go-shiori/shiori
+world: business.saas_company.v1
 run:
   port: 8080
   health: /
+  data:
+  - /data
