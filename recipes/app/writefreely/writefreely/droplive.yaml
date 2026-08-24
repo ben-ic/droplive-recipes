@@ -3,6 +3,7 @@ kind: app
 tagline: "Minimal blogging platform"
 description: "A clean, Markdown-based publishing platform made for writers. Write together and build a community"
 repository: https://github.com/writefreely/writefreely
+world: business.saas_company.v1
 run:
   port: 8080
   health: /
