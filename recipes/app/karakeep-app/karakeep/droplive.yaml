@@ -11,3 +11,10 @@ run:
     path: /api/health
     contains:
     - '"status":"ok"'
+environment:
+  # Karakeep uses this production-only value to sign local-auth JWTs. Without
+  # it, the health endpoint returns NextAuth's NO_SECRET error.
+  NEXTAUTH_SECRET:
+    owner: droplive
+    format: url-safe
+    length: 48

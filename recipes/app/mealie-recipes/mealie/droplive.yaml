@@ -8,3 +8,10 @@ run:
   data:
   - /app/data
   health: /api/app/about
+environment:
+  MEALIE_BOOTSTRAP_PASSWORD:
+    owner: droplive
+    format: url-safe
+    length: 64
+    login:
+      username: owner@local.invalid
