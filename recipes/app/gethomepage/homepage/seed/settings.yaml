@@ -1,0 +1,10 @@
+title: Northstar Relay
+headerStyle: boxed
+hideVersion: true
+layout:
+  Company:
+    style: row
+    columns: 3
+  Operations:
+    style: row
+    columns: 3

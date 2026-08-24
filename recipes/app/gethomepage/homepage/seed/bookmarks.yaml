@@ -1,0 +1,20 @@
+- Company:
+    - Product brief:
+        - href: https://example.com/product
+          description: Current product direction
+    - Customer notes:
+        - href: https://example.com/customers
+          description: Account and feedback review
+    - Team handbook:
+        - href: https://example.com/handbook
+          description: Working agreements
+- Operations:
+    - Release checklist:
+        - href: https://example.com/releases
+          description: Readiness and follow-up tasks
+    - Support queue:
+        - href: https://example.com/support
+          description: Customer request triage
+    - Finance review:
+        - href: https://example.com/finance
+          description: Monthly operating review
