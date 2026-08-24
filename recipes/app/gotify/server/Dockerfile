@@ -7,4 +7,11 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
       org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
       org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
 
+COPY --chmod=0555 droplive-entrypoint.sh /usr/local/bin/droplive-gotify-entrypoint
+
+ENV GOTIFY_DEFAULTUSER_NAME=admin \
+    GOTIFY_REGISTRATION=false
+
+VOLUME ["/app/data"]
 EXPOSE 80
+ENTRYPOINT ["/usr/local/bin/droplive-gotify-entrypoint"]

@@ -3,6 +3,15 @@ kind: app
 tagline: "Push message delivery"
 description: "A simple server for sending and receiving messages in real-time per WebSocket. (Includes a sleek web-ui)"
 repository: https://github.com/gotify/server
+world: business.saas_company.v1
 run:
   port: 80
+  data:
+  - /app/data
   health: /health
+environment:
+  GOTIFY_DEFAULTUSER_PASS:
+    owner: droplive
+    format: url-safe
+    login:
+      username: admin
