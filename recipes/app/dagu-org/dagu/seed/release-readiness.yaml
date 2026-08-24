@@ -1,0 +1,17 @@
+name: release-readiness
+description: Collect the release checks that the product team must review.
+type: chain
+artifacts:
+  enabled: true
+steps:
+  - id: prepare_review
+    name: Prepare release review
+    run: |
+      set -eu
+      cat > "${DAG_RUN_ARTIFACTS_DIR}/release-readiness.txt" <<'EOF'
+      Release 2.8 review
+      - Check the deploy health report
+      - Review open product issues
+      - Confirm customer communication
+      EOF
+      printf 'Release review packet is ready.\n'

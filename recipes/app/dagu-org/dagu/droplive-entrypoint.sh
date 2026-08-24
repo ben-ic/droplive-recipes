@@ -35,13 +35,14 @@ fi
 unset password_length password_charset
 
 mkdir -p /var/lib/dagu/dags
-seed_marker=/var/lib/dagu/.droplive-starter-v1
+seed_marker=/var/lib/dagu/.droplive-starter-v2
 if test ! -e "$seed_marker"; then
-  if test ! -e /var/lib/dagu/dags/droplive-welcome.yaml; then
-    cp /opt/droplive/starter.yaml /var/lib/dagu/dags/droplive-welcome.yaml
-  fi
-  # Record that first-volume initialization completed. If an owner later
-  # deletes the starter DAG, restart/redeploy must respect that choice.
+  for source in /opt/droplive/dags/*.yaml; do
+    target=/var/lib/dagu/dags/$(basename "$source")
+    test -e "$target" || cp "$source" "$target"
+  done
+  # Record first-volume initialization. Later restarts do not recreate a
+  # workflow that the owner removed.
   : > "$seed_marker"
 fi
 unset seed_marker
