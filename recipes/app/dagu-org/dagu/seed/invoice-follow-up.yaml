@@ -1,0 +1,17 @@
+name: invoice-follow-up
+description: Prepare a finance follow-up for an overdue customer invoice.
+type: chain
+artifacts:
+  enabled: true
+steps:
+  - id: draft_follow_up
+    name: Draft finance follow-up
+    run: |
+      set -eu
+      cat > "${DAG_RUN_ARTIFACTS_DIR}/invoice-follow-up.txt" <<'EOF'
+      Invoice follow-up
+      Customer: Lumen Labs
+      Invoice: 4471
+      Next action: confirm payment status before sending a reminder
+      EOF
+      printf 'Finance follow-up packet is ready.\n'

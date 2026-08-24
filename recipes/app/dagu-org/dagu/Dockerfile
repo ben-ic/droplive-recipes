@@ -24,14 +24,14 @@ RUN rm -f /etc/sudoers.d/99-dagu /usr/bin/sudo && \
 
 COPY --chmod=0555 droplive-entrypoint.sh /usr/local/bin/droplive-entrypoint
 COPY --chmod=0555 healthcheck.sh /usr/local/bin/droplive-healthcheck
-COPY --chown=1000:1000 --chmod=0444 starter.yaml /opt/droplive/starter.yaml
+COPY --chown=1000:1000 --chmod=0444 seed/ /opt/droplive/dags/
 RUN chmod 0755 /opt/droplive
 
 LABEL org.opencontainers.image.version="2.7.5" \
       org.opencontainers.image.revision="e8ba3ef2387cc93cbcf609e15fd0b3f249f0e51e" \
       org.opencontainers.image.source="https://github.com/dagucloud/dagu" \
       org.opencontainers.image.licenses="GPL-3.0-only" \
-      io.droplive.recipe-modification="Removed passwordless sudo, deterministic non-root runtime, generated initial owner, bounded concurrency, and managed persistence"
+      io.droplive.recipe-modification="Removed passwordless sudo, deterministic non-root runtime, generated initial owner, bounded concurrency, managed persistence, and four safe starter workflows"
 LABEL io.droplive.data-backup=files
 
 ENV DAGU_HOME=/var/lib/dagu \
