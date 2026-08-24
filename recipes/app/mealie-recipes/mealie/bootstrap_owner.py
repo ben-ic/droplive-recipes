@@ -33,8 +33,12 @@ def main() -> None:
         raise RuntimeError("MEALIE_BOOTSTRAP_EMAIL must be a valid email address")
     if email == settings._DEFAULT_EMAIL.strip().lower():
         raise RuntimeError("MEALIE_BOOTSTRAP_EMAIL must not use Mealie's demonstration address")
-    if len(password) != 64 or not re.fullmatch(r"[A-Za-z0-9_-]{64}", password):
-        raise RuntimeError("MEALIE_BOOTSTRAP_PASSWORD must be a 64-character URL-safe password")
+    # Mealie accepts a URL-safe owner password of at least 16 characters. Do
+    # not require an arbitrary exact size: earlier DropLive installs retain a
+    # valid 43-character generated secret, and the login credential must match
+    # the password used to initialize the owner account.
+    if len(password) < 16 or not re.fullmatch(r"[A-Za-z0-9_-]+", password):
+        raise RuntimeError("MEALIE_BOOTSTRAP_PASSWORD must be a URL-safe password of at least 16 characters")
 
     with session_context() as session:
         users = list(session.execute(select(User)).scalars())
