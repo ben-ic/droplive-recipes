@@ -3,6 +3,7 @@ kind: app
 tagline: "Feed dashboard"
 description: "A self-hosted dashboard that puts all your feeds in one place"
 repository: https://github.com/glanceapp/glance
+world: business.saas_company.v1
 run:
   port: 8080
   data:

@@ -9,11 +9,11 @@ auth:
       password-hash: "@@GLANCE_ADMIN_PASSWORD_HASH@@"
 
 branding:
-  app-name: My Glance
-  logo-text: G
+  app-name: Northstar Relay
+  logo-text: N
 
 pages:
-  - name: Home
+  - name: Operations
     hide-desktop-navigation: true
     columns:
       - size: small
@@ -36,19 +36,19 @@ pages:
 
           - type: bookmarks
             groups:
-              - title: Everyday
+              - title: Company work
                 links:
-                  - title: Wikipedia
-                    url: https://www.wikipedia.org/
-                    description: Learn something new
-                  - title: Internet Archive
-                    url: https://archive.org/
-                    description: Books, media, and the web
-              - title: Build
+                  - title: Release 2.8
+                    url: https://github.com/
+                    description: Product release review and open issues
+                  - title: August month-end
+                    url: https://github.com/
+                    description: Finance close and customer invoice follow-up
+              - title: Team tools
                 links:
                   - title: GitHub
                     url: https://github.com/
-                    description: Code and projects
-                  - title: MDN Web Docs
-                    url: https://developer.mozilla.org/
-                    description: Learn how the web works
+                    description: Source, review, and release work
+                  - title: Customer support
+                    url: https://github.com/
+                    description: Lumen Labs and renewal follow-up
