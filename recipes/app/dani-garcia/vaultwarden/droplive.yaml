@@ -5,4 +5,6 @@ description: "Unofficial Bitwarden compatible server written in Rust, formerly k
 repository: https://github.com/dani-garcia/vaultwarden
 run:
   port: 8080
+  data:
+  - /data
   health: /alive

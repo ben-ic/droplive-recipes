@@ -5,6 +5,8 @@ description: "A self-hostable bookmark-everything app (links, notes and images) 
 repository: https://github.com/karakeep-app/karakeep
 run:
   port: 3000
+  data:
+  - /data
   health:
     path: /api/health
     contains:

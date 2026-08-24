@@ -5,6 +5,8 @@ description: "Etherpad: A modern really-real-time collaborative document editor"
 repository: https://github.com/ether/etherpad-lite
 run:
   port: 9001
+  data:
+  - /opt/etherpad-lite/var
   health:
     path: /health
     contains:

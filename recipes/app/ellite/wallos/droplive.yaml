@@ -5,6 +5,9 @@ description: "Track recurring subscriptions and what they cost each month"
 repository: https://github.com/ellite/wallos
 run:
   port: 80
+  data:
+  - /var/www/html/db
+  - /var/www/html/images/uploads/logos
   health:
     path: /health.php
     contains:

@@ -5,6 +5,8 @@ description: "Collaborative Markdown notes several people can edit at once"
 repository: https://github.com/hedgedoc/hedgedoc
 run:
   port: 3000
+  data:
+  - /hedgedoc/public/uploads
   health:
     path: /_health
     contains:

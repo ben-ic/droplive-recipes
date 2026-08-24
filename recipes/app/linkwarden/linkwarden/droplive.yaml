@@ -5,6 +5,8 @@ description: "Save, annotate and archive bookmarks, keeping a copy of the page"
 repository: https://github.com/linkwarden/linkwarden
 run:
   port: 3000
+  data:
+  - /data/data
   health: /login
 companions:
   database: postgres

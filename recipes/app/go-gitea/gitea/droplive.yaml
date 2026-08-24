@@ -5,6 +5,8 @@ description: "Self-hosted Git service with pull requests, issues, releases and a
 repository: https://github.com/go-gitea/gitea
 run:
   port: 3000
+  data:
+  - /data
   health: /api/healthz
 environment:
   GITEA_ADMIN_PASSWORD:

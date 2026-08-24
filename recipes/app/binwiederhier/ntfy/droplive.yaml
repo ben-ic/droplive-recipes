@@ -5,6 +5,8 @@ description: "Send push notifications to your phone or desktop using PUT/POST"
 repository: https://github.com/binwiederhier/ntfy
 run:
   port: 8080
+  data:
+  - /var/lib/ntfy
   health:
     path: /v1/health
     contains:

@@ -5,6 +5,8 @@ description: "An open-source, privacy-first, self-hosted knowledge workspace whe
 repository: https://github.com/siyuan-note/siyuan
 run:
   port: 6806
+  data:
+  - /data/siyuan
   health:
     path: /api/system/bootProgress
     contains:

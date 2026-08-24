@@ -5,6 +5,8 @@ description: "The minimalistic document archiving platform"
 repository: https://github.com/papra-hq/papra
 run:
   port: 1221
+  data:
+  - /app/app-data
   health:
     path: /api/health
     contains:

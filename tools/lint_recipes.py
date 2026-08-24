@@ -184,6 +184,19 @@ def build_errors(recipe_file: Path, recipe: dict[str, Any]) -> list[str]:
     return []
 
 
+def managed_data_errors(recipe_file: Path, recipe: dict[str, Any]) -> list[str]:
+    """A managed-data backup label needs the paths that it must archive."""
+
+    dockerfile = recipe_file.parent / "Dockerfile"
+    if not dockerfile.is_file() or "io.droplive.data-backup" not in dockerfile.read_text(
+        errors="replace"
+    ):
+        return []
+    if (recipe.get("run") or {}).get("data"):
+        return []
+    return ["Dockerfile has io.droplive.data-backup but run.data is empty"]
+
+
 def world_errors(recipe: dict[str, Any], capabilities: dict[str, Any]) -> list[str]:
     """A demo that already holds its world names it at the top level.
 
@@ -606,6 +619,7 @@ def main() -> int:
             + tagline_errors(recipe_file, recipe)
             + entrypoint_errors(recipe_file, recipe)
             + build_errors(recipe_file, recipe)
+            + managed_data_errors(recipe_file, recipe)
             + capability_errors(recipe, capabilities)
             + world_errors(recipe, capabilities)
             + companion_errors(recipe, companions)

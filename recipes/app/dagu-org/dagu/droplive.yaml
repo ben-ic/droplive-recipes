@@ -5,6 +5,8 @@ description: "Self-hostable workflow orchestrator for teams whose main work isn'
 repository: https://github.com/dagu-org/dagu
 run:
   port: 8080
+  data:
+  - /var/lib/dagu
   health:
     path: /api/v1/health
     contains:

@@ -5,6 +5,8 @@ description: "Automated developer-oriented status page with alerting and inciden
 repository: https://github.com/twin/gatus
 run:
   port: 8080
+  data:
+  - /data
   health:
     path: /health
     contains:

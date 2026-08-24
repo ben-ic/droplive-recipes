@@ -5,6 +5,8 @@ description: "A minimalist, self-hosted WakaTime-compatible backend for coding s
 repository: https://github.com/muety/wakapi
 run:
   port: 3000
+  data:
+  - /data
   health:
     path: /api/health
     contains:
