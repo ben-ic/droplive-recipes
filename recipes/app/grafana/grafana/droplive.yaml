@@ -3,8 +3,11 @@ kind: app
 tagline: "Metrics dashboards"
 description: "The open and composable observability and data visualization platform"
 repository: https://github.com/grafana/grafana
+world: business.saas_company.v1
 run:
   port: 3000
+  data:
+  - /var/lib/grafana
   health: /api/health
 environment:
   # Grafana falls back to admin/admin when this is unset, then asks for a new
