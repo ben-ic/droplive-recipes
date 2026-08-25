@@ -5,6 +5,7 @@ FROM ghcr.io/requarks/wiki@sha256:160986c6cb6d108269a6362985c17196756c79f682f631
 
 FROM scratch
 COPY --from=upstream / /
+COPY --chmod=0555 droplive-entrypoint.sh /usr/local/bin/droplive-wiki-entrypoint
 
 ARG DROPLIVE_SOURCE_COMMIT
 ARG DROPLIVE_SOURCE_TREE_SHA256
@@ -45,4 +46,5 @@ EXPOSE 3000
 HEALTHCHECK --start-period=30s --interval=30s --timeout=5s --retries=4 \
   CMD ["node", "-e", "fetch(\"http://127.0.0.1:3000/\").then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
 
+ENTRYPOINT ["/usr/local/bin/droplive-wiki-entrypoint"]
 CMD ["node", "--no-deprecation", "server"]

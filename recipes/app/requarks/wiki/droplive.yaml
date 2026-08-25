@@ -11,3 +11,13 @@ run:
   health: /
 companions:
   database: postgres
+environment:
+  # Wiki.js has no non-interactive first-owner setting. The entrypoint completes
+  # its local setup endpoint with this per-demo value, then puts it on the
+  # visitor sign-in card.
+  WIKI_ADMIN_PASSWORD:
+    owner: droplive
+    format: password
+    length: 24
+    login:
+      username: maya@northstar-relay.droplive.test
