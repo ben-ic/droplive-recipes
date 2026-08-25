@@ -24,7 +24,7 @@ export NEXTAUTH_URL
 /usr/local/bin/docker-entrypoint.sh "$@" &
 app_pid=$!
 
-node /usr/local/lib/droplive-linkwarden-seed.cjs &
+node /data/droplive-linkwarden-seed.cjs &
 seed_pid=$!
 
 stop() {
