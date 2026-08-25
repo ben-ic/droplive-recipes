@@ -28,4 +28,4 @@ environment:
     format: password
     length: 24
     login:
-      username: maya@northstar-relay.invalid
+      username: maya@northstar-relay.droplive.test

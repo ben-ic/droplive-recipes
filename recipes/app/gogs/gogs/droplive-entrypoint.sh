@@ -20,7 +20,7 @@ SEED=/usr/local/lib/droplive-gogs-seed.requests
 JAR=/tmp/droplive-gogs-cookies
 BASE=http://127.0.0.1:3000
 OWNER=maya
-OWNER_EMAIL=maya@northstar-relay.invalid
+OWNER_EMAIL=maya@northstar-relay.droplive.test
 
 if [ "${#APP_ADMIN_PASSWORD}" -lt 12 ]; then
   echo "APP_ADMIN_PASSWORD must contain at least 12 characters" >&2

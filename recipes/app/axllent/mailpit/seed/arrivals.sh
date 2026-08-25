@@ -34,17 +34,17 @@ API="http://127.0.0.1:${MP_HTTP_PORT:-8025}"
 # domains and no rule reads that off an id.
 address() {
   case "$1" in
-  maya-chen) echo "Maya Chen <maya@northstar-relay.invalid>" ;;
-  jon-bell) echo "Jon Bell <jon@northstar-relay.invalid>" ;;
-  noor-alvarez) echo "Noor Alvarez <noor@northstar-relay.invalid>" ;;
-  elena-petrov) echo "Elena Petrov <elena@northstar-relay.invalid>" ;;
-  samira-okafor) echo "Samira Okafor <samira@northstar-relay.invalid>" ;;
-  lucas-meyer) echo "Lucas Meyer <lucas@northstar-relay.invalid>" ;;
-  hana-ito) echo "Hana Ito <hana@northstar-relay.invalid>" ;;
-  david-banerjee) echo "David Banerjee <david@northstar-relay.invalid>" ;;
-  imani-brooks) echo "Imani Brooks <imani@northstar-relay.invalid>" ;;
-  theo-martin) echo "Theo Martin <theo@northstar-relay.invalid>" ;;
-  priya-raman) echo "Priya Raman <priya@lumen-labs.invalid>" ;;
+  maya-chen) echo "Maya Chen <maya@northstar-relay.droplive.test>" ;;
+  jon-bell) echo "Jon Bell <jon@northstar-relay.droplive.test>" ;;
+  noor-alvarez) echo "Noor Alvarez <noor@northstar-relay.droplive.test>" ;;
+  elena-petrov) echo "Elena Petrov <elena@northstar-relay.droplive.test>" ;;
+  samira-okafor) echo "Samira Okafor <samira@northstar-relay.droplive.test>" ;;
+  lucas-meyer) echo "Lucas Meyer <lucas@northstar-relay.droplive.test>" ;;
+  hana-ito) echo "Hana Ito <hana@northstar-relay.droplive.test>" ;;
+  david-banerjee) echo "David Banerjee <david@northstar-relay.droplive.test>" ;;
+  imani-brooks) echo "Imani Brooks <imani@northstar-relay.droplive.test>" ;;
+  theo-martin) echo "Theo Martin <theo@northstar-relay.droplive.test>" ;;
+  priya-raman) echo "Priya Raman <priya@lumen-labs.droplive.test>" ;;
   *) echo "" ;;
   esac
 }
@@ -82,7 +82,7 @@ deliver() {
   # parses every other message it receives. The date is now, because that is
   # when this arrived -- it is the one thing about it that is not from the world.
   {
-    printf 'Message-ID: <%s@northstar-relay.invalid>\n' "$id"
+    printf 'Message-ID: <%s@northstar-relay.droplive.test>\n' "$id"
     printf 'Date: %s\n' "$(date -R 2>/dev/null || date)"
     printf 'From: %s\n' "$from"
     printf 'To: %s\n' "$to"

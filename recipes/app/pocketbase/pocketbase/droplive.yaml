@@ -10,4 +10,4 @@ environment:
   PB_ADMIN_PASSWORD:
     owner: droplive
     login:
-      username: droplive-owner@local.invalid
+      username: droplive-owner@local.droplive.test

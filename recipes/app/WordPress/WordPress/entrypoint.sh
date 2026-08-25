@@ -84,7 +84,7 @@ while :; do
       --data-urlencode 'user_name=admin' \
       --data-urlencode "admin_password=${WORDPRESS_ADMIN_PASSWORD}" \
       --data-urlencode "admin_password2=${WORDPRESS_ADMIN_PASSWORD}" \
-      --data-urlencode 'admin_email=demo@example.invalid' \
+      --data-urlencode 'admin_email=demo@example.droplive.test' \
       --data-urlencode 'blog_public=0' \
       --data-urlencode 'language=en_US' \
       --data-urlencode 'Submit=Install WordPress' \

@@ -12,7 +12,7 @@ if ($password === '') {
     fwrite(STDERR, "FreshRSS password is absent\n");
     exit(64);
 }
-$email = 'maya.chen@example.invalid';
+$email = 'maya.chen@example.droplive.test';
 $ok = FreshRSS_user_Controller::createUser(
     'maya',
     $email,

@@ -1,12 +1,12 @@
-CLI /user-create user:jon {"username":"jon","email":"jon@northstar-relay.invalid","name":"Jon Bell"}
-CLI /user-create user:noor {"username":"noor","email":"noor@northstar-relay.invalid","name":"Noor Alvarez"}
-CLI /user-create user:elena {"username":"elena","email":"elena@northstar-relay.invalid","name":"Elena Petrov"}
-CLI /user-create user:samira {"username":"samira","email":"samira@northstar-relay.invalid","name":"Samira Okafor"}
-CLI /user-create user:lucas {"username":"lucas","email":"lucas@northstar-relay.invalid","name":"Lucas Meyer"}
-CLI /user-create user:hana {"username":"hana","email":"hana@northstar-relay.invalid","name":"Hana Ito"}
-CLI /user-create user:david {"username":"david","email":"david@northstar-relay.invalid","name":"David Banerjee"}
-CLI /user-create user:imani {"username":"imani","email":"imani@northstar-relay.invalid","name":"Imani Brooks"}
-CLI /user-create user:theo {"username":"theo","email":"theo@northstar-relay.invalid","name":"Theo Martin"}
+CLI /user-create user:jon {"username":"jon","email":"jon@northstar-relay.droplive.test","name":"Jon Bell"}
+CLI /user-create user:noor {"username":"noor","email":"noor@northstar-relay.droplive.test","name":"Noor Alvarez"}
+CLI /user-create user:elena {"username":"elena","email":"elena@northstar-relay.droplive.test","name":"Elena Petrov"}
+CLI /user-create user:samira {"username":"samira","email":"samira@northstar-relay.droplive.test","name":"Samira Okafor"}
+CLI /user-create user:lucas {"username":"lucas","email":"lucas@northstar-relay.droplive.test","name":"Lucas Meyer"}
+CLI /user-create user:hana {"username":"hana","email":"hana@northstar-relay.droplive.test","name":"Hana Ito"}
+CLI /user-create user:david {"username":"david","email":"david@northstar-relay.droplive.test","name":"David Banerjee"}
+CLI /user-create user:imani {"username":"imani","email":"imani@northstar-relay.droplive.test","name":"Imani Brooks"}
+CLI /user-create user:theo {"username":"theo","email":"theo@northstar-relay.droplive.test","name":"Theo Martin"}
 PUT /api/v1/labels label:exports {"title":"Exports","hex_color":"e74c3c"}
 PUT /api/v1/labels label:audit-page {"title":"Audit page","hex_color":"9b59b6"}
 PUT /api/v1/labels label:release {"title":"Release","hex_color":"3498db"}

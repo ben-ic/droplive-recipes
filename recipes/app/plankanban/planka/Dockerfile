@@ -19,7 +19,7 @@ USER node
 
 # Who the administrator Planka makes at startup is. Only the password is minted
 # per session, and it is declared in the recipe rather than written here.
-ENV DEFAULT_ADMIN_EMAIL=maya@northstar-relay.invalid \
+ENV DEFAULT_ADMIN_EMAIL=maya@northstar-relay.droplive.test \
     DEFAULT_ADMIN_NAME="Maya Chen" \
     DEFAULT_ADMIN_USERNAME=maya
 

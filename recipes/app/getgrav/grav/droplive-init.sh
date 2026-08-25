@@ -50,7 +50,7 @@ if [[ -n "${GRAV_ADMIN_PASSWORD:-}" && ! -e "$accounts/maya.yaml" ]]; then
     mkdir -p "$accounts"
     hash=$(php -r 'echo password_hash(getenv("GRAV_ADMIN_PASSWORD"), PASSWORD_BCRYPT);')
     cat >"$accounts/maya.yaml" <<YAML
-email: maya@northstar-relay.invalid
+email: maya@northstar-relay.droplive.test
 fullname: 'Maya Chen'
 title: 'Co-founder and CEO'
 state: enabled

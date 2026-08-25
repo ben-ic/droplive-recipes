@@ -215,7 +215,7 @@ def main():
     if not wait_for_vikunja():
         raise SystemExit("vikunja did not become ready")
     cli("user", "create", "--username", OWNER,
-        "--email", "maya@northstar-relay.invalid", "--password", OWNER_PASSWORD)
+        "--email", "maya@northstar-relay.droplive.test", "--password", OWNER_PASSWORD)
     play()
     json.dump(backdate, open(STATE, "w"))
     print("[droplive] seeded %d bindings, %d rows to date"

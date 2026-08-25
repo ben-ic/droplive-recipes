@@ -22,4 +22,4 @@ environment:
     format: alphanumeric
     length: 24
     login:
-      username: admin@example.invalid
+      username: admin@example.droplive.test

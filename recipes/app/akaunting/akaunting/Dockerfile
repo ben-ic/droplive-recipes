@@ -5,8 +5,8 @@ ENV AKAUNTING_SETUP=true \
     DB_CONNECTION=mysql \
     DB_PREFIX=dl_ \
     COMPANY_NAME="DropLive Demo" \
-    COMPANY_EMAIL=demo@example.invalid \
-    ADMIN_EMAIL=admin@example.invalid
+    COMPANY_EMAIL=demo@example.droplive.test \
+    ADMIN_EMAIL=admin@example.droplive.test
 
 ARG DROPLIVE_SOURCE_COMMIT
 ARG DROPLIVE_SOURCE_TREE_SHA256

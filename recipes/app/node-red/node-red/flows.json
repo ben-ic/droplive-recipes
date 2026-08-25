@@ -372,7 +372,7 @@
                 "billing-out"
             ]
         ],
-        "func": "const invoice = msg.payload;\nmsg.payload = {\n    ...msg.payload,\n    action: 'send the reminder',\n    to: 'accounts@' + invoice.account.toLowerCase().replace(/ /g, '') + '.invalid',\n};\nnode.status({ fill: 'red', shape: 'dot', text: invoice.number + ' overdue' });\nreturn msg;\n",
+        "func": "const invoice = msg.payload;\nmsg.payload = {\n    ...msg.payload,\n    action: 'send the reminder',\n    to: 'accounts@' + invoice.account.toLowerCase().replace(/ /g, '') + '.droplive.test',\n};\nnode.status({ fill: 'red', shape: 'dot', text: invoice.number + ' overdue' });\nreturn msg;\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,

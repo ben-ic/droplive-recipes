@@ -24,7 +24,7 @@
 
 const crypto = require('crypto');
 
-const DOMAIN = 'northstar-relay.invalid';
+const DOMAIN = 'northstar-relay.droplive.test';
 const WEBSITE_NAME = 'Northstar Relay';
 const DAYS = 45;
 // Scheduled exports first crossed the worker row limit here, the same event the
@@ -52,7 +52,7 @@ const REFERRERS = [
   ['news.ycombinator.com', '/item', 9],
   ['duckduckgo.com', '/', 6],
   ['www.reddit.com', '/r/selfhosted', 7],
-  ['lumen-labs.invalid', '/tools', 6],
+  ['lumen-labs.droplive.test', '/tools', 6],
 ];
 
 const BROWSERS = [['chrome', 46], ['firefox', 18], ['safari', 20], ['edge', 11], ['brave', 5]];
