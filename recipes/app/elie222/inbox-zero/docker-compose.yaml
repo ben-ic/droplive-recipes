@@ -29,6 +29,11 @@ services:
       # account for and does not need.
       QUEUE_BACKEND: internal
 
+      # The model emulator advertises this fixed OpenAI-compatible model. The
+      # application validates DEFAULT_LLMS during every request, including the
+      # health check, so its provider chain must name that model explicitly.
+      DEFAULT_LLMS: openai-compatible:droplive-emulated
+
       # Billing is not part of a fifteen-minute demo, and the PWA service worker
       # outlives the session it was installed from.
       NEXT_PUBLIC_BYPASS_PREMIUM_CHECKS: "true"
