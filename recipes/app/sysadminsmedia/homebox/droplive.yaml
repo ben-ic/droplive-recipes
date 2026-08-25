@@ -14,3 +14,9 @@ environment:
     owner: droplive
     format: hex
     length: 64
+  HBOX_DEMO_PASSWORD:
+    owner: droplive
+    format: password
+    length: 24
+    login:
+      username: demo@example.com

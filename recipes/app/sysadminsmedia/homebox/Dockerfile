@@ -15,7 +15,9 @@ LABEL io.droplive.data-backup=sqlite
 # mutable release-check network request. User registration remains enabled so
 # the owner can complete Homebox's normal first-user flow.
 ENV HBOX_OPTIONS_ALLOW_ANALYTICS=false \
-    HBOX_OPTIONS_GITHUB_RELEASE_CHECK=false
+    HBOX_OPTIONS_GITHUB_RELEASE_CHECK=false \
+    HBOX_OPTIONS_ALLOW_REGISTRATION=false \
+    HBOX_DEMO=true
 
 # The upstream image already carries this metadata. Repeat the managed volume
 # and single known port because DropLive's current pre-build exact-Dockerfile
