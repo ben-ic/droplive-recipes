@@ -51,6 +51,14 @@ capabilities:
     datasets:
       - google.productivity_mailbox.v1
 
+  slack.web_api.v1:
+    access:
+      - server
+    outputs:
+      base_url: server_url
+    datasets:
+      - business.saas_company.v1
+
   storage.s3.v1:
     access:
       - server
