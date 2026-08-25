@@ -9,3 +9,10 @@ run:
   health: /
   data:
   - /data
+# Shiori creates this documented first account for a new database. It has no
+# environment setting for the first password, so record the upstream value on
+# the demo card instead of leaving the visitor at an inaccessible login page.
+sign_in:
+  username: shiori
+  password: gopher
+  note: Upstream first account for a new Shiori database.
