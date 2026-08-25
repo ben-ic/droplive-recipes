@@ -171,4 +171,4 @@ Tags are mutable and are not accepted in recipe-owned Dockerfiles.
 Do not remove the digest pin or retry a failed import in a loop. First resolve an
 alternate public registry for the same upstream image, inspect its manifest, and
 replace the `FROM` value with that registry's immutable index digest. Commit the
-recipe change, rebuild it, and verify the resulting public demo before listing it.
+recipe change, rebuild it, and verify the resulting public demo before review.
