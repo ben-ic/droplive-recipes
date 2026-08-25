@@ -6,6 +6,31 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    read_only: true
+    tmpfs:
+      - /tmp
+    volumes:
+      # NOT persistence — writability.
+      #
+      # The image's own start script substitutes every NEXT_PUBLIC_* placeholder into
+      # the already-built bundles, so it rewrites files throughout `.next/server` and
+      # `.next/static` on every boot. Those values are per-session, so they cannot be
+      # baked at build time, and a read-only root filesystem refuses the rewrite:
+      #
+      #   sed: can't create temp file 'apps/web/.next/server/chunks/…XXXXXX':
+      #        Read-only file system
+      #
+      # A tmpfs cannot serve here — it would mount empty over the built application.
+      #
+      # `nocopy: true` is the important half. Docker seeds a named volume from the
+      # image on first mount; a DropLive volume STARTS EMPTY. Relying on copy-up would
+      # pass locally and fail in production, so it is turned off and the recipe's own
+      # entrypoint initializes the mount from a template baked at image build time.
+      - type: volume
+        source: next-build
+        target: /app/apps/web/.next
+        volume:
+          nocopy: true
     environment:
       NODE_ENV: production
       PORT: "3000"
@@ -28,11 +53,6 @@ services:
       # In-process queue. The hosted product uses QStash, which a demo has no
       # account for and does not need.
       QUEUE_BACKEND: internal
-
-      # The model emulator advertises this fixed OpenAI-compatible model. The
-      # application validates DEFAULT_LLMS during every request, including the
-      # health check, so its provider chain must name that model explicitly.
-      DEFAULT_LLMS: openai-compatible:droplive-emulated
 
       # Billing is not part of a fifteen-minute demo, and the PWA service worker
       # outlives the session it was installed from.
