@@ -5,20 +5,24 @@ set -eu
 : "${APP_URL:?DropLive must provide the public Wiki.js URL}"
 
 seed_marker=/wiki/data/.droplive-seeded
+bootstrap_port=3001
 
 if [ -f "$seed_marker" ]; then
   exec "$@"
 fi
 
-"$@" &
+# Keep the setup server private. The public port must not pass its HTTP health
+# check until the owner and sample pages are present; otherwise a short
+# verification session can end in the middle of a successful first setup.
+PORT="$bootstrap_port" "$@" &
 wiki_pid=$!
 
 # Wiki.js exposes its setup endpoint only until the first configuration is
 # complete. Boot it once, use that endpoint on loopback, then use its normal
 # authenticated API to write public pages. No value is copied into the image.
-node - "$APP_URL" "maya@northstar-relay.droplive.test" "$WIKI_ADMIN_PASSWORD" "$seed_marker" <<'NODE'
-const [siteUrl, email, password, marker] = process.argv.slice(2);
-const base = "http://127.0.0.1:3000";
+node - "$APP_URL" "maya@northstar-relay.droplive.test" "$WIKI_ADMIN_PASSWORD" "$seed_marker" "$bootstrap_port" <<'NODE'
+const [siteUrl, email, password, marker, port] = process.argv.slice(2);
+const base = `http://127.0.0.1:${port}`;
 
 async function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
@@ -79,7 +83,7 @@ async function main() {
 
   const create = "mutation Create($content:String!,$description:String!,$editor:String!,$isPublished:Boolean!,$isPrivate:Boolean!,$locale:String!,$path:String!,$tags:[String]!,$title:String!){pages{create(content:$content,description:$description,editor:$editor,isPublished:$isPublished,isPrivate:$isPrivate,locale:$locale,path:$path,tags:$tags,title:$title){responseResult{succeeded message}}}}";
   const pages = [
-    ["start", "Northstar Relay", "# Northstar Relay\\n\\nA small software company that automates large operational data exports.\\n\\n## This week\\n\\n- Lumen Labs needs a reliable large export.\\n- Release 2.8 needs a decision on the timeout fix.\\n- Theo starts while the team manages customer work."],
+    ["home", "Northstar Relay", "# Northstar Relay\\n\\nA small software company that automates large operational data exports.\\n\\n## This week\\n\\n- Lumen Labs needs a reliable large export.\\n- Release 2.8 needs a decision on the timeout fix.\\n- Theo starts while the team manages customer work."],
     ["customers", "Customers", "# Customers\\n\\n## Lumen Labs\\nNorthstar Scale plan. Renewal depends on a reliable export.\\n\\n## Ember Commerce\\nNorthstar Growth plan. Preparing release-readiness feedback.\\n\\n## Fieldnote Studio\\nNorthstar Team plan. Requests a simpler finance export."],
     ["work", "Work in flight", "# Work in flight\\n\\n- **Lumen renewal** — active, load and cancellation tests remain.\\n- **Release 2.8** — at risk until the export timeout decision.\\n- **Theo onboarding** — staging access still needs an owner."],
     ["export-incident", "The export incident", "# The export incident\\n\\nScheduled exports above 50,000 rows time out after two minutes. The team has a proposed fix, but it must pass load and cancellation tests before release."]
@@ -105,4 +109,6 @@ if [ "$seed_status" -ne 0 ]; then
   exit "$seed_status"
 fi
 
-wait "$wiki_pid"
+kill "$wiki_pid" 2>/dev/null || true
+wait "$wiki_pid" 2>/dev/null || true
+exec "$@"
