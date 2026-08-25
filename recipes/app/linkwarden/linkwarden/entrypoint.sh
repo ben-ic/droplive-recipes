@@ -17,4 +17,21 @@ case "$NEXTAUTH_URL" in
 esac
 export NEXTAUTH_URL
 
-exec /usr/local/bin/docker-entrypoint.sh "$@"
+# Migrations are part of Linkwarden's own command. Start that command first,
+# then seed through the application's pinned Prisma client after its schema is
+# ready. The seed is independent of the web process, so an RSS-style first-run
+# timing race cannot prevent the login page from serving.
+/usr/local/bin/docker-entrypoint.sh "$@" &
+app_pid=$!
+
+node /data/droplive-linkwarden-seed.cjs &
+seed_pid=$!
+
+stop() {
+  kill "$seed_pid" "$app_pid" 2>/dev/null || true
+  wait "$seed_pid" 2>/dev/null || true
+  wait "$app_pid" 2>/dev/null || true
+}
+trap stop INT TERM
+
+wait "$app_pid"
