@@ -1,11 +1,11 @@
 NORTHSTAR RELAY
-northstar-relay.invalid
+northstar-relay.droplive.test
 
 INVOICE 2607-42
 
 Bill to      Ember Commerce
              Ravi Okonkwo
-             ravi@ember-commerce.invalid
+             ravi@ember-commerce.droplive.test
 
 Issued       2026-07-05
 Due          2026-08-05
@@ -18,4 +18,4 @@ Total due                                               289.00 USD
 Status       PAID
 Paid         2026-08-05
 
-Questions about this invoice go to noor@northstar-relay.invalid.
+Questions about this invoice go to noor@northstar-relay.droplive.test.

@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-# droplive: generate=hex64 ownership=app purpose=owner-bootstrap lifecycle=stable rotation=app name=MEALIE_BOOTSTRAP_PASSWORD capability=owner-login username=owner@local.invalid
+# droplive: generate=hex64 ownership=app purpose=owner-bootstrap lifecycle=stable rotation=app name=MEALIE_BOOTSTRAP_PASSWORD capability=owner-login username=owner@local.droplive.test
 : "${MEALIE_BOOTSTRAP_PASSWORD:?DropLive must generate the initial owner password}"
 : "${MEALIE_BOOTSTRAP_EMAIL:?The recipe must provide the initial owner email address}"
 : "${BASE_URL:?DropLive must derive the public application URL}"

@@ -15,7 +15,7 @@ A design studio with a small annual Northstar plan.
 | Plan | Northstar Team plan |
 | Monthly | 99.00 USD |
 | Contact | Marta Silva, Studio manager |
-| Email | marta@fieldnote-studio.invalid |
+| Email | marta@fieldnote-studio.droplive.test |
 | Invoiced on | day 8, due day 8 |
 
 ### Billing

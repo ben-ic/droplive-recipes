@@ -21,7 +21,7 @@ COPY --chmod=0444 seed_recipes.py /usr/local/lib/droplive-mealie-seed-recipes.py
 RUN install -d -o 911 -g 911 -m 0700 /app/data
 
 ENV ALLOW_SIGNUP=false \
-    MEALIE_BOOTSTRAP_EMAIL=owner@local.invalid \
+    MEALIE_BOOTSTRAP_EMAIL=owner@local.droplive.test \
     TZ=UTC \
     UVICORN_WORKERS=1
 

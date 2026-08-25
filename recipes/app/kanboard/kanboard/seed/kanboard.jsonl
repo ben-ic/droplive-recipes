@@ -1,13 +1,13 @@
-{"jsonrpc":"2.0","id":"user:maya","method":"createUser","params":{"username":"maya","password":"@secret:owner-password@","name":"Maya Chen","email":"maya@northstar-relay.invalid","role":"app-admin"}}
-{"jsonrpc":"2.0","id":"user:jon","method":"createUser","params":{"username":"jon","password":"@secret:random@","name":"Jon Bell","email":"jon@northstar-relay.invalid","role":"app-user"}}
-{"jsonrpc":"2.0","id":"user:noor","method":"createUser","params":{"username":"noor","password":"@secret:random@","name":"Noor Alvarez","email":"noor@northstar-relay.invalid","role":"app-user"}}
-{"jsonrpc":"2.0","id":"user:elena","method":"createUser","params":{"username":"elena","password":"@secret:random@","name":"Elena Petrov","email":"elena@northstar-relay.invalid","role":"app-user"}}
-{"jsonrpc":"2.0","id":"user:samira","method":"createUser","params":{"username":"samira","password":"@secret:random@","name":"Samira Okafor","email":"samira@northstar-relay.invalid","role":"app-user"}}
-{"jsonrpc":"2.0","id":"user:lucas","method":"createUser","params":{"username":"lucas","password":"@secret:random@","name":"Lucas Meyer","email":"lucas@northstar-relay.invalid","role":"app-user"}}
-{"jsonrpc":"2.0","id":"user:hana","method":"createUser","params":{"username":"hana","password":"@secret:random@","name":"Hana Ito","email":"hana@northstar-relay.invalid","role":"app-user"}}
-{"jsonrpc":"2.0","id":"user:david","method":"createUser","params":{"username":"david","password":"@secret:random@","name":"David Banerjee","email":"david@northstar-relay.invalid","role":"app-user"}}
-{"jsonrpc":"2.0","id":"user:imani","method":"createUser","params":{"username":"imani","password":"@secret:random@","name":"Imani Brooks","email":"imani@northstar-relay.invalid","role":"app-user"}}
-{"jsonrpc":"2.0","id":"user:theo","method":"createUser","params":{"username":"theo","password":"@secret:random@","name":"Theo Martin","email":"theo@northstar-relay.invalid","role":"app-user"}}
+{"jsonrpc":"2.0","id":"user:maya","method":"createUser","params":{"username":"maya","password":"@secret:owner-password@","name":"Maya Chen","email":"maya@northstar-relay.droplive.test","role":"app-admin"}}
+{"jsonrpc":"2.0","id":"user:jon","method":"createUser","params":{"username":"jon","password":"@secret:random@","name":"Jon Bell","email":"jon@northstar-relay.droplive.test","role":"app-user"}}
+{"jsonrpc":"2.0","id":"user:noor","method":"createUser","params":{"username":"noor","password":"@secret:random@","name":"Noor Alvarez","email":"noor@northstar-relay.droplive.test","role":"app-user"}}
+{"jsonrpc":"2.0","id":"user:elena","method":"createUser","params":{"username":"elena","password":"@secret:random@","name":"Elena Petrov","email":"elena@northstar-relay.droplive.test","role":"app-user"}}
+{"jsonrpc":"2.0","id":"user:samira","method":"createUser","params":{"username":"samira","password":"@secret:random@","name":"Samira Okafor","email":"samira@northstar-relay.droplive.test","role":"app-user"}}
+{"jsonrpc":"2.0","id":"user:lucas","method":"createUser","params":{"username":"lucas","password":"@secret:random@","name":"Lucas Meyer","email":"lucas@northstar-relay.droplive.test","role":"app-user"}}
+{"jsonrpc":"2.0","id":"user:hana","method":"createUser","params":{"username":"hana","password":"@secret:random@","name":"Hana Ito","email":"hana@northstar-relay.droplive.test","role":"app-user"}}
+{"jsonrpc":"2.0","id":"user:david","method":"createUser","params":{"username":"david","password":"@secret:random@","name":"David Banerjee","email":"david@northstar-relay.droplive.test","role":"app-user"}}
+{"jsonrpc":"2.0","id":"user:imani","method":"createUser","params":{"username":"imani","password":"@secret:random@","name":"Imani Brooks","email":"imani@northstar-relay.droplive.test","role":"app-user"}}
+{"jsonrpc":"2.0","id":"user:theo","method":"createUser","params":{"username":"theo","password":"@secret:random@","name":"Theo Martin","email":"theo@northstar-relay.droplive.test","role":"app-user"}}
 {"jsonrpc":"2.0","id":"project:release-28","method":"createProject","params":{"name":"Release 2.8","description":"Ship the audit improvements without hiding the remaining export risk.","owner_id":"@user:elena@","identifier":"REL28","start_date":"2026-07-27","end_date":"2026-08-27"}}
 {"jsonrpc":"2.0","id":"-","method":"addProjectUser","params":{"project_id":"@project:release-28@","user_id":"@user:elena@","role":"project-manager"}}
 {"jsonrpc":"2.0","id":"-","method":"addProjectUser","params":{"project_id":"@project:release-28@","user_id":"@user:jon@","role":"project-member"}}

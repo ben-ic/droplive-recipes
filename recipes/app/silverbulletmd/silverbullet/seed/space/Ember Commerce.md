@@ -9,7 +9,7 @@ An online retailer that uses scheduled exports for fulfilment reporting.
 | Plan | Northstar Growth plan |
 | Monthly | 289.00 USD |
 | Contact | Ravi Okonkwo, Data operations manager |
-| Email | ravi@ember-commerce.invalid |
+| Email | ravi@ember-commerce.droplive.test |
 | Invoiced on | day 5, due day 5 |
 
 ### Billing

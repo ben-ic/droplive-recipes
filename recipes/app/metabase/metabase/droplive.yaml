@@ -30,4 +30,4 @@ environment:
     length: 24
     pattern: '^[A-Za-z0-9!@#$%^&*_-]*[0-9][A-Za-z0-9!@#$%^&*_-]*$'
     login:
-      username: maya@northstar-relay.invalid
+      username: maya@northstar-relay.droplive.test

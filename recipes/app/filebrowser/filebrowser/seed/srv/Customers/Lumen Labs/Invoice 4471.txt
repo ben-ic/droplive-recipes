@@ -1,11 +1,11 @@
 NORTHSTAR RELAY
-northstar-relay.invalid
+northstar-relay.droplive.test
 
 INVOICE 4471
 
 Bill to      Lumen Labs
              Priya Raman
-             priya@lumen-labs.invalid
+             priya@lumen-labs.droplive.test
 
 Issued       2026-08-14
 Due          2026-08-30
@@ -17,4 +17,4 @@ Total due                                               412.00 USD
 
 Status       OPEN
 
-Questions about this invoice go to noor@northstar-relay.invalid.
+Questions about this invoice go to noor@northstar-relay.droplive.test.

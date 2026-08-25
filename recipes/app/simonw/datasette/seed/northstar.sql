@@ -8,13 +8,13 @@ CREATE TABLE organizations (
   is_northstar INTEGER NOT NULL
 );
 INSERT INTO organizations (id, name, domain, summary, is_northstar) VALUES
-('northstar-relay', 'Northstar Relay', 'northstar-relay.invalid', 'A small software company that automates large operational data exports.', 1),
-('lumen-labs', 'Lumen Labs', 'lumen-labs.invalid', 'A growing operations analytics company and Northstar''s largest upcoming renewal.', 0),
-('ember-commerce', 'Ember Commerce', 'ember-commerce.invalid', 'An online retailer that uses scheduled exports for fulfilment reporting.', 0),
-('fieldnote-studio', 'Fieldnote Studio', 'fieldnote-studio.invalid', 'A design studio with a small annual Northstar plan.', 0),
-('harbor-mobility', 'Harbor Mobility', 'harbor-mobility.invalid', 'A regional transport operator with compliance export requirements.', 0),
-('cedar-office', 'Cedar Office', 'cedar-office.invalid', 'Northstar''s office and equipment supplier.', 0),
-('cloudharbor', 'CloudHarbor', 'cloudharbor.invalid', 'A fictional infrastructure provider used by Northstar.', 0);
+('northstar-relay', 'Northstar Relay', 'northstar-relay.droplive.test', 'A small software company that automates large operational data exports.', 1),
+('lumen-labs', 'Lumen Labs', 'lumen-labs.droplive.test', 'A growing operations analytics company and Northstar''s largest upcoming renewal.', 0),
+('ember-commerce', 'Ember Commerce', 'ember-commerce.droplive.test', 'An online retailer that uses scheduled exports for fulfilment reporting.', 0),
+('fieldnote-studio', 'Fieldnote Studio', 'fieldnote-studio.droplive.test', 'A design studio with a small annual Northstar plan.', 0),
+('harbor-mobility', 'Harbor Mobility', 'harbor-mobility.droplive.test', 'A regional transport operator with compliance export requirements.', 0),
+('cedar-office', 'Cedar Office', 'cedar-office.droplive.test', 'Northstar''s office and equipment supplier.', 0),
+('cloudharbor', 'CloudHarbor', 'cloudharbor.droplive.test', 'A fictional infrastructure provider used by Northstar.', 0);
 CREATE TABLE people (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
@@ -27,22 +27,22 @@ CREATE TABLE people (
   status TEXT
 );
 INSERT INTO people (id, name, role, team, email, github_login, location, organization_id, status) VALUES
-('maya-chen', 'Maya Chen', 'Co-founder and CEO', 'leadership', 'maya@northstar-relay.invalid', 'mayac', 'London', 'northstar-relay', 'Renewal prep until 14:00'),
-('jon-bell', 'Jon Bell', 'Co-founder and CTO', 'engineering', 'jon@northstar-relay.invalid', 'jonbell', 'Bristol', 'northstar-relay', 'Load testing exports'),
-('noor-alvarez', 'Noor Alvarez', 'Operations and finance lead', 'operations', 'noor@northstar-relay.invalid', 'nooralvarez', 'Madrid', 'northstar-relay', 'Month-end preparation'),
-('elena-petrov', 'Elena Petrov', 'Product manager', 'product', 'elena@northstar-relay.invalid', 'elenap', 'Berlin', 'northstar-relay', 'Planning 2.8'),
-('samira-okafor', 'Samira Okafor', 'Customer support lead', 'support', 'samira@northstar-relay.invalid', 'samira-o', 'Dublin', 'northstar-relay', 'Watching Lumen export'),
-('lucas-meyer', 'Lucas Meyer', 'Senior engineer', 'engineering', 'lucas@northstar-relay.invalid', 'lucasmeyer', 'Hamburg', 'northstar-relay', 'Export worker fix'),
-('hana-ito', 'Hana Ito', 'Software engineer', 'engineering', 'hana@northstar-relay.invalid', 'hanaito', 'Leeds', 'northstar-relay', 'Reviewing audit page'),
-('david-banerjee', 'David Banerjee', 'Sales and partnerships', 'commercial', 'david@northstar-relay.invalid', 'davidb', 'London', 'northstar-relay', 'Customer calls'),
-('imani-brooks', 'Imani Brooks', 'Product designer', 'product', 'imani@northstar-relay.invalid', 'imanib', 'Manchester', 'northstar-relay', 'Onboarding notes'),
-('theo-martin', 'Theo Martin', 'Software engineer', 'engineering', 'theo@northstar-relay.invalid', 'theomartin', 'Glasgow', 'northstar-relay', 'Starts Monday'),
-('priya-raman', 'Priya Raman', 'Director of operations', 'external', 'priya@lumen-labs.invalid', 'priya-raman', 'Amsterdam', 'lumen-labs', NULL),
-('ravi-okonkwo', 'Ravi Okonkwo', 'Data operations manager', 'external', 'ravi@ember-commerce.invalid', 'ravi-okonkwo', 'Birmingham', 'ember-commerce', NULL),
-('marta-silva', 'Marta Silva', 'Studio manager', 'external', 'marta@fieldnote-studio.invalid', 'marta-silva', 'Porto', 'fieldnote-studio', NULL),
-('owen-price', 'Owen Price', 'Compliance systems lead', 'external', 'owen@harbor-mobility.invalid', 'owen-price', 'Cardiff', 'harbor-mobility', NULL),
-('fern-ellery', 'Fern Ellery', 'Account manager', 'external', 'fern@cedar-office.invalid', 'fern-ellery', 'London', 'cedar-office', NULL),
-('adil-hassan', 'Adil Hassan', 'Customer success engineer', 'external', 'adil@cloudharbor.invalid', 'adil-hassan', 'Paris', 'cloudharbor', NULL);
+('maya-chen', 'Maya Chen', 'Co-founder and CEO', 'leadership', 'maya@northstar-relay.droplive.test', 'mayac', 'London', 'northstar-relay', 'Renewal prep until 14:00'),
+('jon-bell', 'Jon Bell', 'Co-founder and CTO', 'engineering', 'jon@northstar-relay.droplive.test', 'jonbell', 'Bristol', 'northstar-relay', 'Load testing exports'),
+('noor-alvarez', 'Noor Alvarez', 'Operations and finance lead', 'operations', 'noor@northstar-relay.droplive.test', 'nooralvarez', 'Madrid', 'northstar-relay', 'Month-end preparation'),
+('elena-petrov', 'Elena Petrov', 'Product manager', 'product', 'elena@northstar-relay.droplive.test', 'elenap', 'Berlin', 'northstar-relay', 'Planning 2.8'),
+('samira-okafor', 'Samira Okafor', 'Customer support lead', 'support', 'samira@northstar-relay.droplive.test', 'samira-o', 'Dublin', 'northstar-relay', 'Watching Lumen export'),
+('lucas-meyer', 'Lucas Meyer', 'Senior engineer', 'engineering', 'lucas@northstar-relay.droplive.test', 'lucasmeyer', 'Hamburg', 'northstar-relay', 'Export worker fix'),
+('hana-ito', 'Hana Ito', 'Software engineer', 'engineering', 'hana@northstar-relay.droplive.test', 'hanaito', 'Leeds', 'northstar-relay', 'Reviewing audit page'),
+('david-banerjee', 'David Banerjee', 'Sales and partnerships', 'commercial', 'david@northstar-relay.droplive.test', 'davidb', 'London', 'northstar-relay', 'Customer calls'),
+('imani-brooks', 'Imani Brooks', 'Product designer', 'product', 'imani@northstar-relay.droplive.test', 'imanib', 'Manchester', 'northstar-relay', 'Onboarding notes'),
+('theo-martin', 'Theo Martin', 'Software engineer', 'engineering', 'theo@northstar-relay.droplive.test', 'theomartin', 'Glasgow', 'northstar-relay', 'Starts Monday'),
+('priya-raman', 'Priya Raman', 'Director of operations', 'external', 'priya@lumen-labs.droplive.test', 'priya-raman', 'Amsterdam', 'lumen-labs', NULL),
+('ravi-okonkwo', 'Ravi Okonkwo', 'Data operations manager', 'external', 'ravi@ember-commerce.droplive.test', 'ravi-okonkwo', 'Birmingham', 'ember-commerce', NULL),
+('marta-silva', 'Marta Silva', 'Studio manager', 'external', 'marta@fieldnote-studio.droplive.test', 'marta-silva', 'Porto', 'fieldnote-studio', NULL),
+('owen-price', 'Owen Price', 'Compliance systems lead', 'external', 'owen@harbor-mobility.droplive.test', 'owen-price', 'Cardiff', 'harbor-mobility', NULL),
+('fern-ellery', 'Fern Ellery', 'Account manager', 'external', 'fern@cedar-office.droplive.test', 'fern-ellery', 'London', 'cedar-office', NULL),
+('adil-hassan', 'Adil Hassan', 'Customer success engineer', 'external', 'adil@cloudharbor.droplive.test', 'adil-hassan', 'Paris', 'cloudharbor', NULL);
 CREATE TABLE customers (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
@@ -1073,9 +1073,9 @@ CREATE TABLE calendar_events (
   attendees TEXT NOT NULL
 );
 INSERT INTO calendar_events (id, summary, description, starts_at, ends_at, attendees) VALUES
-('event-lumen-review', 'Lumen renewal review', 'Renewal, export reliability, usage growth, and next-quarter plan.', '2026-08-25 13:00:00', '2026-08-25 13:45:00', 'maya@northstar-relay.invalid, david@northstar-relay.invalid, priya@lumen-labs.invalid'),
-('event-release-go-no-go', '2.8 go or no-go', 'Decide whether the export timeout fix enters 2.8.', '2026-08-24 11:30:00', '2026-08-24 12:00:00', 'jon@northstar-relay.invalid, elena@northstar-relay.invalid, lucas@northstar-relay.invalid'),
-('event-theo-welcome', 'Welcome Theo', 'Introductions, first-week plan, and access check.', '2026-08-24 09:30:00', '2026-08-24 10:00:00', 'theo@northstar-relay.invalid, imani@northstar-relay.invalid, jon@northstar-relay.invalid');
+('event-lumen-review', 'Lumen renewal review', 'Renewal, export reliability, usage growth, and next-quarter plan.', '2026-08-25 13:00:00', '2026-08-25 13:45:00', 'maya@northstar-relay.droplive.test, david@northstar-relay.droplive.test, priya@lumen-labs.droplive.test'),
+('event-release-go-no-go', '2.8 go or no-go', 'Decide whether the export timeout fix enters 2.8.', '2026-08-24 11:30:00', '2026-08-24 12:00:00', 'jon@northstar-relay.droplive.test, elena@northstar-relay.droplive.test, lucas@northstar-relay.droplive.test'),
+('event-theo-welcome', 'Welcome Theo', 'Introductions, first-week plan, and access check.', '2026-08-24 09:30:00', '2026-08-24 10:00:00', 'theo@northstar-relay.droplive.test, imani@northstar-relay.droplive.test, jon@northstar-relay.droplive.test');
 CREATE TABLE chat_messages (
   id TEXT PRIMARY KEY,
   channel TEXT NOT NULL,

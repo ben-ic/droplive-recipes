@@ -28,7 +28,7 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
 
 # The address of the account the image bootstraps. It is a literal the visitor
 # reads off the sign-in card, so the recipe owns it; only the password is minted.
-ENV ADMINMAIL=maya@northstar-relay.invalid
+ENV ADMINMAIL=maya@northstar-relay.droplive.test
 
 # The Northstar company, one complete request per line: the people, the four
 # accounts, their projects and activities, and four weeks of timesheets.

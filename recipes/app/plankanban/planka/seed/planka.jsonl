@@ -1,12 +1,12 @@
-POST /api/users user:jon {"email":"jon@northstar-relay.invalid","password":"@secret:random@","username":"jon","name":"Jon Bell","role":"boardUser","language":"en-GB"}
-POST /api/users user:noor {"email":"noor@northstar-relay.invalid","password":"@secret:random@","username":"noor","name":"Noor Alvarez","role":"projectOwner","language":"en-GB"}
-POST /api/users user:elena {"email":"elena@northstar-relay.invalid","password":"@secret:random@","username":"elena","name":"Elena Petrov","role":"projectOwner","language":"en-GB"}
-POST /api/users user:samira {"email":"samira@northstar-relay.invalid","password":"@secret:random@","username":"samira","name":"Samira Okafor","role":"boardUser","language":"en-GB"}
-POST /api/users user:lucas {"email":"lucas@northstar-relay.invalid","password":"@secret:random@","username":"lucas","name":"Lucas Meyer","role":"boardUser","language":"en-GB"}
-POST /api/users user:hana {"email":"hana@northstar-relay.invalid","password":"@secret:random@","username":"hana","name":"Hana Ito","role":"boardUser","language":"en-GB"}
-POST /api/users user:david {"email":"david@northstar-relay.invalid","password":"@secret:random@","username":"david","name":"David Banerjee","role":"boardUser","language":"en-GB"}
-POST /api/users user:imani {"email":"imani@northstar-relay.invalid","password":"@secret:random@","username":"imani","name":"Imani Brooks","role":"projectOwner","language":"en-GB"}
-POST /api/users user:theo {"email":"theo@northstar-relay.invalid","password":"@secret:random@","username":"theo","name":"Theo Martin","role":"boardUser","language":"en-GB"}
+POST /api/users user:jon {"email":"jon@northstar-relay.droplive.test","password":"@secret:random@","username":"jon","name":"Jon Bell","role":"boardUser","language":"en-GB"}
+POST /api/users user:noor {"email":"noor@northstar-relay.droplive.test","password":"@secret:random@","username":"noor","name":"Noor Alvarez","role":"projectOwner","language":"en-GB"}
+POST /api/users user:elena {"email":"elena@northstar-relay.droplive.test","password":"@secret:random@","username":"elena","name":"Elena Petrov","role":"projectOwner","language":"en-GB"}
+POST /api/users user:samira {"email":"samira@northstar-relay.droplive.test","password":"@secret:random@","username":"samira","name":"Samira Okafor","role":"boardUser","language":"en-GB"}
+POST /api/users user:lucas {"email":"lucas@northstar-relay.droplive.test","password":"@secret:random@","username":"lucas","name":"Lucas Meyer","role":"boardUser","language":"en-GB"}
+POST /api/users user:hana {"email":"hana@northstar-relay.droplive.test","password":"@secret:random@","username":"hana","name":"Hana Ito","role":"boardUser","language":"en-GB"}
+POST /api/users user:david {"email":"david@northstar-relay.droplive.test","password":"@secret:random@","username":"david","name":"David Banerjee","role":"boardUser","language":"en-GB"}
+POST /api/users user:imani {"email":"imani@northstar-relay.droplive.test","password":"@secret:random@","username":"imani","name":"Imani Brooks","role":"projectOwner","language":"en-GB"}
+POST /api/users user:theo {"email":"theo@northstar-relay.droplive.test","password":"@secret:random@","username":"theo","name":"Theo Martin","role":"boardUser","language":"en-GB"}
 POST /api/projects project:release-28 {"type":"shared","name":"Release 2.8","description":"Ship the audit improvements without hiding the remaining export risk."}
 POST /api/projects/@project:release-28@/project-managers - {"userId":"@user:elena@"}
 POST /api/projects/@project:release-28@/boards board:release-28 {"name":"Release 2.8","position":65536}

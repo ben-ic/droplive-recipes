@@ -94,7 +94,7 @@ seed() {
 
   # Maya is the account on the sign-in card. Metabase requires a digit in a
   # password, which is why the recipe constrains the value it mints.
-  session=$(printf '{"token":"%s","user":{"first_name":"Maya","last_name":"Chen","email":"maya@northstar-relay.invalid","password":"%s","site_name":"Northstar Relay"},"prefs":{"site_name":"Northstar Relay","site_locale":"en","allow_tracking":false}}' "$token" "$password" |
+  session=$(printf '{"token":"%s","user":{"first_name":"Maya","last_name":"Chen","email":"maya@northstar-relay.droplive.test","password":"%s","site_name":"Northstar Relay"},"prefs":{"site_name":"Northstar Relay","site_locale":"en","allow_tracking":false}}' "$token" "$password" |
     curl -s -m 60 -H 'Content-Type: application/json' --data-binary @- "$BASE/api/setup" 2>/dev/null |
     sed -n 's/.*"id":"\([^"]*\)".*/\1/p')
   [ -n "$session" ] || { echo "[droplive] metabase setup was refused; skipping seed" >&2; return 0; }

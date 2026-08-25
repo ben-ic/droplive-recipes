@@ -16,7 +16,7 @@ Three meetings decide the week of 24 August.
 
 Introductions, first-week plan, and access check.
 
-Attendees: theo@northstar-relay.invalid, imani@northstar-relay.invalid, jon@northstar-relay.invalid
+Attendees: theo@northstar-relay.droplive.test, imani@northstar-relay.droplive.test, jon@northstar-relay.droplive.test
 
 ### 2.8 go or no-go
 
@@ -24,7 +24,7 @@ Attendees: theo@northstar-relay.invalid, imani@northstar-relay.invalid, jon@nort
 
 Decide whether the export timeout fix enters 2.8.
 
-Attendees: jon@northstar-relay.invalid, elena@northstar-relay.invalid, lucas@northstar-relay.invalid
+Attendees: jon@northstar-relay.droplive.test, elena@northstar-relay.droplive.test, lucas@northstar-relay.droplive.test
 
 ### Lumen renewal review
 
@@ -32,4 +32,4 @@ Attendees: jon@northstar-relay.invalid, elena@northstar-relay.invalid, lucas@nor
 
 Renewal, export reliability, usage growth, and next-quarter plan.
 
-Attendees: maya@northstar-relay.invalid, david@northstar-relay.invalid, priya@lumen-labs.invalid
+Attendees: maya@northstar-relay.droplive.test, david@northstar-relay.droplive.test, priya@lumen-labs.droplive.test

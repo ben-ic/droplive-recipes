@@ -1,11 +1,11 @@
 NORTHSTAR RELAY
-northstar-relay.invalid
+northstar-relay.droplive.test
 
 INVOICE 2607-63
 
 Bill to      Harbor Mobility
              Owen Price
-             owen@harbor-mobility.invalid
+             owen@harbor-mobility.droplive.test
 
 Issued       2026-07-11
 Due          2026-08-11
@@ -18,4 +18,4 @@ Total due                                               356.00 USD
 Status       PAID
 Paid         2026-08-11
 
-Questions about this invoice go to noor@northstar-relay.invalid.
+Questions about this invoice go to noor@northstar-relay.droplive.test.
