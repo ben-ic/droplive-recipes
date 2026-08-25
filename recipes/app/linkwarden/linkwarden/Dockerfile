@@ -30,7 +30,10 @@ ENV NODE_ENV=production \
     NEXT_PUBLIC_CREDENTIALS_ENABLED=true
 
 COPY entrypoint.sh /usr/local/bin/droplive-linkwarden-entrypoint
-COPY seed.cjs /usr/local/lib/droplive-linkwarden-seed.cjs
+# Keep the seed beside Linkwarden's installed dependencies. Node resolves
+# `@prisma/client` relative to this file, so placing it under /usr/local would
+# make the seed silently fail before it can create the demo owner.
+COPY seed.cjs /data/droplive-linkwarden-seed.cjs
 RUN chmod 0755 /usr/local/bin/droplive-linkwarden-entrypoint
 
 VOLUME ["/data/data"]
