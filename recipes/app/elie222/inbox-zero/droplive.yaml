@@ -3,6 +3,7 @@ kind: app
 tagline: "Email assistant"
 description: "The world's best AI personal assistant for email. Open source app to help you reach inbox zero fast"
 repository: https://github.com/elie222/inbox-zero
+world: business.saas_company.v1
 run:
   port: 3000
   health:
