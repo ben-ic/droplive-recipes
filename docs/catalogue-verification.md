@@ -18,6 +18,10 @@ public launch UI:
 6. Save one secret-free screenshot of the useful screen.
 7. End the demo through the public UI.
 
+Do not list a temporary build application. The catalogue version must be created
+by the completed recipe import and must retain the exact source commit and image
+digest that the reviewer tested.
+
 If any check fails, keep the version unlisted. Fix the recipe first unless the
 evidence proves a generic platform defect.
 
