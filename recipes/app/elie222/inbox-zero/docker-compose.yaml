@@ -6,31 +6,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    read_only: true
-    tmpfs:
-      - /tmp
-    volumes:
-      # NOT persistence — writability.
-      #
-      # The image's own start script substitutes every NEXT_PUBLIC_* placeholder into
-      # the already-built bundles, so it rewrites files throughout `.next/server` and
-      # `.next/static` on every boot. Those values are per-session, so they cannot be
-      # baked at build time, and a read-only root filesystem refuses the rewrite:
-      #
-      #   sed: can't create temp file 'apps/web/.next/server/chunks/…XXXXXX':
-      #        Read-only file system
-      #
-      # A tmpfs cannot serve here — it would mount empty over the built application.
-      #
-      # `nocopy: true` is the important half. Docker seeds a named volume from the
-      # image on first mount; a DropLive volume STARTS EMPTY. Relying on copy-up would
-      # pass locally and fail in production, so it is turned off and the recipe's own
-      # entrypoint initializes the mount from a template baked at image build time.
-      - type: volume
-        source: next-build
-        target: /app/apps/web/.next
-        volume:
-          nocopy: true
     environment:
       NODE_ENV: production
       PORT: "3000"
@@ -74,6 +49,3 @@ services:
       # value, so the token is the companion's to supply. Naming it here -- as a
       # literal or as a generated value -- overrides the companion with something
       # the shim will reject.
-
-volumes:
-  next-build:
