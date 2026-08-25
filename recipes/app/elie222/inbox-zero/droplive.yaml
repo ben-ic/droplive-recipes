@@ -3,7 +3,10 @@ kind: app
 tagline: "Email assistant"
 description: "The world's best AI personal assistant for email. Open source app to help you reach inbox zero fast"
 repository: https://github.com/elie222/inbox-zero
-world: business.saas_company.v1
+# The Google mailbox fixture is the company world for this email app.  Do not
+# also name `business.saas_company.v1`: both names resolve to the same reviewed
+# world, but a recipe must select it once.
+world: google.productivity_mailbox.v1
 run:
   port: 3000
   health:
