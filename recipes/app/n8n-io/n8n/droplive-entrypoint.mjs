@@ -38,14 +38,30 @@ async function request(path, options = {}) {
 }
 
 function list(payload, path) {
-  const rows =
-    Array.isArray(payload)
-      ? payload
-      : Array.isArray(payload?.data)
-        ? payload.data
-        : payload?.results;
-  if (!Array.isArray(rows)) throw new Error(`${path}: expected a list response`);
-  return rows;
+  let candidate = payload;
+
+  // n8n has used several equivalent list envelopes across releases. The
+  // request helper removes one `data` envelope, but a fresh install can still
+  // return another envelope (for example `{data: {data: []}}`). Follow only
+  // known list keys so an unexpected error object is still reported.
+  for (let depth = 0; depth < 3; depth += 1) {
+    if (Array.isArray(candidate)) return candidate;
+    if (!candidate || typeof candidate !== "object") break;
+
+    const keys = ["data", "results", "credentials", "workflows", "items"];
+    const next = keys.map((key) => candidate[key]).find((value) => Array.isArray(value));
+
+    if (next !== undefined) return next;
+
+    const nested = keys
+      .map((key) => candidate[key])
+      .find((value) => value && typeof value === "object");
+
+    if (nested === undefined) break;
+    candidate = nested;
+  }
+
+  throw new Error(`${path}: expected a list response`);
 }
 
 async function waitForN8n() {
