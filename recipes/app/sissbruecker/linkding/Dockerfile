@@ -1,5 +1,7 @@
 FROM docker.io/sissbruecker/linkding@sha256:0c0a9a04c7ebd644293c37f98710872fe7cdff0ea1ff7fd9be4d235e4c4678d2
 
+COPY --chmod=0555 droplive-entrypoint.sh /usr/local/bin/droplive-linkding-entrypoint
+
 ARG DROPLIVE_SOURCE_COMMIT
 ARG DROPLIVE_SOURCE_TREE_SHA256
 ARG DROPLIVE_RUNTIME_CONTRACT_SHA256
@@ -27,5 +29,11 @@ ENV LD_ENABLE_OIDC=True
 # claim. (At the pinned emulate version Google signs HS256 with a hardcoded secret
 # and serves an empty key set, which is why these endpoints are Microsoft's.)
 ENV OIDC_RP_SIGN_ALGO=RS256
+
+# The base image owns migrations and the initial superuser. The wrapper waits for
+# that normal startup, then writes a sizeable, session-local bookmark set for a
+# disposable demo. It is gated by DROPLIVE_DEMO and a data-volume marker, so a
+# persistent deployment is never overwritten.
+ENTRYPOINT ["/usr/local/bin/droplive-linkding-entrypoint"]
 
 EXPOSE 9090
