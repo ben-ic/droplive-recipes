@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import { existsSync, writeFileSync } from "node:fs";
 
 const base = "http://127.0.0.1:8055";
-const marker = "/directus/database/.droplive-northstar-seed-v2";
+const marker = "/directus/database/.droplive-northstar-seed-v3";
 
 function fail(message) {
   throw new Error(message);
@@ -73,6 +73,18 @@ async function ensureCollection(token, collection, icon, note, fields) {
     // A partially completed seed can already have the collection. Its fields
     // and rows remain individually idempotent below.
   }
+  for (const definition of fields.filter(({ field: name }) => name !== "id")) {
+    try {
+      await request(`/fields/${collection}`, {
+        method: "POST",
+        headers: headers(token),
+        body: JSON.stringify(definition),
+      });
+    } catch {
+      // A fresh collection already has these fields. A persisted demo can have
+      // only the earlier seed, so field creation is deliberately idempotent.
+    }
+  }
 }
 
 async function grantOwnerAccess(token, collections) {
@@ -140,22 +152,22 @@ async function seedDashboard(token, dashboard, panels) {
   for (const panel of panels) await ensurePanel(token, dashboardId, panel);
 }
 
-function metricPanel(name, collection, x, y, color, note) {
+function metricPanel(name, collection, field, functionName, x, y, color, note, prefix = "", suffix = "") {
   return {
     name, icon: "analytics", color, note, type: "metric", show_header: true,
     position_x: x, position_y: y, width: 6, height: 8,
-    options: { collection, field: "id", function: "count", prefix: "", suffix: "", abbreviate: false },
+    options: { collection, field, function: functionName, prefix, suffix, abbreviate: false },
   };
 }
 
-function listPanel(name, collection, fields, x, y, width, height, note) {
+function listPanel(name, collection, displayTemplate, x, y, width, height, note) {
   return {
     name, icon: "view_list", color: "#3B82F6", note, type: "list", show_header: true,
     position_x: x, position_y: y, width, height,
-    // Directus's built-in list panel has its own field chooser. Supplying an
-    // arbitrary field list causes a GraphQL validation failure in v11. The
-    // selected collection gives the panel its supported default columns.
-    options: { collection, sort: ["-id"], limit: 6 },
+    // These are the documented v11 list-panel keys. The panel itself derives
+    // the GraphQL fields from the display template, so every visible row has
+    // a valid query and a concise operational summary.
+    options: { collection, sortField: "id", sortDirection: "desc", limit: 6, displayTemplate, linkToItem: true },
   };
 }
 
@@ -175,18 +187,19 @@ async function seed() {
   await ensureCollection(token, "customer_accounts", "groups", "The customer accounts that Northstar Relay supports.", [
     primaryKey(), field("external_ref", "string", true), field("name", "string", true), field("status", "string", true),
     field("summary", "text"), field("plan", "string"), field("renewal_date", "date"),
+    field("annual_contract_value", "integer"), field("active_seats", "integer"), field("health_score", "integer"), field("last_check_in", "date"),
   ]);
   await ensureCollection(token, "renewal_briefs", "description", "Current renewal work and the next customer action.", [
     primaryKey(), field("external_ref", "string", true), field("name", "string", true), field("status", "string", true),
-    field("summary", "text"), field("owner", "string"), field("next_action", "string"),
+    field("summary", "text"), field("owner", "string"), field("next_action", "string"), field("forecast_amount", "integer"), field("decision_date", "date"),
   ]);
   await ensureCollection(token, "support_cases", "support_agent", "Customer cases that the release team tracks through to a safe outcome.", [
     primaryKey(), field("external_ref", "string", true), field("name", "string", true), field("status", "string", true),
-    field("summary", "text"), field("owner", "string"), field("next_action", "string"), field("priority", "string"),
+    field("summary", "text"), field("owner", "string"), field("next_action", "string"), field("priority", "string"), field("opened_on", "date"), field("hours_to_next_update", "integer"),
   ]);
   await ensureCollection(token, "release_work", "rocket_launch", "The release work that connects product changes to customer commitments.", [
     primaryKey(), field("external_ref", "string", true), field("name", "string", true), field("status", "string", true),
-    field("summary", "text"), field("owner", "string"), field("next_action", "string"), field("priority", "string"),
+    field("summary", "text"), field("owner", "string"), field("next_action", "string"), field("priority", "string"), field("due_date", "date"), field("confidence_score", "integer"),
   ]);
   await grantOwnerAccess(token, ["customer_accounts", "renewal_briefs", "support_cases", "release_work"]);
   // Directus reads policy grants into the access token. Sign in again so the
@@ -200,18 +213,27 @@ async function seed() {
   if (!token) fail("Directus owner re-sign-in returned no access token");
 
   for (const item of [
-    { external_ref: "acct-lumen", name: "Lumen Labs", status: "Renewal in progress", plan: "Northstar Scale", renewal_date: "2026-08-30", summary: "Usage is up 38% since February. Invoice 4471 is open and not overdue." },
-    { external_ref: "acct-ember", name: "Ember Commerce", status: "Healthy", plan: "Northstar Growth", renewal_date: "2026-10-15", summary: "The data export team is reviewing a CSV header issue before the Q4 planning cycle." },
-    { external_ref: "acct-harbor", name: "Harbor Mobility", status: "At risk", plan: "Northstar Scale", renewal_date: "2026-09-12", summary: "A 75k-row scheduled export needs the new worker timeout before the renewal review." },
-    { external_ref: "acct-fieldnote", name: "Fieldnote Studio", status: "Healthy", plan: "Northstar Growth", renewal_date: "2026-11-03", summary: "The attachments export is stable. The customer asked for a short audit-history walkthrough." },
-    { external_ref: "acct-copper", name: "Copper Lake Foods", status: "Attention needed", plan: "Northstar Growth", renewal_date: "2026-09-28", summary: "The finance owner needs a corrected monthly export before the close review." },
-    { external_ref: "acct-cedar", name: "Cedar Health", status: "Healthy", plan: "Northstar Scale", renewal_date: "2026-12-18", summary: "The compliance workspace was added in June and adoption is on plan." },
+    { external_ref: "acct-lumen", name: "Lumen Labs", status: "Renewal in progress", plan: "Northstar Scale", renewal_date: "2026-08-30", annual_contract_value: 186000, active_seats: 184, health_score: 62, last_check_in: "2026-08-25", summary: "Usage is up 38% since February. Invoice 4471 is open and not overdue." },
+    { external_ref: "acct-ember", name: "Ember Commerce", status: "Healthy", plan: "Northstar Growth", renewal_date: "2026-10-15", annual_contract_value: 78000, active_seats: 73, health_score: 88, last_check_in: "2026-08-22", summary: "The data export team is reviewing a CSV header issue before the Q4 planning cycle." },
+    { external_ref: "acct-harbor", name: "Harbor Mobility", status: "At risk", plan: "Northstar Scale", renewal_date: "2026-09-12", annual_contract_value: 142000, active_seats: 126, health_score: 48, last_check_in: "2026-08-25", summary: "A 75k-row scheduled export needs the new worker timeout before the renewal review." },
+    { external_ref: "acct-fieldnote", name: "Fieldnote Studio", status: "Healthy", plan: "Northstar Growth", renewal_date: "2026-11-03", annual_contract_value: 54000, active_seats: 51, health_score: 91, last_check_in: "2026-08-19", summary: "The attachments export is stable. The customer asked for a short audit-history walkthrough." },
+    { external_ref: "acct-copper", name: "Copper Lake Foods", status: "Attention needed", plan: "Northstar Growth", renewal_date: "2026-09-28", annual_contract_value: 96000, active_seats: 88, health_score: 57, last_check_in: "2026-08-24", summary: "The finance owner needs a corrected monthly export before the close review." },
+    { external_ref: "acct-cedar", name: "Cedar Health", status: "Healthy", plan: "Northstar Scale", renewal_date: "2026-12-18", annual_contract_value: 164000, active_seats: 148, health_score: 86, last_check_in: "2026-08-21", summary: "The compliance workspace was added in June and adoption is on plan." },
+    { external_ref: "acct-aurora", name: "Aurora Logistics", status: "Healthy", plan: "Northstar Scale", renewal_date: "2027-01-22", annual_contract_value: 128000, active_seats: 117, health_score: 84, last_check_in: "2026-08-18", summary: "The dispatch analytics rollout is complete and the regional manager asked for an adoption review." },
+    { external_ref: "acct-vanta", name: "Vanta Works", status: "Attention needed", plan: "Northstar Growth", renewal_date: "2026-09-05", annual_contract_value: 69000, active_seats: 64, health_score: 59, last_check_in: "2026-08-23", summary: "The operations lead needs a role-permission review before the renewal decision." },
+    { external_ref: "acct-kinetic", name: "Kinetic Energy", status: "Healthy", plan: "Northstar Scale", renewal_date: "2027-02-14", annual_contract_value: 212000, active_seats: 202, health_score: 93, last_check_in: "2026-08-20", summary: "The fleet telemetry team adopted the new scheduled reporting workflow in all regions." },
+    { external_ref: "acct-nomad", name: "Nomad Freight", status: "At risk", plan: "Northstar Growth", renewal_date: "2026-09-19", annual_contract_value: 82000, active_seats: 76, health_score: 44, last_check_in: "2026-08-25", summary: "Two supervisors report delayed weekly exports after the data-retention change." },
+    { external_ref: "acct-alder", name: "Alder & Finch", status: "Healthy", plan: "Northstar Growth", renewal_date: "2026-12-06", annual_contract_value: 61000, active_seats: 57, health_score: 89, last_check_in: "2026-08-16", summary: "The customer success team completed its quarterly business review with no open commitments." },
+    { external_ref: "acct-solis", name: "Solis Clinics", status: "Attention needed", plan: "Northstar Scale", renewal_date: "2026-10-02", annual_contract_value: 154000, active_seats: 139, health_score: 63, last_check_in: "2026-08-24", summary: "The compliance owner asked for a data-access report before the next clinical governance meeting." },
+    { external_ref: "acct-river", name: "River & Rail", status: "Healthy", plan: "Northstar Growth", renewal_date: "2027-03-11", annual_contract_value: 47000, active_seats: 43, health_score: 87, last_check_in: "2026-08-17", summary: "The small operations team expanded usage after the dispatch import improvements." },
   ]) await ensureItem(token, "customer_accounts", item);
   for (const item of [
-    { external_ref: "brief-lumen-aug", name: "Lumen Labs renewal", status: "Waiting for engineering", owner: "Maya Chen", next_action: "Send the tested export workaround before 15:00 UTC.", summary: "Keep invoice 4471 separate from the export incident. The customer needs a clear status and a safe manual retry path." },
-    { external_ref: "brief-harbor-sep", name: "Harbor Mobility renewal", status: "Risk review", owner: "Jon Bell", next_action: "Run the cancellation fixture at 75k rows and publish the result.", summary: "The interactive retry works. The scheduled route still uses the legacy worker timeout." },
-    { external_ref: "brief-copper-sep", name: "Copper Lake close review", status: "Waiting for finance", owner: "Noor Alvarez", next_action: "Send the corrected August export and confirm the reconciliation fields.", summary: "The customer needs a complete month-end file before the finance review on Friday." },
-    { external_ref: "brief-fieldnote-nov", name: "Fieldnote growth review", status: "Prepared", owner: "Maya Chen", next_action: "Share the audit-history walkthrough and confirm the attachment retention needs.", summary: "Usage is steady and the customer asked for a concise operational review." },
+    { external_ref: "brief-lumen-aug", name: "Lumen Labs renewal", status: "Waiting for engineering", owner: "Maya Chen", forecast_amount: 186000, decision_date: "2026-08-30", next_action: "Send the tested export workaround before 15:00 UTC.", summary: "Keep invoice 4471 separate from the export incident. The customer needs a clear status and a safe manual retry path." },
+    { external_ref: "brief-harbor-sep", name: "Harbor Mobility renewal", status: "Risk review", owner: "Jon Bell", forecast_amount: 142000, decision_date: "2026-09-12", next_action: "Run the cancellation fixture at 75k rows and publish the result.", summary: "The interactive retry works. The scheduled route still uses the legacy worker timeout." },
+    { external_ref: "brief-copper-sep", name: "Copper Lake close review", status: "Waiting for finance", owner: "Noor Alvarez", forecast_amount: 96000, decision_date: "2026-09-28", next_action: "Send the corrected August export and confirm the reconciliation fields.", summary: "The customer needs a complete month-end file before the finance review on Friday." },
+    { external_ref: "brief-fieldnote-nov", name: "Fieldnote growth review", status: "Prepared", owner: "Maya Chen", forecast_amount: 54000, decision_date: "2026-11-03", next_action: "Share the audit-history walkthrough and confirm the attachment retention needs.", summary: "Usage is steady and the customer asked for a concise operational review." },
+    { external_ref: "brief-nomad-sep", name: "Nomad Freight recovery review", status: "Executive check-in", owner: "Samira Okafor", forecast_amount: 82000, decision_date: "2026-09-19", next_action: "Agree the export-reliability recovery plan with the operations sponsor.", summary: "Two supervisors report late weekly exports. The renewal decision needs an agreed recovery milestone." },
+    { external_ref: "brief-solis-oct", name: "Solis Clinics governance review", status: "Prepared", owner: "Noor Alvarez", forecast_amount: 154000, decision_date: "2026-10-02", next_action: "Review the data-access evidence with the clinical governance lead.", summary: "The renewal is healthy if the audit report answers the compliance owner’s questions." },
   ]) await ensureItem(token, "renewal_briefs", item);
   for (const item of [
     { external_ref: "case-lumen-export", name: "Scheduled export stops at two minutes", status: "Workaround sent", priority: "High", owner: "Samira Okafor", next_action: "Update Priya after the scheduled cancellation run.", summary: "Lumen reproduces the issue at 52,184 rows. Interactive retries succeed; the scheduled route uses the legacy worker timeout." },
@@ -221,9 +243,9 @@ async function seed() {
     { external_ref: "case-harbor-timeout", name: "75k export renewal risk", status: "Engineering review", priority: "High", owner: "Jon Bell", next_action: "Attach the cancellation fixture evidence to the renewal brief.", summary: "Harbor’s renewal depends on a tested scheduled-export path for its largest data set." },
   ]) await ensureItem(token, "support_cases", item);
   for (const item of [
-    { external_ref: "rel-28-owner", name: "Confirm Release 2.8 owner and scope", status: "Complete", priority: "High", owner: "Maya Chen", next_action: "Keep the approval record with the release notes.", summary: "The release scope includes audit history and the export cancellation fix. The owner and customer communication path are confirmed." },
-    { external_ref: "rel-28-cancel", name: "Run 50k and 75k cancellation fixtures", status: "Ready for review", priority: "High", owner: "Jon Bell", next_action: "Publish results and ask Elena for release approval.", summary: "The fixture verifies worker-lease cleanup and removal of partial objects on a cancelled scheduled export." },
-    { external_ref: "rel-28-notes", name: "Approve audit-history release notes", status: "In review", priority: "Normal", owner: "Elena Petrov", next_action: "Apply the product-language edits and mark the release notes approved.", summary: "The notes explain time display and export activity entries without exposing implementation details." },
+    { external_ref: "rel-28-owner", name: "Confirm Release 2.8 owner and scope", status: "Complete", priority: "High", owner: "Maya Chen", due_date: "2026-08-25", confidence_score: 96, next_action: "Keep the approval record with the release notes.", summary: "The release scope includes audit history and the export cancellation fix. The owner and customer communication path are confirmed." },
+    { external_ref: "rel-28-cancel", name: "Run 50k and 75k cancellation fixtures", status: "Ready for review", priority: "High", owner: "Jon Bell", due_date: "2026-08-27", confidence_score: 82, next_action: "Publish results and ask Elena for release approval.", summary: "The fixture verifies worker-lease cleanup and removal of partial objects on a cancelled scheduled export." },
+    { external_ref: "rel-28-notes", name: "Approve audit-history release notes", status: "In review", priority: "Normal", owner: "Elena Petrov", due_date: "2026-08-28", confidence_score: 74, next_action: "Apply the product-language edits and mark the release notes approved.", summary: "The notes explain time display and export activity entries without exposing implementation details." },
     { external_ref: "rel-28-lumen", name: "Send Lumen workaround after release decision", status: "Blocked by approval", priority: "High", owner: "Samira Okafor", next_action: "Send Priya the safe retry path after approval.", summary: "The customer communication must not promise a release date before the cancellation evidence is accepted." },
     { external_ref: "rel-28-observe", name: "Observe first scheduled export after rollout", status: "Planned", priority: "Normal", owner: "David Banerjee", next_action: "Review latency and worker lease events at 09:00 UTC.", summary: "The release team will monitor the first production-like scheduled export and attach the observation to the support case." },
   ]) await ensureItem(token, "release_work", item);
@@ -232,33 +254,33 @@ async function seed() {
     name: "Northstar Command Center", icon: "space_dashboard", color: "#2563EB",
     note: "The live customer, support, and release picture for the week.",
   }, [
-    metricPanel("Customers in view", "customer_accounts", 1, 1, "#2563EB", "Accounts with active renewal or support work."),
-    metricPanel("Open support cases", "support_cases", 7, 1, "#DC2626", "Cases that need customer or engineering follow-up."),
-    metricPanel("Release work items", "release_work", 13, 1, "#7C3AED", "The work that protects the next customer commitment."),
-    listPanel("Customer attention queue", "customer_accounts", ["name", "status", "plan", "renewal_date"], 1, 9, 12, 14, "Renewals and accounts that need a decision."),
-    listPanel("Support handoffs", "support_cases", ["name", "priority", "status", "owner", "next_action"], 13, 9, 12, 14, "Customer commitments with a named next action."),
+    metricPanel("Contract value", "customer_accounts", "annual_contract_value", "sum", 1, 1, "#2563EB", "Annual contract value across the operating portfolio.", "$"),
+    metricPanel("Active seats", "customer_accounts", "active_seats", "sum", 7, 1, "#0F766E", "People actively using Northstar Relay.", "", " seats"),
+    metricPanel("Portfolio health", "customer_accounts", "health_score", "avg", 13, 1, "#F59E0B", "Average account health score across the portfolio.", "", "/100"),
+    listPanel("Customer attention queue", "customer_accounts", "{{ name }} · {{ status }} · renewal {{ renewal_date }}", 1, 9, 12, 14, "Renewals and accounts that need a decision."),
+    listPanel("Support handoffs", "support_cases", "{{ name }} · {{ priority }} · {{ owner }}", 13, 9, 12, 14, "Customer commitments with a named next action."),
   ]);
   await seedDashboard(token, {
     name: "Release Readiness", icon: "rocket_launch", color: "#7C3AED",
     note: "A working release board: ownership, evidence, approvals, and customer communication.",
   }, [
-    metricPanel("Ready for review", "release_work", 1, 1, "#16A34A", "Release work with evidence prepared for review."),
-    metricPanel("Renewal briefs", "renewal_briefs", 7, 1, "#F59E0B", "Customer reviews linked to the release decision."),
-    listPanel("Release board", "release_work", ["name", "priority", "status", "owner", "next_action"], 1, 9, 12, 16, "What ships next, who owns it, and what blocks it."),
-    listPanel("Customer communication", "renewal_briefs", ["name", "status", "owner", "next_action"], 13, 9, 12, 16, "Customer reviews that depend on a safe release result."),
+    metricPanel("Release confidence", "release_work", "confidence_score", "avg", 1, 1, "#16A34A", "Average confidence from release evidence and approval readiness.", "", "/100"),
+    metricPanel("Work in flight", "release_work", "id", "count", 7, 1, "#7C3AED", "Release commitments with an owner and next action."),
+    listPanel("Release board", "release_work", "{{ name }} · {{ status }} · {{ owner }}", 1, 9, 12, 16, "What ships next, who owns it, and what blocks it."),
+    listPanel("Customer communication", "renewal_briefs", "{{ name }} · {{ status }} · {{ owner }}", 13, 9, 12, 16, "Customer reviews that depend on a safe release result."),
   ]);
   await seedDashboard(token, {
     name: "Customer Health Review", icon: "favorite", color: "#0F766E",
     note: "Prepare the weekly customer operating review from real support and renewal work.",
   }, [
-    metricPanel("Accounts tracked", "customer_accounts", 1, 1, "#0F766E", "Customer accounts reviewed this week."),
-    metricPanel("Renewal briefs", "renewal_briefs", 7, 1, "#F59E0B", "Active customer renewal and close-review briefs."),
-    listPanel("Renewal work", "renewal_briefs", ["name", "status", "owner", "next_action"], 1, 9, 12, 16, "The next customer action is visible without opening each record."),
-    listPanel("Case follow-up", "support_cases", ["name", "priority", "status", "owner", "next_action"], 13, 9, 12, 16, "Support work that can change a customer outcome."),
+    metricPanel("Renewal value", "renewal_briefs", "forecast_amount", "sum", 1, 1, "#0F766E", "Forecast value of customer decisions in the review window.", "$"),
+    metricPanel("Accounts tracked", "customer_accounts", "id", "count", 7, 1, "#F59E0B", "Customer accounts reviewed this week."),
+    listPanel("Renewal work", "renewal_briefs", "{{ name }} · {{ status }} · {{ owner }}", 1, 9, 12, 16, "The next customer action is visible without opening each record."),
+    listPanel("Case follow-up", "support_cases", "{{ name }} · {{ priority }} · {{ owner }}", 13, 9, 12, 16, "Support work that can change a customer outcome."),
   ]);
 
   writeFileSync(marker, "seeded\n", { mode: 0o600 });
-  console.error("[droplive] seeded Directus with 6 accounts, 4 renewal briefs, 5 support cases, 5 release-work items, and 3 dashboards");
+  console.error("[droplive] seeded Directus with 13 accounts, 6 renewal briefs, 5 support cases, 5 release-work items, and 3 dashboards");
 }
 
 const child = spawn("docker-entrypoint.sh", process.argv.slice(2), { stdio: "inherit" });
