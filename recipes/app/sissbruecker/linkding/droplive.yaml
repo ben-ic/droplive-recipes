@@ -14,6 +14,11 @@ environment:
     owner: droplive
     login:
       username: maya@northstar-relay.droplive.test
+  # The DropLive edge terminates HTTPS before the app. Linkding must trust the
+  # assigned public origin or Django rejects the normal login POST with 403.
+  LD_CSRF_TRUSTED_ORIGINS:
+    owner: droplive
+    role: public_origin
 
 # linkding signs in through OIDC, and the demo points it at the reviewed API
 # fixture rather than at Microsoft. The four endpoints and both client values are
