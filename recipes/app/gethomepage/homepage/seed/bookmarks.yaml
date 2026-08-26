@@ -1,20 +1,35 @@
 - Company:
     - Product brief:
         - href: https://example.com/product
-          description: Current product direction
+          description: Three release decisions awaiting approval
     - Customer notes:
         - href: https://example.com/customers
-          description: Account and feedback review
+          description: 13 active accounts; three need attention
     - Team handbook:
         - href: https://example.com/handbook
-          description: Working agreements
+          description: On-call, escalation, and customer communication playbooks
+    - Delivery scorecard:
+        - href: https://example.com/scorecard
+          description: 84% release confidence; five items; two open approvals
+    - Decision log:
+        - href: https://example.com/decisions
+          description: Six operating decisions; two owner responses pending
 - Operations:
     - Release checklist:
         - href: https://example.com/releases
-          description: Readiness and follow-up tasks
+          description: Release 2.8 has 14 of 16 checks complete
     - Support queue:
         - href: https://example.com/support
-          description: Customer request triage
+          description: Eight open cases; three high-priority handoffs
     - Finance review:
         - href: https://example.com/finance
-          description: Monthly operating review
+          description: Invoice 4471 paid; two renewal briefs due this week
+    - Renewal watchlist:
+        - href: https://example.com/renewals
+          description: Lumen, Nomad, Solis, and Vanta renewal work
+    - Incident handoff:
+        - href: https://example.com/incidents
+          description: Export recovery has a customer update due before 15:00
+    - Weekly rhythm:
+        - href: https://example.com/calendar
+          description: Customer review Tue; release gate Thu; operations review Fri
