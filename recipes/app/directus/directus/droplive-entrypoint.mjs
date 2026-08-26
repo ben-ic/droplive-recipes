@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import { existsSync, writeFileSync } from "node:fs";
 
 const base = "http://127.0.0.1:8055";
-const marker = "/directus/database/.droplive-northstar-seed-v1";
+const marker = "/directus/database/.droplive-northstar-seed-v2";
 
 function fail(message) {
   throw new Error(message);
@@ -107,6 +107,58 @@ async function ensureItem(token, collection, item) {
   });
 }
 
+async function ensureDashboard(token, dashboard) {
+  const current = await request(
+    `/dashboards?filter[name][_eq]=${encodeURIComponent(dashboard.name)}&fields=id&limit=1`,
+    { headers: headers(token) },
+  );
+  if (current?.data?.length) return current.data[0].id;
+  const created = await request("/dashboards", {
+    method: "POST",
+    headers: headers(token),
+    body: JSON.stringify(dashboard),
+  });
+  return created?.data?.id;
+}
+
+async function ensurePanel(token, dashboard, panel) {
+  const current = await request(
+    `/panels?filter[dashboard][_eq]=${encodeURIComponent(dashboard)}&filter[name][_eq]=${encodeURIComponent(panel.name)}&fields=id&limit=1`,
+    { headers: headers(token) },
+  );
+  if (current?.data?.length) return;
+  await request("/panels", {
+    method: "POST",
+    headers: headers(token),
+    body: JSON.stringify({ dashboard, ...panel }),
+  });
+}
+
+async function seedDashboard(token, dashboard, panels) {
+  const dashboardId = await ensureDashboard(token, dashboard);
+  if (!dashboardId) fail(`Dashboard ${dashboard.name} was not created`);
+  for (const panel of panels) await ensurePanel(token, dashboardId, panel);
+}
+
+function metricPanel(name, collection, x, y, color, note) {
+  return {
+    name, icon: "analytics", color, note, type: "metric", show_header: true,
+    position_x: x, position_y: y, width: 6, height: 8,
+    options: { collection, field: "id", function: "count", prefix: "", suffix: "", abbreviate: false },
+  };
+}
+
+function listPanel(name, collection, fields, x, y, width, height, note) {
+  return {
+    name, icon: "view_list", color: "#3B82F6", note, type: "list", show_header: true,
+    position_x: x, position_y: y, width, height,
+    // Directus's built-in list panel has its own field chooser. Supplying an
+    // arbitrary field list causes a GraphQL validation failure in v11. The
+    // selected collection gives the panel its supported default columns.
+    options: { collection, sort: ["-id"], limit: 6 },
+  };
+}
+
 async function seed() {
   if (existsSync(marker)) return;
   const password = process.env.ADMIN_PASSWORD;
@@ -176,8 +228,37 @@ async function seed() {
     { external_ref: "rel-28-observe", name: "Observe first scheduled export after rollout", status: "Planned", priority: "Normal", owner: "David Banerjee", next_action: "Review latency and worker lease events at 09:00 UTC.", summary: "The release team will monitor the first production-like scheduled export and attach the observation to the support case." },
   ]) await ensureItem(token, "release_work", item);
 
+  await seedDashboard(token, {
+    name: "Northstar Command Center", icon: "space_dashboard", color: "#2563EB",
+    note: "The live customer, support, and release picture for the week.",
+  }, [
+    metricPanel("Customers in view", "customer_accounts", 1, 1, "#2563EB", "Accounts with active renewal or support work."),
+    metricPanel("Open support cases", "support_cases", 7, 1, "#DC2626", "Cases that need customer or engineering follow-up."),
+    metricPanel("Release work items", "release_work", 13, 1, "#7C3AED", "The work that protects the next customer commitment."),
+    listPanel("Customer attention queue", "customer_accounts", ["name", "status", "plan", "renewal_date"], 1, 9, 12, 14, "Renewals and accounts that need a decision."),
+    listPanel("Support handoffs", "support_cases", ["name", "priority", "status", "owner", "next_action"], 13, 9, 12, 14, "Customer commitments with a named next action."),
+  ]);
+  await seedDashboard(token, {
+    name: "Release Readiness", icon: "rocket_launch", color: "#7C3AED",
+    note: "A working release board: ownership, evidence, approvals, and customer communication.",
+  }, [
+    metricPanel("Ready for review", "release_work", 1, 1, "#16A34A", "Release work with evidence prepared for review."),
+    metricPanel("Renewal briefs", "renewal_briefs", 7, 1, "#F59E0B", "Customer reviews linked to the release decision."),
+    listPanel("Release board", "release_work", ["name", "priority", "status", "owner", "next_action"], 1, 9, 12, 16, "What ships next, who owns it, and what blocks it."),
+    listPanel("Customer communication", "renewal_briefs", ["name", "status", "owner", "next_action"], 13, 9, 12, 16, "Customer reviews that depend on a safe release result."),
+  ]);
+  await seedDashboard(token, {
+    name: "Customer Health Review", icon: "favorite", color: "#0F766E",
+    note: "Prepare the weekly customer operating review from real support and renewal work.",
+  }, [
+    metricPanel("Accounts tracked", "customer_accounts", 1, 1, "#0F766E", "Customer accounts reviewed this week."),
+    metricPanel("Renewal briefs", "renewal_briefs", 7, 1, "#F59E0B", "Active customer renewal and close-review briefs."),
+    listPanel("Renewal work", "renewal_briefs", ["name", "status", "owner", "next_action"], 1, 9, 12, 16, "The next customer action is visible without opening each record."),
+    listPanel("Case follow-up", "support_cases", ["name", "priority", "status", "owner", "next_action"], 13, 9, 12, 16, "Support work that can change a customer outcome."),
+  ]);
+
   writeFileSync(marker, "seeded\n", { mode: 0o600 });
-  console.error("[droplive] seeded Directus with 6 accounts, 4 renewal briefs, 5 support cases, and 5 release-work items");
+  console.error("[droplive] seeded Directus with 6 accounts, 4 renewal briefs, 5 support cases, 5 release-work items, and 3 dashboards");
 }
 
 const child = spawn("docker-entrypoint.sh", process.argv.slice(2), { stdio: "inherit" });
