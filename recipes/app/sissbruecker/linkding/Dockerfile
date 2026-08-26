@@ -15,9 +15,9 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
 # credential nobody had told them and no way to make one.
 #
 # Only the password is a secret, and DropLive mints it per demo (see
-# droplive.yaml). The username is not: it is this literal, and the same literal
-# in the recipe so the demo card can show the visitor what to type.
-ENV LD_SUPERUSER_NAME=admin
+# droplive.yaml). The username is the reviewed world identity, so OIDC finds
+# this same account and the seeded bookmarks are visible after Maya signs in.
+ENV LD_SUPERUSER_NAME=maya@northstar-relay.droplive.test
 
 # Off in the image, on because the demo has an issuer to point at. A sign-in
 # button that leads nowhere is worse than no button.

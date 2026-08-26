@@ -39,7 +39,10 @@ django.setup()
 from bookmarks.models import Bookmark, BookmarkBundle, Tag
 
 User = get_user_model()
-owner = User.objects.get(username="admin")
+owner = User.objects.get(username="maya@northstar-relay.droplive.test")
+if owner.email != owner.username:
+    owner.email = owner.username
+    owner.save(update_fields=["email"])
 now = timezone.now()
 
 records = [

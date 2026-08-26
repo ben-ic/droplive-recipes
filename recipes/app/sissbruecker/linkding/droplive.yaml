@@ -13,7 +13,7 @@ environment:
   LD_SUPERUSER_PASSWORD:
     owner: droplive
     login:
-      username: admin
+      username: maya@northstar-relay.droplive.test
 
 # linkding signs in through OIDC, and the demo points it at the reviewed API
 # fixture rather than at Microsoft. The four endpoints and both client values are
