@@ -4,6 +4,12 @@ set -eu
 # Keep the upstream bootstrap as the owner of migrations, the admin account and
 # the server process. Run it in the background so the demo-only seed can wait for
 # a healthy Django response before it touches the database.
+# The edge terminates TLS and forwards to the app. Linkding checks the browser
+# Origin on every POST, so give Django the exact per-session public origin before
+# its bootstrap reads the environment.
+if [ -n "${APP_URL:-}" ]; then
+  export LD_CSRF_TRUSTED_ORIGINS="$APP_URL"
+fi
 /etc/linkding/bootstrap.sh &
 app_pid=$!
 
