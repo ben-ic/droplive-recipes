@@ -10,6 +10,13 @@ run:
   - /meili_data
   health: /health
 environment:
+  # Setting a master key is what stops an open demo accepting writes from
+  # anyone who has the URL, and Meilisearch's own dashboard opens by asking for
+  # it. Nothing else in the session can tell the visitor what it is, so it has
+  # to be on the sign-in card. Meilisearch has no user, so the card shows the
+  # key alone under its own name.
   MEILI_MASTER_KEY:
     owner: droplive
     format: url-safe
+    login:
+      label: Admin API key

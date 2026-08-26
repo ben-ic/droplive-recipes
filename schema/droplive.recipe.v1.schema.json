@@ -379,14 +379,17 @@
         "login": {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "username"
-          ],
+          "minProperties": 1,
           "properties": {
             "username": {
               "type": "string",
               "minLength": 1,
               "maxLength": 128
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 60
             }
           }
         }

@@ -51,6 +51,17 @@ valid({
     "format": "password",
     "login": {"username": "admin"},
 })
+# Meilisearch's first screen asks for an admin API key and has no account, so a
+# card can name what the value is instead of who it belongs to.
+valid({
+    "owner": "droplive",
+    "format": "url-safe",
+    "login": {"label": "Admin API key"},
+})
+valid({
+    "owner": "droplive",
+    "login": {"username": "admin", "label": "Admin password"},
+})
 
 invalid({"owner": "recipe"})
 invalid({"owner": "optional"})
@@ -66,5 +77,9 @@ invalid({"owner": "droplive", "format": "base64", "length": 42})
 invalid({"owner": "droplive", "format": "laravel-base64", "length": 44})
 invalid({"owner": "droplive", "format": "laravel-base64", "pattern": "^.+$"})
 invalid({"owner": "droplive", "pattern": "[A-Z]+"})
+# `login` says a generated value goes on the sign-in card. An empty one says
+# nothing, and a card with neither a name nor a label is not a declaration.
+invalid({"owner": "droplive", "login": {}})
+invalid({"owner": "droplive", "login": {"role": "admin"}})
 
 print("environment schema cases passed")

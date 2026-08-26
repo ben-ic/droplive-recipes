@@ -247,9 +247,12 @@ second generator. `laravel-base64` does not accept `pattern`.
 application requires. Declare them when the application genuinely constrains the
 value, and leave them out otherwise so the default applies.
 
-`login` names the username shown beside a generated password on the demo's
-sign-in card. The username has to be a literal the visitor can read, so only the
-password is generated:
+`login` puts a generated value on the demo's sign-in card, which is the only
+place a visitor can read it. Without it the value is minted, injected, and never
+shown, and the demo dead-ends on the screen that asks for it.
+
+`username` names the account the password belongs to. It has to be a literal the
+visitor can read, so only the password is generated:
 
 ```yaml
 environment:
@@ -258,6 +261,23 @@ environment:
     login:
       username: admin
 ```
+
+`label` names what the card is handing over. It defaults to `Owner password`,
+which is wrong for anything that is not one — Meilisearch opens by asking for an
+admin API key and has no account at all, so it declares the label and no
+username, and the card shows the key alone:
+
+```yaml
+environment:
+  MEILI_MASTER_KEY:
+    owner: droplive
+    format: url-safe
+    login:
+      label: Admin API key
+```
+
+Declare at least one of the two. Declare both when the application wants a
+username beside a password that is not the owner's.
 
 An entrypoint annotation does the same job for a credential the application
 itself bootstraps — see [entrypoint declarations](#entrypoint-declarations).
