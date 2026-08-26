@@ -38,6 +38,23 @@ while True:
             raise RuntimeError("changedetection.io did not become ready for setup")
         time.sleep(0.5)
 
+# The company URL is served by the session's HTTP-target emulator.  The app
+# becomes healthy before the launcher exposes that companion hostname, so a
+# seed request made immediately after the local API is ready can create a watch
+# whose first check records the edge's temporary 404.  Wait for the primary
+# target to be reachable before creating watches; this keeps the seed data
+# deterministic without changing the reviewed bindings or creating duplicates.
+while True:
+    try:
+        with urllib.request.urlopen(WANTED[0][1], timeout=10) as response:
+            if response.status == 200:
+                break
+            raise RuntimeError(f"company target returned HTTP {response.status}")
+    except (OSError, RuntimeError, urllib.error.URLError):
+        if time.monotonic() >= deadline:
+            raise RuntimeError("changedetection.io company target did not become reachable")
+        time.sleep(0.5)
+
 existing = {item.get("url") for item in current.values()} if isinstance(current, dict) else set()
 for title, url, tag, interval_seconds in WANTED:
     if url not in existing:
