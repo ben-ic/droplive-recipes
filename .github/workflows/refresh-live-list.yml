@@ -1,0 +1,33 @@
+name: refresh live list
+
+on:
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-live-list
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - run: python3 tools/update_live_now.py
+      - name: Commit a catalogue change
+        run: |
+          if git diff --quiet -- LIVE_NOW.md; then
+            echo "The public catalogue did not change."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add LIVE_NOW.md
+          git commit -m "Refresh live demo list"
+          git push

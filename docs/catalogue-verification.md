@@ -28,24 +28,12 @@ The recipe declaration is authoritative for the visitor description and
 canonical repository identity. The forge refresher can update changing forge
 facts only.
 
-## Screenshot storage
+## Screenshot evidence
 
-Store new screenshots outside the recipe directory so an asset change does not
-change the recipe build hash:
-
-```text
-catalogue-assets/<kind>/<owner>/<repo>/<recipe-version>-<screen>.png
-```
-
-Example:
-
-```text
-catalogue-assets/app/paperless-ngx/paperless-ngx/recipe-a4749af91936-documents.png
-```
-
-Use a useful dashboard, editor, library, document view, or completed first-run
-screen. Do not capture a password, API key, credential card, loading state,
-error, or filled login form.
+Keep the screenshot with the browser-review record. Do not commit it to this
+recipe source repository. Use a useful dashboard, editor, library, document
+view, or completed first-run screen. Do not capture a password, API key,
+credential card, loading state, error, or filled login form.
 
 ## Catalogue reconciliation
 
@@ -56,7 +44,7 @@ catalogue checkpoint, record or verify for every visible app:
 - browser-verification status;
 - login and first-run guidance;
 - emulator and BYOK behavior;
-- the screenshot asset.
+- the browser-review evidence.
 
 An unfinished recipe can remain in this repository as an unlisted candidate.
 A visible app must use the current verified recipe contract.

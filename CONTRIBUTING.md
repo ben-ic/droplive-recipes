@@ -60,6 +60,7 @@ python3 tools/lint_recipes.py
 python3 tools/test_environment_schema.py
 python3 tools/test_kind_schema.py
 python3 tools/test_entrypoint_rules.py
+python3 tools/test_byok_schema.py
 ```
 
 Unknown keys fail validation by design.
