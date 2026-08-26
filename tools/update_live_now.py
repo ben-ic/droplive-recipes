@@ -243,17 +243,19 @@ def render(rows: list[dict[str, Any]]) -> str:
         f"[public DropLive catalogue]({CATALOG_URL}). "
         "Do not edit it by hand.",
         "",
-        "| Project | What it does | Sample data | Try now |",
+        "| Project | What it does | Sample data | Try it |",
         "| --- | --- | :---: | --- |",
     ]
 
     for row in rows:
         sample_data = "Yes" if row["has_data"] else "—"
+        slug = urlsplit(row["url"]).path.rsplit("/", 1)[-1]
         lines.append(
             f"| {table_text(row['name'])} "
             f"| {table_text(row['description'])} "
             f"| {sample_data} "
-            f"| [Try now →]({row['url']}) |"
+            f"| [![Try with DropLive](https://droplive.io/badge/{slug}.svg)]"
+            f"({row['url']}) |"
         )
 
     return "\n".join(lines) + "\n"
