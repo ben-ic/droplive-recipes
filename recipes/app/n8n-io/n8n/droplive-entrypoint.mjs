@@ -31,7 +31,10 @@ async function request(path, options = {}) {
 }
 
 async function waitForN8n() {
-  for (let attempt = 0; attempt < 60; attempt += 1) {
+  // A first boot runs database migrations before N8N serves its API. The seed
+  // is part of the demo contract, so wait for that bounded cold-start path
+  // instead of silently giving up after one minute.
+  for (let attempt = 0; attempt < 300; attempt += 1) {
     try {
       await request("/healthz");
       return;
