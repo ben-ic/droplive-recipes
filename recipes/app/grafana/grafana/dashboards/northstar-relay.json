@@ -3,22 +3,36 @@
   "title": "Northstar Relay — Release Readiness",
   "tags": ["northstar", "release"],
   "schemaVersion": 41,
-  "version": 1,
+  "version": 2,
   "time": {"from": "now-7d", "to": "now"},
   "panels": [
     {
       "id": 1,
       "type": "text",
-      "title": "Release readiness",
-      "gridPos": {"h": 7, "w": 12, "x": 0, "y": 0},
-      "options": {"mode": "markdown", "content": "## Ready for review\n\n- Confirm release owner\n- Check customer communication\n- Review support queue"}
+      "title": "Northstar Relay — operating snapshot",
+      "gridPos": {"h": 9, "w": 12, "x": 0, "y": 0},
+      "options": {"mode": "markdown", "content": "## Operating snapshot\n\n| Measure | Current signal |\n| --- | --- |\n| Customers in the operating plan | 4 — Lumen Labs, Ember Commerce, Fieldnote Studio, Harbor Mobility |\n| Open renewal anchor | Lumen Labs — invoice 4471, **$412**, due 30 August; not overdue |\n| Largest delivery risk | Scheduled exports reach the 120-second worker limit above 50k rows |\n| Next release | 2.8 — export timeout and cancellation cleanup remain the gate |\n\nThis dashboard is a read-only view of the Northstar Relay fixture. The supporting records are available in the connected company apps."}
     },
     {
       "id": 2,
       "type": "text",
-      "title": "Customer notes",
-      "gridPos": {"h": 7, "w": 12, "x": 12, "y": 0},
-      "options": {"mode": "markdown", "content": "## Three interviews ready\n\nCustomer feedback is prepared for the release review."}
+      "title": "Renewal watch",
+      "gridPos": {"h": 9, "w": 12, "x": 12, "y": 0},
+      "options": {"mode": "markdown", "content": "## Renewal watch\n\n- **Lumen Labs** — usage is up 38% since February. A 48k-row export finishes in 1m34s; 52k reaches the worker limit.\n- **Ember Commerce** — scheduled exports support fulfilment reporting; the CSV header order issue is waiting for customer confirmation.\n- **Fieldnote Studio** — attachment export is stable; the customer asked for an audit-history walkthrough.\n- **Harbor Mobility** — a 75k-row scheduled export needs the worker timeout change before its renewal review.\n\n**Next customer action:** send the tested Lumen workaround before 15:00 UTC. Keep billing separate from the export incident."}
+    },
+    {
+      "id": 3,
+      "type": "text",
+      "title": "Release 2.8 gate",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 9},
+      "options": {"mode": "markdown", "content": "## Release 2.8 gate\n\n| Check | State | Owner / evidence |\n| --- | --- | --- |\n| 50k-row load | Complete | Export worker test |\n| 75k-row load | Complete | Export worker test |\n| Cancelled-job cleanup | **Open** | Partial object still needs cleanup |\n| Audit-page label fix | Isolated | Issue 322; outside the export branch |\n| Release decision | **Blocked** | Keep 2.8 conditional until cancellation is safe |\n\nThe dashboard keeps the decision visible without turning an untested fix into a customer promise."}
+    },
+    {
+      "id": 4,
+      "type": "text",
+      "title": "People and follow-up",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 9},
+      "options": {"mode": "markdown", "content": "## People and follow-up\n\n- **Maya Chen** — renewal preparation\n- **Jon Bell** — export load testing\n- **Noor Alvarez** — month-end preparation\n- **Elena Petrov** — release planning\n- **Samira Okafor** — watching the Lumen export\n- **Theo Martin** — starts Monday; staging access is still unassigned\n\n**Useful views:** customer renewals, support cases, release work, invoices, calendar decisions, and the Lumen renewal thread."}
     }
   ]
 }
