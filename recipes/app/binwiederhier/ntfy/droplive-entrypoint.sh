@@ -91,9 +91,13 @@ trap 'test -n "$ntfy_pid" && kill -HUP "$ntfy_pid" 2>/dev/null || true' HUP
 ntfy_pid=$!
 
 if ! test -f "$seed_marker"; then
+  publish() {
+    /usr/bin/ntfy publish --user "admin:$NTFY_ADMIN_PASSWORD" \
+      --title "$2" --tags "$3" --priority "$4" "http://127.0.0.1:8080/$1" "$5"
+  }
   seed_ready=0
   for attempt in $(seq 1 30); do
-    if /usr/bin/ntfy publish --user "admin:$NTFY_ADMIN_PASSWORD" --title "Northstar Relay" --tags "rocket" http://127.0.0.1:8080/northstar-relay "Release readiness review starts at 10:00 UTC."; then
+    if publish northstar-release 'Release 2.8 review starts' 'rocket,clipboard' 5 'Maya owns the review. Confirm cancellation coverage and customer communication before approval.'; then
       seed_ready=1
       break
     fi
@@ -103,8 +107,16 @@ if ! test -f "$seed_marker"; then
     echo '[ntfy-init] Could not publish the initial company notification.' >&2
     exit 65
   fi
-  /usr/bin/ntfy publish --user "admin:$NTFY_ADMIN_PASSWORD" --title "Customer notes" --tags "memo" http://127.0.0.1:8080/northstar-relay "Three customer interviews are ready for review."
-  /usr/bin/ntfy publish --user "admin:$NTFY_ADMIN_PASSWORD" --title "Support queue" --tags "warning" http://127.0.0.1:8080/northstar-relay "Two priority support items need an owner."
+  publish northstar-release 'Cancellation coverage complete' 'white_check_mark,test_tube' 4 'The 50k and 75k cancellation fixtures release worker leases and partial objects.'
+  publish northstar-release 'Release notes need product approval' 'memo,eyes' 4 'Elena updated the audit-history notes. One product review remains before the release decision.'
+  publish northstar-customers 'Lumen renewal is active' 'handshake,receipt' 5 'Invoice 4471 is open, due 30 August, and not overdue. Keep it separate from the export incident.'
+  publish northstar-customers 'Three customer interviews ready' 'memo,people_hugging' 4 'Priya, Asha, and Diego feedback is tagged for the release review.'
+  publish northstar-customers 'Harbor Mobility needs risk review' 'warning,bar_chart' 5 'The 75k scheduled export requires the tested timeout path before the 12 September renewal.'
+  publish northstar-customers 'Ember Commerce follow-up' 'speech_balloon,calendar' 3 'Confirm the CSV header fix with the customer-success owner before Friday.'
+  publish northstar-oncall 'Scheduled export latency elevated' 'rotating_light,chart_with_upwards_trend' 5 'Two scheduled jobs crossed the legacy-worker warning threshold. Interactive retries remain healthy.'
+  publish northstar-oncall 'Lease cleanup confirmed' 'white_check_mark,wrench' 3 'The cancellation fixture released all test leases. Monitor the next scheduled run.'
+  publish northstar-oncall 'No paging action required' 'information_source,shield' 2 'The export incident has an owner, workaround, and scheduled customer update.'
+  publish northstar-oncall 'Morning handoff prepared' 'sunrise,clipboard' 3 'Jon will review the 75k evidence at 09:00 and update the release command topic.'
   touch "$seed_marker"
   chmod 0600 "$seed_marker"
 fi
