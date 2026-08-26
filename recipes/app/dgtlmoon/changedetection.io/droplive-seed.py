@@ -6,7 +6,11 @@ import urllib.error
 import urllib.request
 
 API = "http://127.0.0.1:5000/api/v1/watch"
-DATASTORE = "/datastore/url-watches.json"
+# The image starts with the legacy file so Changedetection can migrate it. The
+# API token is written to the current datastore after that migration, not to the
+# legacy file. Read the current file or the seed races the migration and never
+# gets an API key.
+DATASTORE = "/datastore/changedetection.json"
 WANTED = (
     ("Northstar company", os.environ["DROPLIVE_COMPANY_URL"], "Company", None),
     ("Lumen release page", os.environ["DROPLIVE_CHANGING_URL"], "Product launch", 15),
