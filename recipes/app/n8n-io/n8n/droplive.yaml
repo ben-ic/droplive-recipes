@@ -3,6 +3,26 @@ kind: app
 tagline: "Workflow automation"
 description: "Fair-code workflow automation platform with native AI capabilities. Combine visual building with custom code, self-host or cloud, 400+ integrations"
 repository: https://github.com/n8n-io/n8n
+world: business.saas_company.v1
+environment:
+  N8N_OWNER_PASSWORD:
+    owner: droplive
+    format: password
+    login:
+      username: maya@northstar-relay.droplive.test
 run:
   port: 5678
   health: /healthz
+  data:
+    - /home/node/.n8n
+emulators:
+  mail:
+    capability: mail.smtp.v1
+    bindings:
+      N8N_SEED_SMTP_HOST: host
+      N8N_SEED_SMTP_PORT: port
+      N8N_SEED_SMTP_FROM: from_address
+  slack:
+    capability: slack.web_api.v1
+    bindings:
+      N8N_SEED_SLACK_BASE_URL: base_url
