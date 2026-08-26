@@ -10,33 +10,68 @@ appConfig:
   theme: colorful
   layout: auto
 sections:
-  - name: Company
+  - name: Monday operating review
     icon: fas fa-building
     items:
       - title: Product direction
-        description: Current decisions and delivery priorities
+        description: Three decisions awaiting approval before Friday's release review
         icon: fas fa-compass
         url: https://example.com/product
       - title: Release readiness
-        description: Checklist and rollout review
+        description: "Release 2.8 · 14 of 16 checks complete · owner: David Banerjee"
         icon: fas fa-rocket
         url: https://example.com/releases
       - title: Customer work
-        description: Accounts, feedback, and follow-ups
+        description: 13 active accounts · 3 need attention · $714k in renewal work
         icon: fas fa-users
         url: https://example.com/customers
-  - name: Operations
+      - title: Weekly priorities
+        description: Finish export recovery, renewal briefing, and permissions review
+        icon: fas fa-list-check
+        url: https://example.com/priorities
+      - title: Decision log
+        description: Six recorded decisions, two awaiting an owner response
+        icon: fas fa-clipboard-list
+        url: https://example.com/decisions
+  - name: Customer operations
     icon: fas fa-clipboard-check
     items:
       - title: Support queue
-        description: Current customer requests
+        description: "8 open cases · 3 high priority · next handoff at 14:30 UTC"
         icon: fas fa-life-ring
         url: https://example.com/support
       - title: Finance review
-        description: Monthly operating review
+        description: Invoice 4471 paid · two renewal briefs due this week
         icon: fas fa-chart-line
         url: https://example.com/finance
       - title: Team handbook
-        description: Agreements and working practices
+        description: On-call, escalation, and customer communication playbooks
         icon: fas fa-book
         url: https://example.com/handbook
+      - title: Renewal watchlist
+        description: Lumen Labs, Nomad Freight, Solis Clinics, and Vanta Works
+        icon: fas fa-handshake
+        url: https://example.com/renewals
+      - title: Incident handoffs
+        description: Export recovery is high priority; Samira owns the next update
+        icon: fas fa-triangle-exclamation
+        url: https://example.com/incidents
+      - title: Customer feedback
+        description: Three interviews ready for release review and response planning
+        icon: fas fa-comments
+        url: https://example.com/feedback
+  - name: Team rhythm
+    icon: fas fa-people-group
+    items:
+      - title: This week's meetings
+        description: Customer review Tue · release gate Thu · operations review Fri
+        icon: fas fa-calendar-days
+        url: https://example.com/calendar
+      - title: On-call schedule
+        description: Maya primary · Jon secondary · David release owner
+        icon: fas fa-headset
+        url: https://example.com/on-call
+      - title: Delivery scorecard
+        description: 84% release confidence · 5 release items · 2 open approvals
+        icon: fas fa-gauge-high
+        url: https://example.com/scorecard

@@ -40,15 +40,38 @@ pages:
                 links:
                   - title: Release 2.8
                     url: https://github.com/
-                    description: Product release review and open issues
+                    description: 14 of 16 checks complete; David owns the final approvals
                   - title: August month-end
                     url: https://github.com/
-                    description: Finance close and customer invoice follow-up
+                    description: Invoice 4471 is paid; two renewal briefs are due this week
+                  - title: Customer review
+                    url: https://github.com/
+                    description: 13 active accounts, 3 attention-needed accounts, $714k renewal work
+                  - title: Decision log
+                    url: https://github.com/
+                    description: Six operating decisions recorded; two owners still need to respond
               - title: Team tools
                 links:
                   - title: GitHub
                     url: https://github.com/
-                    description: Source, review, and release work
+                    description: Release branch, review queue, and deployment evidence
                   - title: Customer support
                     url: https://github.com/
-                    description: Lumen Labs and renewal follow-up
+                    description: 8 open cases, 3 high priority; next handoff is at 14:30 UTC
+                  - title: Renewal watchlist
+                    url: https://github.com/
+                    description: Lumen Labs, Nomad Freight, Solis Clinics, and Vanta Works
+                  - title: On-call handoff
+                    url: https://github.com/
+                    description: Maya primary, Jon secondary; export recovery needs a customer update
+              - title: Team rhythm
+                links:
+                  - title: Weekly calendar
+                    url: https://github.com/
+                    description: Customer review Tuesday, release gate Thursday, operations review Friday
+                  - title: Customer interviews
+                    url: https://github.com/
+                    description: Three interviews prepared for the release review
+                  - title: Delivery scorecard
+                    url: https://github.com/
+                    description: 84% release confidence, five release items, two open approvals
