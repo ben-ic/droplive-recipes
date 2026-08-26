@@ -243,7 +243,7 @@ def render(rows: list[dict[str, Any]]) -> str:
         f"[public DropLive catalogue]({CATALOG_URL}). "
         "Do not edit it by hand.",
         "",
-        "| Project | What it does | Sample data | Try it |",
+        "| Project | What it does | Sample data | Try&nbsp;it&nbsp;with&nbsp;DropLive |",
         "| --- | --- | :---: | --- |",
     ]
 

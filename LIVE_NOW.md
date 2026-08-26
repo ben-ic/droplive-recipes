@@ -4,7 +4,7 @@
 
 This file is generated each day from the [public DropLive catalogue](https://droplive.io/projects?sort=name). Do not edit it by hand.
 
-| Project | What it does | Sample data | Try it |
+| Project | What it does | Sample data | Try&nbsp;it&nbsp;with&nbsp;DropLive |
 | --- | --- | :---: | --- |
 | 4gaBoards | Straightforward realtime kanban boards management for intuitive task tracking | — | [![Try with DropLive](https://droplive.io/badge/4gaboards.svg)](https://droplive.io/projects/4gaboards) |
 | AdGuardHome | Network-wide ads &amp; trackers blocking DNS server | — | [![Try with DropLive](https://droplive.io/badge/adguardhome.svg)](https://droplive.io/projects/adguardhome) |
