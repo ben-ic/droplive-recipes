@@ -1,11 +1,27 @@
 # DropLive recipes
 
-This repository is the reviewed source of runtime intent for DropLive. DropLive
-gives visitors temporary, isolated demos of open-source projects.
+This repository contains the reviewed recipes that DropLive uses to start
+temporary demos of open-source software.
 
-## Small application recipe
+[Try a live demo](https://droplive.io/projects) or see [every project that is
+live now](LIVE_NOW.md).
 
-Create this folder:
+## What is in this repository
+
+- `recipes/` contains the build and run instructions for each project.
+- `schema/`, `capabilities/`, and `companions/` define the recipe contract.
+- `tools/` validates recipes and updates the public live list.
+- [`LIVE_NOW.md`](LIVE_NOW.md) lists the current public demos. A daily workflow
+  reads the public DropLive catalogue and updates this file when the list
+  changes.
+
+A recipe is runtime intent. It does not control public listing state. A passing
+build creates an unlisted candidate. DropLive lists an exact version only after
+a reviewer completes the [public browser gate](docs/catalogue-verification.md).
+
+## Add an application
+
+Create this directory:
 
 ```text
 recipes/app/<forge-owner>/<repository>/
@@ -13,8 +29,7 @@ recipes/app/<forge-owner>/<repository>/
 └── Dockerfile
 ```
 
-`droplive.yaml` must include the project description and canonical repository
-identity:
+Start with the smallest complete recipe:
 
 ```yaml
 version: 1
@@ -34,48 +49,14 @@ FROM ghcr.io/example/project@sha256:0123456789abcdef0123456789abcdef0123456789ab
 EXPOSE 3000
 ```
 
-`description` and `repository` are required. The recipe owns both values.
-DropLive does not reconstruct repository identity from the folder name. The
-forge refresher owns only changing forge facts, such as stars, homepage,
-licence, and refresh time.
+Use a recipe-root `docker-compose.yaml` when the application needs more than one
+application service. Put public defaults in the image or Compose file. Declare a
+runtime value only when DropLive must generate it or ask the visitor for it. The
+launch page must show every value and instruction that a visitor needs.
 
-## Build inputs
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before you add or change a recipe.
 
-A recipe can use a pinned image, a recipe-root Dockerfile, or a recipe-root
-`docker-compose.yaml`. Docker Compose is a first-class input for multi-service
-applications. Keep each required application service in Compose. Do not combine
-real app services only to fit a single-container model.
-
-When Compose has more than one service, name the visitor-facing service `app`.
-Pin each image-only service by digest. Keep managed database, cache, and emulator
-services in the typed recipe declarations when DropLive provides them.
-
-## Runtime values
-
-Put public defaults in the image or Compose. Declare a value in `environment`
-only when DropLive must generate it or, in an exceptional case, ask the visitor
-for it. A generated login value must include the metadata that puts it on the
-launch sign-in card.
-
-The launch UI must provide every credential, setup value, and instruction that a
-visitor needs. Do not require private contributor or operator knowledge.
-
-BYOK is recipe-controlled. `byok: true` is accepted only for a reviewed
-capability that supports the real-provider flow, and the group must replace the
-provider's endpoint and its credential together -- a key pointed at the emulator
-is refused. The default launch continues to use the emulator.
-
-## Listing is separate from build
-
-A build or health probe does not authorize public listing. An exact version can
-be listed only after public browser verification reaches a useful application
-screen with the information shown by the launch UI. See
-[`docs/catalogue-verification.md`](docs/catalogue-verification.md).
-
-The session TTL starts when the application becomes live. Startup does not use
-the visitor's live time.
-
-## Validate
+## Validate a change
 
 ```sh
 python3 -m pip install -r requirements-dev.txt
@@ -83,10 +64,21 @@ python3 tools/lint_recipes.py
 python3 tools/test_environment_schema.py
 python3 tools/test_kind_schema.py
 python3 tools/test_entrypoint_rules.py
+python3 tools/test_byok_schema.py
 ```
 
-Unknown recipe keys fail JSON Schema validation. This includes MCP recipes; the
-unknown-key behavior is intentional.
+Unknown recipe keys fail JSON Schema validation. This also applies to MCP
+recipes.
+
+## Refresh the live list
+
+```sh
+python3 tools/update_live_now.py
+```
+
+The command reads `https://droplive.io/projects`. Do not edit `LIVE_NOW.md` by
+hand. GitHub Actions runs this command each day and commits a change only when
+the public catalogue changes.
 
 ## References
 
@@ -95,6 +87,7 @@ unknown-key behavior is intentional.
 - [Catalogue verification](docs/catalogue-verification.md)
 - [MCP and skill boundaries](docs/mcp-and-skills.md)
 - [Troubleshooting](docs/troubleshooting.md)
+- [Coding-agent prompt](docs/agent-prompt.md)
 - [Contribution guide](CONTRIBUTING.md)
 
 This repository uses the [MIT License](LICENSE).
