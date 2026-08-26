@@ -3,7 +3,7 @@ kind: app
 tagline: "Personal dashboard"
 description: "Personal dashboard of links and widgets, with status checks and a built-in editor"
 repository: https://github.com/Lissy93/dashy
-world: business.saas_company.v1
+world: business.saas_company.v2
 run:
   port: 8080
   health: /

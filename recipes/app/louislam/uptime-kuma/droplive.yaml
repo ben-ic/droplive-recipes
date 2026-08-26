@@ -22,7 +22,7 @@ emulators:
   targets:
     capability: http.targets.v1
     access: server
-    dataset: business.saas_company.v1
+    dataset: business.saas_company.v2
     bindings:
       DROPLIVE_STABLE_URL: stable_url
       DROPLIVE_FAILING_URL: failing_url

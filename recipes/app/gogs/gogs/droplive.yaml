@@ -5,7 +5,7 @@ description: "The painless way to host your own Git service"
 repository: https://github.com/gogs/gogs
 # The company this demo is stocked with before the visitor arrives. Its
 # repositories are in the application's own store, so there is no emulator.
-world: business.saas_company.v1
+world: business.saas_company.v2
 run:
   port: 3000
   # Gogs serves its install wizard until it is configured; the entrypoint writes

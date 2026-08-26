@@ -5,7 +5,7 @@ description: "Open-source, self-hosted note-taking tool built for quick capture.
 repository: https://github.com/usememos/memos
 # The company this notebook is about. The platform mounts this world read-only
 # for the session, which is also where the arrivals adapter reads its timeline.
-world: business.saas_company.v1
+world: business.saas_company.v2
 run:
   port: 5230
   health: /healthz

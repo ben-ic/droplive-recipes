@@ -3,7 +3,7 @@ kind: app
 tagline: "Server start page"
 description: "Start page for a server, listing its applications and bookmarks"
 repository: https://github.com/pawelmalak/flame
-world: business.saas_company.v1
+world: business.saas_company.v2
 run:
   port: 5005
   health: /

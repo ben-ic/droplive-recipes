@@ -3,7 +3,7 @@ kind: app
 tagline: "Recipe and meal planner"
 description: "Recipe manager and meal planner with shopping lists and a recipe importer"
 repository: https://github.com/mealie-recipes/mealie
-world: business.saas_company.v1
+world: business.saas_company.v2
 run:
   port: 9000
   data:

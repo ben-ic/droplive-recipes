@@ -12,7 +12,7 @@ emulators:
   pages:
     capability: http.targets.v1
     access: server
-    dataset: business.saas_company.v1
+    dataset: business.saas_company.v2
     bindings:
       DROPLIVE_COMPANY_URL: base_url
       DROPLIVE_CHANGING_URL: page_url

@@ -5,7 +5,7 @@ description: "Low-code programming for event-driven applications"
 repository: https://github.com/node-red/node-red
 # The company whose automations this demo carries. Its data is in the flows
 # file the image ships, so there is no emulator to hang it off.
-world: business.saas_company.v1
+world: business.saas_company.v2
 run:
   port: 1880
   data:

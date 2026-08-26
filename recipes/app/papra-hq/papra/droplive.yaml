@@ -3,7 +3,7 @@ kind: app
 tagline: "Document management"
 description: "The minimalistic document archiving platform"
 repository: https://github.com/papra-hq/papra
-world: business.saas_company.v1
+world: business.saas_company.v2
 run:
   port: 1221
   data:

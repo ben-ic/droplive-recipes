@@ -3,7 +3,7 @@ kind: app
 tagline: "Workflow automation"
 description: "Fair-code workflow automation platform with native AI capabilities. Combine visual building with custom code, self-host or cloud, 400+ integrations"
 repository: https://github.com/n8n-io/n8n
-world: business.saas_company.v1
+world: business.saas_company.v2
 environment:
   N8N_OWNER_PASSWORD:
     owner: droplive

@@ -3,7 +3,7 @@ kind: app
 tagline: "Ebook library"
 description: "Web app for browsing, reading and downloading eBooks in a Calibre library"
 repository: https://github.com/janeczku/calibre-web
-world: business.saas_company.v1
+world: business.saas_company.v2
 run:
   port: 8083
   health:

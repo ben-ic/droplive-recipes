@@ -3,7 +3,7 @@ kind: app
 tagline: "Resume builder"
 description: "Build, edit and share a resume from the browser"
 repository: https://github.com/amruthpillai/reactive-resume
-world: business.saas_company.v1
+world: business.saas_company.v2
 run:
   port: 3000
   data:

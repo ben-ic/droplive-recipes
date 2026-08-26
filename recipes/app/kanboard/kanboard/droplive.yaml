@@ -5,7 +5,7 @@ description: "Kanban project management software"
 repository: https://github.com/kanboard/kanboard
 # The company this demo is stocked with before the visitor arrives. Its data is
 # in the application's own store, so there is no emulator to hang it off.
-world: business.saas_company.v1
+world: business.saas_company.v2
 run:
   port: 80
   health: /login

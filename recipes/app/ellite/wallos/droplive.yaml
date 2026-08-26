@@ -3,7 +3,7 @@ kind: app
 tagline: "Subscription tracker"
 description: "Track recurring subscriptions and what they cost each month"
 repository: https://github.com/ellite/wallos
-world: business.saas_company.v1
+world: business.saas_company.v2
 run:
   port: 80
   data:

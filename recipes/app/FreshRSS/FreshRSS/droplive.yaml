@@ -19,6 +19,6 @@ emulators:
   news:
     capability: http.rss.v1
     access: server
-    dataset: business.saas_company.v1
+    dataset: business.saas_company.v2
     bindings:
       DROPLIVE_FEED_URL: feed_url

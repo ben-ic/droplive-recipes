@@ -10,6 +10,6 @@ emulators:
   specification:
     capability: openapi.document.v1
     access: browser
-    dataset: business.saas_company.v1
+    dataset: business.saas_company.v2
     bindings:
       URL: openapi_url

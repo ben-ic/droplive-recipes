@@ -3,7 +3,7 @@ kind: app
 tagline: "Knowledge base"
 description: "Knowledge base with Markdown and visual editors, page history and access rules"
 repository: https://github.com/requarks/wiki
-world: business.saas_company.v1
+world: business.saas_company.v2
 run:
   port: 3000
   data:

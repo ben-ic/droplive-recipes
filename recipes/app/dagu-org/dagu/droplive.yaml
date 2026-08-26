@@ -4,7 +4,7 @@ tagline: "Workflow orchestrator"
 description: "Self-hostable workflow orchestrator for teams whose main work isn't orchestration"
 repository: https://github.com/dagu-org/dagu
 # The starter workflows describe release and invoice work for this company.
-world: business.saas_company.v1
+world: business.saas_company.v2
 run:
   port: 8080
   data:
