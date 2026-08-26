@@ -38,7 +38,12 @@ async function request(path, options = {}) {
 }
 
 function list(payload, path) {
-  const rows = Array.isArray(payload) ? payload : payload?.results;
+  const rows =
+    Array.isArray(payload)
+      ? payload
+      : Array.isArray(payload?.data)
+        ? payload.data
+        : payload?.results;
   if (!Array.isArray(rows)) throw new Error(`${path}: expected a list response`);
   return rows;
 }
