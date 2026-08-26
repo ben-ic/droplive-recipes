@@ -27,7 +27,20 @@ async function request(path, options = {}) {
     }
   }
   if (!response.ok) throw new Error(`${path}: ${response.status} ${text}`);
-  return { data: data.data, cookies: response.headers.getSetCookie?.() ?? [] };
+  // N8N uses both `{data: ...}` and direct JSON responses across its internal
+  // REST endpoints. Keep the transport detail here so every caller sees the
+  // payload itself, including an empty list from a new installation.
+  const payload =
+    data && typeof data === "object" && !Array.isArray(data) && Object.hasOwn(data, "data")
+      ? data.data
+      : data;
+  return { data: payload, cookies: response.headers.getSetCookie?.() ?? [] };
+}
+
+function list(payload, path) {
+  const rows = Array.isArray(payload) ? payload : payload?.results;
+  if (!Array.isArray(rows)) throw new Error(`${path}: expected a list response`);
+  return rows;
 }
 
 async function waitForN8n() {
@@ -70,7 +83,9 @@ async function seed() {
   const cookie = await sessionCookie();
   const headers = { "content-type": "application/json", cookie };
   const credentials = await request("/rest/credentials", { headers });
-  let smtp = credentials.data.find((credential) => credential.name === "Northstar Relay SMTP");
+  let smtp = list(credentials.data, "/rest/credentials").find(
+    (credential) => credential.name === "Northstar Relay SMTP",
+  );
 
   if (!smtp) {
     smtp = (
@@ -93,6 +108,7 @@ async function seed() {
   }
 
   const workflows = await request("/rest/workflows", { headers });
+  const existingWorkflows = list(workflows.data, "/rest/workflows");
   const seededWorkflows = [
     paymentWorkflow(smtp),
     renewalBriefingWorkflow(smtp),
@@ -101,7 +117,7 @@ async function seed() {
   ];
 
   for (const definition of seededWorkflows) {
-    if (workflows.data.some((workflow) => workflow.name === definition.name)) continue;
+    if (existingWorkflows.some((workflow) => workflow.name === definition.name)) continue;
 
     const workflow = (
       await request("/rest/workflows", {
