@@ -65,12 +65,16 @@ function list(payload, path) {
 }
 
 async function waitForN8n() {
-  // A first boot runs database migrations before N8N serves its API. The seed
-  // is part of the demo contract, so wait for that bounded cold-start path
-  // instead of silently giving up after one minute.
+  // A first boot runs database migrations after the health endpoint starts
+  // answering. The seed is part of the demo contract, so health alone is not
+  // enough: wait until the user-management API exists as well.
   for (let attempt = 0; attempt < 300; attempt += 1) {
     try {
       await request("/healthz");
+      const settings = await request("/rest/settings");
+      if (typeof settings.data?.userManagement?.showSetupOnFirstLoad !== "boolean") {
+        throw new Error("n8n user-management settings are not ready");
+      }
       return;
     } catch {
       await sleep(1000);
@@ -80,21 +84,51 @@ async function waitForN8n() {
 }
 
 async function sessionCookie() {
-  const settings = await request("/rest/settings");
-  if (settings.data?.userManagement?.showSetupOnFirstLoad) {
-    await request("/rest/owner/setup", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(owner),
-    });
-  }
+  // The settings endpoint can become readable just before the final migration
+  // commits. Retry the setup and login as one unit so a transient 401 or 503
+  // cannot make the one-shot seed give up before the owner exists.
+  let lastError;
+  for (let attempt = 0; attempt < 120; attempt += 1) {
+    try {
+      const settings = await request("/rest/settings");
+      if (typeof settings.data?.userManagement?.showSetupOnFirstLoad !== "boolean") {
+        throw new Error("n8n user-management settings are not ready");
+      }
+      if (settings.data.userManagement.showSetupOnFirstLoad) {
+        await request("/rest/owner/setup", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(owner),
+        });
+      }
 
-  const login = await request("/rest/login", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ emailOrLdapLoginId: owner.email, password: owner.password }),
-  });
-  return login.cookies.map((cookie) => cookie.split(";", 1)[0]).join("; ");
+      const login = await request("/rest/login", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ emailOrLdapLoginId: owner.email, password: owner.password }),
+      });
+      const cookie = login.cookies.map((cookie) => cookie.split(";", 1)[0]).join("; ");
+      if (!cookie) throw new Error("n8n login returned no session cookie");
+      return cookie;
+    } catch (error) {
+      lastError = error;
+      await sleep(1000);
+    }
+  }
+  throw lastError || new Error("n8n owner setup did not become ready");
+}
+
+async function listEndpoint(path, headers) {
+  let lastError;
+  for (let attempt = 0; attempt < 120; attempt += 1) {
+    try {
+      return list((await request(path, { headers })).data, path);
+    } catch (error) {
+      lastError = error;
+      await sleep(1000);
+    }
+  }
+  throw lastError || new Error(`${path}: list did not become ready`);
 }
 
 async function seed() {
@@ -103,8 +137,8 @@ async function seed() {
 
   const cookie = await sessionCookie();
   const headers = { "content-type": "application/json", cookie };
-  const credentials = await request("/rest/credentials", { headers });
-  let smtp = list(credentials.data, "/rest/credentials").find(
+  const credentials = await listEndpoint("/rest/credentials", headers);
+  let smtp = credentials.find(
     (credential) => credential.name === "Northstar Relay SMTP",
   );
 
@@ -128,8 +162,7 @@ async function seed() {
     ).data;
   }
 
-  const workflows = await request("/rest/workflows", { headers });
-  const existingWorkflows = list(workflows.data, "/rest/workflows");
+  const existingWorkflows = await listEndpoint("/rest/workflows", headers);
   const seededWorkflows = [
     paymentWorkflow(smtp),
     renewalBriefingWorkflow(smtp),
