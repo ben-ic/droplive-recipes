@@ -4,6 +4,7 @@ set -euo pipefail
 : "${DROPLIVE_PUBLIC_ORIGIN:?DropLive supplies the public origin}"
 export KOLU_ALLOWED_ORIGINS="$DROPLIVE_PUBLIC_ORIGIN"
 
+cd /workspace
 /opt/droplive/bin/world-workspace.sh
 /opt/droplive/bin/world-arrivals.sh &
 arrivals_pid=$!
