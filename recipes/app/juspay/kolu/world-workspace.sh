@@ -4,6 +4,7 @@ set -euo pipefail
 workspace_root=${DROPLIVE_WORKSPACE_ROOT:-/workspace}
 workspace="$workspace_root/northstar-relay"
 
+cd "$workspace_root"
 rm -rf "$workspace"
 mkdir -p "$workspace"/{apps/web-console,config,data,docs,services/exports-service,services/relay-core,scripts,var}
 
