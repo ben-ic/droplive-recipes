@@ -1,42 +1,73 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-world_path=${DROPLIVE_WORLD_PATH:?DROPLIVE_WORLD_PATH is required}
 workspace_root=${DROPLIVE_WORKSPACE_ROOT:-/workspace}
 workspace="$workspace_root/northstar-relay"
-world_json="$world_path/world.json"
-software_json="$world_path/packs/software.json"
-work_json="$world_path/packs/work.json"
-support_json="$world_path/packs/support.json"
-timeline_json="$world_path/timeline.json"
-
-jq -e '.id == "business.saas-company" and .version == "v2"' "$world_json" >/dev/null
-for required in "$software_json" "$work_json" "$support_json" "$timeline_json"; do
-  test -s "$required"
-done
 
 rm -rf "$workspace"
 mkdir -p "$workspace"/{apps/web-console,config,data,docs,services/exports-service,services/relay-core,scripts,var}
 
-jq -r '
-  "# " + .title + "\n\n" +
-  .synthetic_notice + "\n\n" +
-  "## Active operating stories\n\n" +
-  ([.stories[] | "- **" + .title + "** — " + .summary] | join("\n")) + "\n\n" +
-  "This disposable workspace contains the current engineering, support, and release context for Northstar Relay."
-' "$world_json" > "$workspace/README.md"
+cat > "$workspace/README.md" <<'EOF'
+# Northstar Relay
 
-jq -r '["repository","language","description"], (.repositories[] | [.name,.language,.description]) | @tsv' \
-  "$software_json" > "$workspace/data/repositories.tsv"
-jq -r '["repository","number","state","assignee","title","labels"], (.repositories[] as $r | $r.issues[] | [$r.name,(.number|tostring),.state,.assignee,.title,(.labels|join(","))]) | @tsv' \
-  "$software_json" > "$workspace/data/issues.tsv"
-jq -r '["project","status","target","owner","summary"], (.projects[] | [.name,.status,.target_on,.owner_id,.summary]) | @tsv' \
-  "$work_json" > "$workspace/data/projects.tsv"
-jq -r '["status","priority","due","assignee","project","title"], (.tasks[] | [.status,.priority,.due_on,.assignee_id,.project_id,.title]) | @tsv' \
-  "$work_json" > "$workspace/data/tasks.tsv"
-jq -r '["state","priority","owner","customer","title","next action"], (.cases[] | [.state,.priority,.owner_id,.customer_id,.title,.next_action]) | @tsv' \
-  "$support_json" > "$workspace/data/support-cases.tsv"
-cp "$timeline_json" "$workspace/data/timeline.json"
+This is a synthetic, disposable engineering workspace for a 16-person B2B data-export company. It contains linked release, product, engineering, and support work. No production source, customer data, or credentials are present.
+
+## Active operating stories
+
+- **Release 2.8 readiness** — Large scheduled exports now complete, but cancellation cleanup still blocks release.
+- **Lumen Labs escalation** — Support has a safe manual-retry workaround while engineering tests issue 318.
+- **Audit clarity** — Issue 322 isolates customer-time-zone labels from the export fix.
+- **On-call reliability** — Queue telemetry and runbooks are being updated before the next rotation.
+EOF
+
+cat > "$workspace/data/repositories.tsv" <<'EOF'
+repository	language	description
+relay-core	TypeScript	Export scheduling, worker leases, and audit events
+web-console	TypeScript	Customer administration and audit-log interface
+delivery-ops	Shell	Release checks, incident runbooks, and deployment automation
+EOF
+
+cat > "$workspace/data/issues.tsv" <<'EOF'
+repository	number	state	assignee	title	labels
+relay-core	318	in-progress	Jon Bell	Scheduled export uses legacy 120-second timeout	bug,release-2.8
+relay-core	319	open	Noor Alvarez	Remove partial object when an export is cancelled	bug,release-blocker
+relay-core	325	review	Elena Petrov	Expose worker lease age in queue telemetry	observability
+web-console	322	in-progress	Hana Ito	Show audit timestamps in the account time zone	ux,audit
+web-console	327	open	Lucas Meyer	Preserve export filters in shared links	enhancement
+delivery-ops	88	review	Samira Okafor	Add cancellation fixture to the release gate	testing,release-2.8
+EOF
+
+cat > "$workspace/data/projects.tsv" <<'EOF'
+project	status	target	owner	summary
+Release 2.8	at-risk	2026-09-03	Maya Chen	Ship export reliability and audit improvements after cleanup passes
+Export reliability	active	2026-08-31	Jon Bell	Remove timeouts and partial objects from large scheduled exports
+Audit clarity	active	2026-09-02	Hana Ito	Make audit timestamps and filters clear for global teams
+On-call hardening	planned	2026-09-10	Samira Okafor	Improve queue telemetry, alerts, and incident runbooks
+EOF
+
+cat > "$workspace/data/tasks.tsv" <<'EOF'
+status	priority	due	assignee	project	title
+done	high	2026-08-25	Jon Bell	Export reliability	Raise scheduled export timeout to the account limit
+done	high	2026-08-26	Noor Alvarez	Export reliability	Verify the 50,000-row load case
+done	high	2026-08-26	Noor Alvarez	Export reliability	Verify the 75,000-row load case
+in-progress	urgent	2026-08-28	Noor Alvarez	Export reliability	Delete partial objects after cancellation
+review	high	2026-08-28	Elena Petrov	Export reliability	Publish worker lease-age telemetry
+blocked	high	2026-08-29	Maya Chen	Release 2.8	Approve the Release 2.8 go or no-go decision
+in-progress	medium	2026-08-29	Hana Ito	Audit clarity	Render audit timestamps in the account time zone
+review	medium	2026-08-30	Lucas Meyer	Audit clarity	Retain filters in shared audit links
+todo	medium	2026-09-01	Hana Ito	Audit clarity	Update audit-log empty and loading states
+in-progress	high	2026-08-28	Samira Okafor	On-call hardening	Add export cancellation to release checks
+todo	medium	2026-09-04	Elena Petrov	On-call hardening	Add queue-depth warning thresholds
+todo	medium	2026-09-05	Samira Okafor	On-call hardening	Revise the export incident runbook
+done	high	2026-08-27	Imani Brooks	Release 2.8	Draft the Lumen manual-retry workaround
+todo	medium	2026-09-02	Theo Martin	Release 2.8	Prepare conditional customer release notes
+EOF
+
+cat > "$workspace/data/support-cases.tsv" <<'EOF'
+state	priority	owner	customer	title	next action
+engineering	high	Imani Brooks	Lumen Labs	Scheduled export stops at two minutes	Send the manual-retry steps, then update after cancellation testing
+waiting-on-customer	medium	Theo Martin	Harbor Mobility	Audit timestamps differ from the finance report	Confirm the account time zone and attach the issue 322 preview
+EOF
 
 cat > "$workspace/docs/release-2.8.md" <<'EOF'
 # Release 2.8 readiness

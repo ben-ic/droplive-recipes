@@ -3,7 +3,6 @@ kind: app
 tagline: "Terminal workspace"
 description: "Organize real terminal sessions on an infinite browser canvas"
 repository: https://github.com/juspay/kolu
-world: business.saas_company.v2
 run:
   port: 7681
   health:
