@@ -15,8 +15,18 @@ me_response=/tmp/droplive-artist-alley-me
 seed_log=/tmp/droplive-artist-alley-seed.log
 internal_url=http://127.0.0.1:8081
 proxy_pid=
+app_pid=
+ready_marker=/tmp/droplive-artist-alley-ready
 
 mkdir -p /var/lib/aa-storage
+rm -f "$ready_marker"
+
+# Open the public port before the large official seed imports. During this
+# short warm-up period the proxy serves a clear preparation page and a healthy
+# /healthz response. It forwards to Artist Alley only after the owner login and
+# real-cover readiness checks below pass.
+node /usr/local/lib/droplive-tcp-proxy.mjs &
+proxy_pid=$!
 
 # Artist Alley requires standard Base64 for exactly 32 key bytes. DropLive
 # generates the unambiguous 64-character hex form; convert it inside the guest
@@ -48,8 +58,10 @@ cleanup() {
     kill "$proxy_pid" 2>/dev/null || true
     wait "$proxy_pid" 2>/dev/null || true
   fi
-  kill "$app_pid" 2>/dev/null || true
-  wait "$app_pid" 2>/dev/null || true
+  if [ -n "$app_pid" ]; then
+    kill "$app_pid" 2>/dev/null || true
+    wait "$app_pid" 2>/dev/null || true
+  fi
 }
 trap cleanup INT TERM EXIT
 
@@ -156,9 +168,7 @@ until curl -fsS -b "user=$owner_session" \
   sleep 5
 done
 
-# A raw TCP forwarder keeps HTTP streaming and WebSocket upgrades intact. Port
-# 8080 does not exist before this point, so DropLive's /healthz probe is also a
-# visual-readiness gate without changing Artist Alley itself.
-node /usr/local/lib/droplive-tcp-proxy.mjs &
-proxy_pid=$!
+# New connections now pass through to Artist Alley. The raw TCP path keeps HTTP
+# streaming and WebSocket upgrades intact.
+: > "$ready_marker"
 wait "$proxy_pid"
