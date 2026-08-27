@@ -6,7 +6,7 @@ workspace="$workspace_root/northstar-relay"
 
 cd "$workspace_root"
 rm -rf "$workspace"
-mkdir -p "$workspace"/{apps/web-console,config,data,docs,services/exports-service,services/relay-core,scripts,var}
+mkdir -p "$workspace"/{apps/web-console/public,config,data,docs,services/exports-service,services/relay-core,scripts,var}
 
 cat > "$workspace/README.md" <<'EOF'
 # Northstar Relay
@@ -127,18 +127,66 @@ export function auditTimestampLabel(value: Date, zone: string): string {
 }
 EOF
 
+cat > "$workspace/apps/web-console/public/index.html" <<'EOF'
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Northstar Relay development console</title>
+<h1>Northstar Relay</h1>
+<p>Release 2.8 development console</p>
+<ul>
+  <li>Scheduled export timeout: fixed</li>
+  <li>Cancellation cleanup: under test</li>
+  <li>Audit time-zone labels: isolated</li>
+</ul>
+EOF
+printf '%s\n' 'northstar-web-console: ready' > "$workspace/apps/web-console/public/health.txt"
+seq 1 50000 > "$workspace/var/export-50000.rows"
+seq 1 75000 > "$workspace/var/export-75000.rows"
+
 cat > "$workspace/scripts/release-checks" <<'EOF'
 #!/usr/bin/env bash
-set -u
+set -uo pipefail
 cd "$(dirname "$0")/.."
 printf '\nNorthstar Relay · Release 2.8 gate\n'
-printf '%-34s %s\n' '50,000-row scheduled export' 'PASS  92s'
-printf '%-34s %s\n' '75,000-row scheduled export' 'PASS  141s'
-printf '%-34s %s\n' 'worker lease released on cancel' 'PASS'
-printf '%-34s %s\n' 'partial object removed on cancel' 'FAIL  issue 319'
-printf '%-34s %s\n' 'audit timestamp label isolated' 'PASS  issue 322'
-printf '\nDecision: BLOCKED — cleanup remains the release gate.\n\n'
-exit 0
+failed=0
+check_rows() {
+  expected=$1
+  fixture=$2
+  actual=$(wc -l < "$fixture")
+  if [[ "$actual" -eq "$expected" ]]; then
+    printf '%-38s PASS  %s rows\n' "$expected-row export fixture" "$actual"
+  else
+    printf '%-38s FAIL  expected %s, found %s\n' "$expected-row export fixture" "$expected" "$actual"
+    failed=1
+  fi
+}
+if services/relay-core/worker.sh config/export-worker.conf >/dev/null; then
+  printf '%-38s %s\n' 'scheduled worker timeout' 'PASS  360s'
+else
+  printf '%-38s %s\n' 'scheduled worker timeout' 'FAIL  issue 318'
+  failed=1
+fi
+check_rows 50000 var/export-50000.rows
+check_rows 75000 var/export-75000.rows
+if services/exports-service/cancel-fixture.sh config/export-worker.conf >/dev/null; then
+  printf '%-38s %s\n' 'partial object removed on cancel' 'PASS'
+else
+  printf '%-38s %s\n' 'partial object removed on cancel' 'FAIL  issue 319'
+  failed=1
+fi
+if grep -q 'timeZone: zone' apps/web-console/audit-timezone.ts; then
+  printf '%-38s %s\n' 'audit time-zone source contract' 'PASS  issue 322'
+else
+  printf '%-38s %s\n' 'audit time-zone source contract' 'FAIL  issue 322'
+  failed=1
+fi
+if (( failed == 0 )); then
+  printf '\nDecision: READY — all local release checks pass.\n\n'
+else
+  printf '\nDecision: BLOCKED — cleanup remains the release gate.\n\n'
+fi
+exit "$failed"
 EOF
 
 cat > "$workspace/scripts/briefing" <<'EOF'
@@ -153,13 +201,64 @@ printf '\nSupport queue\n\n'
 column -t -s $'\t' data/support-cases.tsv 2>/dev/null || sed 's/\t/  /g' data/support-cases.tsv
 EOF
 
-cat > "$workspace/scripts/activity" <<'EOF'
+cat > "$workspace/scripts/watch-tests" <<'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
-printf '\nNorthstar Relay · live world activity\n\n'
-touch var/activity.log
-tail -n 25 -f var/activity.log
+watched=config/export-worker.conf
+last=$(stat -c %Y "$watched")
+printf '\nNorthstar Relay · file watcher\nWatching %s and rerunning the release gate.\n' "$watched"
+scripts/release-checks || true
+while sleep 2; do
+  current=$(stat -c %Y "$watched")
+  if [[ "$current" != "$last" ]]; then
+    printf '\n[watch] %s changed; rerunning checks\n' "$watched"
+    scripts/release-checks || true
+    last=$current
+  fi
+done
+EOF
+
+cat > "$workspace/scripts/dev-server" <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+busybox httpd -f -p 4173 -h apps/web-console/public &
+http_pid=$!
+cleanup() {
+  kill "$http_pid" 2>/dev/null || true
+  wait "$http_pid" 2>/dev/null || true
+}
+trap cleanup EXIT INT TERM
+printf '\nNorthstar Relay · web-console development server\n'
+printf '[dev] serving guest files on http://127.0.0.1:4173\n'
+while kill -0 "$http_pid" 2>/dev/null; do
+  code=$(curl --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:4173/health.txt || true)
+  printf '[dev] GET /health.txt -> %s · source apps/web-console/public\n' "$code"
+  sleep 7
+done
+wait "$http_pid"
+EOF
+
+cat > "$workspace/scripts/export-worker" <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+printf '\nNorthstar Relay · issue 319 worker\n'
+printf '[worker] reproducing cancellation cleanup against guest fixture\n'
+if services/exports-service/cancel-fixture.sh config/export-worker.conf; then
+  printf '[worker] fixture unexpectedly passed; no edit required\n'
+else
+  printf '[worker] confirmed partial object remains; preparing local fix\n'
+fi
+sleep 12
+sed 's/cleanup_partial_object_on_cancel=false/cleanup_partial_object_on_cancel=true/' \
+  config/export-worker.conf > config/export-worker.conf.next
+mv config/export-worker.conf.next config/export-worker.conf
+printf '[worker] changed config/export-worker.conf in this disposable guest\n'
+services/exports-service/cancel-fixture.sh config/export-worker.conf
+scripts/release-checks
+printf '[worker] work complete; the shell remains open for inspection\n'
 EOF
 
 chmod +x "$workspace"/scripts/* "$workspace"/services/*/*.sh
@@ -176,7 +275,3 @@ mv config/export-worker.conf.next config/export-worker.conf
 git commit -qam "Reproduce scheduled export timeout"
 sed 's/scheduled_timeout_seconds=120/scheduled_timeout_seconds=360/' config/export-worker.conf > config/export-worker.conf.next
 mv config/export-worker.conf.next config/export-worker.conf
-cat > var/activity.log <<'EOF'
-[workspace] 16 people · 4 projects · 14 tasks · 3 repositories · 2 support cases
-[workspace] Release 2.8 is at risk; cancellation cleanup is the active gate.
-EOF

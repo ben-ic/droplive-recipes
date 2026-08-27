@@ -16,6 +16,7 @@ RUN mkdir -p /opt \
       "github:juspay/kolu/${DROPLIVE_SOURCE_COMMIT}#default" \
     && nix profile install --profile /opt/runtime \
       "github:NixOS/nixpkgs/d8e1b5b3c6faedb60c060c5dec2cc17c0c2473a0#bashInteractive" \
+      "github:NixOS/nixpkgs/d8e1b5b3c6faedb60c060c5dec2cc17c0c2473a0#busybox" \
       "github:NixOS/nixpkgs/d8e1b5b3c6faedb60c060c5dec2cc17c0c2473a0#coreutils" \
       "github:NixOS/nixpkgs/d8e1b5b3c6faedb60c060c5dec2cc17c0c2473a0#curl" \
       "github:NixOS/nixpkgs/d8e1b5b3c6faedb60c060c5dec2cc17c0c2473a0#findutils" \
@@ -29,7 +30,7 @@ RUN mkdir -p /opt \
     && mkdir -p /workspace /run/kolu /run/padi /opt/droplive/bin /home/demo \
     && chown -R 1000:1000 /workspace /run/kolu /run/padi /home/demo
 
-COPY --chmod=0755 droplive-entrypoint.sh world-workspace.sh world-arrivals.sh /opt/droplive/bin/
+COPY --chmod=0755 droplive-entrypoint.sh world-workspace.sh /opt/droplive/bin/
 
 ENV HOME=/home/demo \
     PATH=/opt/droplive/bin:/opt/kolu/bin:/opt/runtime/bin \
