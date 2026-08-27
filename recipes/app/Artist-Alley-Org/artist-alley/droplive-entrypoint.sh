@@ -3,7 +3,7 @@ set -eu
 
 : "${ARTIST_ALLEY_OWNER_PASSWORD:?DropLive must generate the owner password}"
 : "${AA_SCRAMBLE_KEY:?DropLive must generate the password scramble key}"
-: "${AA_MASTER_KEY:?DropLive must generate the at-rest master key}"
+: "${ARTIST_ALLEY_MASTER_KEY_HEX:?DropLive must generate the at-rest master key}"
 : "${AA_DB_HOST:?DropLive must attach managed PostgreSQL}"
 : "${AA_DB_PASSWORD:?DropLive must attach managed PostgreSQL}"
 
@@ -13,6 +13,12 @@ cookie_jar=/tmp/droplive-artist-alley-cookie
 
 mkdir -p /var/lib/aa-storage "$seed_root"
 node /opt/droplive/generate-demo.mjs "$seed_root"
+
+# Artist Alley requires standard Base64 for exactly 32 key bytes. DropLive
+# generates the unambiguous 64-character hex form; convert it inside the guest
+# so no padding or decoded-length assumption crosses the recipe boundary.
+AA_MASTER_KEY=$(node -e 'process.stdout.write(Buffer.from(process.env.ARTIST_ALLEY_MASTER_KEY_HEX, "hex").toString("base64"))')
+export AA_MASTER_KEY
 
 if [ ! -f "$seed_marker" ]; then
   # The upstream seed command owns schema migration, first-admin creation and
