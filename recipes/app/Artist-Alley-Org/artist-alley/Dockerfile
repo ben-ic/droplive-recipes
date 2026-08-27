@@ -7,15 +7,23 @@ FROM alpine:3.22@sha256:14358309a308569c32bdc37e2e0e9694be33a9d99e68afb0f5ff33cc
 
 WORKDIR /opt/artist-alley-seed
 
+# Kaggle v7 wraps every media directory in one extra `media/` directory,
+# while MANIFEST.json paths start at images/, videos/, audio/, and so on.
+# Flatten that wrapper once in the image so the upstream seed command can open
+# the real files it selected instead of recording them all as missing.
 RUN wget -q -O /tmp/dam-population-seed.zip \
       https://www.kaggle.com/api/v1/datasets/download/mscrnt/dam-population-seed \
     && echo "72b7519ccdab9b7d3c1cc7011c41f42c8b7734e76d19cb06b355433c84e5f55c  /tmp/dam-population-seed.zip" | sha256sum -c - \
     && mkdir -p site catalogue \
     && unzip -q /tmp/dam-population-seed.zip -d site \
     && rm /tmp/dam-population-seed.zip \
+    && test -d site/media \
+    && mv site/media/* site/ \
+    && rmdir site/media \
     && test -f site/MANIFEST.json \
     && test -f site/posts.json \
-    && test -f site/ATTRIBUTIONS.md
+    && test -f site/ATTRIBUTIONS.md \
+    && test -f site/videos/internet/mineclone2-release.webm
 
 RUN for name in \
       dataset.users.json \
