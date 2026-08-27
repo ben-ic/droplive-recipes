@@ -1,4 +1,35 @@
 # syntax=docker/dockerfile:1
+# Artist Alley's public demo dataset is the project's own version-7 Kaggle
+# archive. The checksum pins that release even though Kaggle's download URL
+# always resolves the latest public version. The four catalogue files are the
+# exact copies used by the v0.10.2 source revision below.
+FROM alpine:3.22@sha256:14358309a308569c32bdc37e2e0e9694be33a9d99e68afb0f5ff33cc1f695dce AS official-seed
+
+WORKDIR /opt/artist-alley-seed
+
+RUN wget -q -O /tmp/dam-population-seed.zip \
+      https://www.kaggle.com/api/v1/datasets/download/mscrnt/dam-population-seed \
+    && echo "72b7519ccdab9b7d3c1cc7011c41f42c8b7734e76d19cb06b355433c84e5f55c  /tmp/dam-population-seed.zip" | sha256sum -c - \
+    && mkdir -p site catalogue \
+    && unzip -q /tmp/dam-population-seed.zip -d site \
+    && rm /tmp/dam-population-seed.zip \
+    && test -f site/MANIFEST.json \
+    && test -f site/posts.json \
+    && test -f site/ATTRIBUTIONS.md
+
+RUN for name in \
+      dataset.users.json \
+      dataset.teams.json \
+      dataset.collections.json \
+      dataset.field_definitions.json; do \
+      wget -q -O "catalogue/$name" \
+        "https://raw.githubusercontent.com/Artist-Alley-Org/artist-alley/1c856cb0a6d8bf1dbea4ea570e20d1acaa391839/seed/profiles/$name"; \
+    done \
+    && echo "9ae255c5a88cb85445c5cc801dc0f7876e93a954ac63272b525c82aa0c5402a0  catalogue/dataset.users.json" | sha256sum -c - \
+    && echo "015d242b0b4be5e4670b439a3de10fa2cddf26f9aacd9ad015f62e6c65e582ab  catalogue/dataset.teams.json" | sha256sum -c - \
+    && echo "b1aac46d70da1d190b42b6fb0c997220f8e16b6d555af8cd0753e909b4ba7a3e  catalogue/dataset.collections.json" | sha256sum -c - \
+    && echo "7c3ed4fd1efb926cb61856f76b3965e25f7de7bea05c5666fb6adbe8e093b74e  catalogue/dataset.field_definitions.json" | sha256sum -c -
+
 # Official v0.10.2 multi-architecture image. Its OCI config identifies source
 # revision 1c856cb0a6d8bf1dbea4ea570e20d1acaa391839.
 FROM ghcr.io/artist-alley-org/artist-alley@sha256:527962ab113404b99677cde067fcce31d7f82cb42c62aa216629179c61432d85
@@ -22,7 +53,7 @@ ENV AA_HTTP_ADDR=:8080 \
     AA_LOG_LEVEL=info \
     AA_LOG_FORMAT=json
 
-COPY --chmod=0555 generate-demo.mjs /opt/droplive/generate-demo.mjs
+COPY --from=official-seed --chown=app:app /opt/artist-alley-seed /opt/artist-alley-seed
 COPY --chmod=0555 droplive-entrypoint.sh /usr/local/bin/droplive-artist-alley
 
 USER app
