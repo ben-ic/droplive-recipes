@@ -4,6 +4,8 @@ ARG DROPLIVE_SOURCE_COMMIT
 ARG DROPLIVE_SOURCE_TREE_SHA256
 ARG DROPLIVE_RUNTIME_CONTRACT_SHA256
 
+ENV NIX_CONFIG="experimental-features = nix-command flakes"
+
 LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
       org.opencontainers.image.source="https://github.com/juspay/kolu" \
       org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
