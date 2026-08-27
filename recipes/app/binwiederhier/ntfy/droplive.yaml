@@ -6,6 +6,8 @@ repository: https://github.com/binwiederhier/ntfy
 world: business.saas_company.v2
 run:
   port: 8080
+  # Open the seeded release topic so the first screen contains useful data.
+  open: /northstar-release
   data:
   - /var/lib/ntfy
   health:
@@ -25,3 +27,5 @@ environment:
     owner: droplive
     format: url-safe
     length: 16
+    login:
+      username: admin

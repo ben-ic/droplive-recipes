@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-# droplive: generate=hex96 ownership=app purpose=owner-bootstrap lifecycle=stable rotation=app name=NTFY_ADMIN_PASSWORD capability=owner-login
+# droplive: generate=hex96 ownership=app purpose=owner-bootstrap lifecycle=stable rotation=app name=NTFY_ADMIN_PASSWORD capability=owner-login username=admin
 : "${NTFY_ADMIN_PASSWORD:?DropLive must generate NTFY_ADMIN_PASSWORD}"
 : "${NTFY_BASE_URL:?DropLive must derive NTFY_BASE_URL from the public origin}"
 
