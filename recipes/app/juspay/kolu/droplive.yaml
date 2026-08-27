@@ -9,3 +9,12 @@ run:
     path: /api/health
     contains:
       - kolu
+  # Kolu hands a visitor a real shell with real PTYs, and every tool it needs is
+  # already baked into the image by nix. It reaches nothing on the internet to be
+  # useful: the workspace, the git repository, the builds and the tests are all
+  # local, and the canvas is served on 7681 to the visitor's own browser.
+  #
+  # So the reviewed answer is that this application reaches nothing at all. That is
+  # a claim about Kolu, not a platform default -- a demo of a shell is exactly the
+  # case where "what can this reach" has to be answered by someone who looked.
+  network: none

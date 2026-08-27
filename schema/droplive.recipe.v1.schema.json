@@ -199,8 +199,77 @@
         "working-directory": {
           "type": "string",
           "pattern": "^/"
+        },
+        "network": {
+          "enum": [
+            "none",
+            "allowlist"
+          ]
+        },
+        "expected_hosts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/expectedHost"
+          },
+          "minItems": 1,
+          "uniqueItems": true
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "network": {
+                "const": "none"
+              }
+            },
+            "required": [
+              "network"
+            ]
+          },
+          "then": {
+            "not": {
+              "required": [
+                "expected_hosts"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "network": {
+                "const": "allowlist"
+              }
+            },
+            "required": [
+              "network"
+            ]
+          },
+          "then": {
+            "required": [
+              "expected_hosts"
+            ]
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "expected_hosts"
+            ]
+          },
+          "then": {
+            "properties": {
+              "network": {
+                "const": "allowlist"
+              }
+            },
+            "required": [
+              "network"
+            ]
+          }
+        }
+      ]
     },
     "environment": {
       "type": "object",
