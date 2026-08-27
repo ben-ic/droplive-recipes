@@ -45,7 +45,7 @@ LABEL org.opencontainers.image.version="v0.10.2" \
       org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
       org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
 
-ENV AA_HTTP_ADDR=:8080 \
+ENV AA_HTTP_ADDR=127.0.0.1:8081 \
     AA_DB_SSLMODE=disable \
     AA_STORAGE_BACKEND=fs \
     AA_STORAGE_FS_ROOT=/var/lib/aa-storage \
@@ -55,6 +55,8 @@ ENV AA_HTTP_ADDR=:8080 \
 
 COPY --from=official-seed --chown=app:app /opt/artist-alley-seed /opt/artist-alley-seed
 COPY --chmod=0555 droplive-entrypoint.sh /usr/local/bin/droplive-artist-alley
+COPY --chmod=0444 droplive-feed-ready.mjs /usr/local/lib/droplive-feed-ready.mjs
+COPY --chmod=0444 droplive-tcp-proxy.mjs /usr/local/lib/droplive-tcp-proxy.mjs
 
 USER app
 WORKDIR /app
