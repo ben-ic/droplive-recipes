@@ -11,6 +11,7 @@ seed_root=/opt/artist-alley-seed
 seed_marker=/var/lib/aa-storage/.droplive-official-kaggle-v7
 cookie_jar=/tmp/droplive-artist-alley-cookie
 feed_response=/tmp/droplive-artist-alley-feed
+me_response=/tmp/droplive-artist-alley-me
 internal_url=http://127.0.0.1:8081
 proxy_pid=
 
@@ -96,13 +97,31 @@ if [ "$login_code" != 200 ]; then
   exit 1
 fi
 
+# Use the exact session that the application returned. This also makes the
+# authentication proof independent of curl's cookie-file policy for localhost.
+owner_session=$(awk '$6 == "user" { value = $7 } END { print value }' "$cookie_jar")
+if [ -z "$owner_session" ]; then
+  echo "artist-alley generated owner login did not return a session cookie" >&2
+  exit 1
+fi
+if ! curl -fsS -b "user=$owner_session" -o "$me_response" \
+    "$internal_url/api/v1/auth/me" \
+    || ! node -e '
+      const fs = require("node:fs");
+      const me = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+      if (me.username !== "admin") process.exit(1);
+    ' "$me_response"; then
+  echo "artist-alley generated owner session could not authenticate" >&2
+  exit 1
+fi
+
 # The upstream seed command queues previews but does not render them. Its worker
 # pool starts with the private server above. Do not expose the public port until
 # the first 36-post feed has at least 24 real, servable cover previews. This is
 # the smallest useful screen-sized cohort: the launch page cannot pass while
 # the main feed is still a wall of fallback cards.
 attempt=0
-until curl -fsS -b "$cookie_jar" \
+until curl -fsS -b "user=$owner_session" \
     -o "$feed_response" \
     "$internal_url/api/v1/posts?limit=36&feed=latest&dir=desc" \
     && node /usr/local/lib/droplive-feed-ready.mjs "$feed_response"; do
