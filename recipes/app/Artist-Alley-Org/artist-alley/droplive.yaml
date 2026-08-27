@@ -1,0 +1,37 @@
+version: 1
+kind: app
+tagline: "Game studio art review"
+description: "Review, organize, search and archive a game studio's artwork and media"
+repository: https://github.com/Artist-Alley-Org/artist-alley
+run:
+  port: 8080
+  data:
+  - /var/lib/aa-storage
+  health:
+    path: /healthz
+    contains:
+    - 'ok'
+companions:
+  database:
+    type: postgres
+    bindings:
+      AA_DB_HOST: host
+      AA_DB_PORT: port
+      AA_DB_NAME: database
+      AA_DB_USER: username
+      AA_DB_PASSWORD: password
+environment:
+  ARTIST_ALLEY_OWNER_PASSWORD:
+    owner: droplive
+    format: password
+    length: 24
+    login:
+      username: admin
+  AA_SCRAMBLE_KEY:
+    owner: droplive
+    format: hex
+    length: 64
+  ARTIST_ALLEY_MASTER_KEY_HEX:
+    owner: droplive
+    format: hex
+    length: 64
