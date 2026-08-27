@@ -6,15 +6,13 @@ export KOLU_ALLOWED_ORIGINS="$DROPLIVE_PUBLIC_ORIGIN"
 
 cd /workspace
 /opt/droplive/bin/world-workspace.sh
-/opt/droplive/bin/world-arrivals.sh &
-arrivals_pid=$!
 
 kolu web --bind 0.0.0.0 --port 7681 &
 server_pid=$!
 
 cleanup() {
-  kill "$arrivals_pid" "$server_pid" 2>/dev/null || true
-  wait "$arrivals_pid" "$server_pid" 2>/dev/null || true
+  kill "$server_pid" 2>/dev/null || true
+  wait "$server_pid" 2>/dev/null || true
 }
 trap cleanup EXIT INT TERM
 
@@ -46,10 +44,10 @@ for _ in $(seq 1 120); do
 done
 kolu_padi ls >/dev/null
 
-release_id=$(kolu_padi create --toplevel --cwd /workspace/northstar-relay --intent "Release 2.8 · readiness" -- bash -lc './scripts/release-checks; exec bash')
-kolu_padi create --parent "$release_id" --cwd /workspace/northstar-relay --intent "World activity · live" -- bash -lc './scripts/activity' >/dev/null
-kolu_padi create --toplevel --cwd /workspace/northstar-relay --intent "Issue 318 · worker fix" -- bash -lc 'printf "\nIssue 318 · scheduled export timeout\n\n"; git status --short; git diff -- config/export-worker.conf; ./services/relay-core/worker.sh; exec bash' >/dev/null
-kolu_padi create --toplevel --cwd /workspace/northstar-relay --intent "Lumen · support context" -- bash -lc 'printf "\n"; sed -n "1,160p" docs/lumen-support.md; printf "\nRecent support work\n\n"; sed -n "1,8p" data/tasks.tsv; exec bash' >/dev/null
-kolu_padi create --toplevel --cwd /workspace/northstar-relay --intent "Northstar · operating brief" -- bash -lc './scripts/briefing; exec bash' >/dev/null
+release_id=$(kolu_padi create --toplevel --cwd /workspace/northstar-relay --intent "Release 2.8 · failing gate" -- bash -lc './scripts/release-checks || true; exec bash')
+kolu_padi create --parent "$release_id" --cwd /workspace/northstar-relay --intent "Release gate · file watcher" -- bash -lc './scripts/watch-tests' >/dev/null
+kolu_padi create --toplevel --cwd /workspace/northstar-relay --intent "Web console · development server" -- bash -lc './scripts/dev-server' >/dev/null
+kolu_padi create --toplevel --cwd /workspace/northstar-relay --intent "Issue 319 · cleanup worker" -- bash -lc './scripts/export-worker; exec bash' >/dev/null
+kolu_padi create --toplevel --cwd /workspace/northstar-relay --intent "Northstar · completed briefing" -- bash -lc './scripts/briefing; printf "\n[briefing] complete\n"; exec bash' >/dev/null
 
 wait "$server_pid"
