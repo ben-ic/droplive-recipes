@@ -20,6 +20,10 @@ case "$NTFY_BASE_URL" in
     exit 64
     ;;
 esac
+# DropLive may include the declared first screen in the origin value. ntfy's
+# base-url is different: it must be the host origin, not a topic path.
+NTFY_BASE_URL=$(printf '%s' "$NTFY_BASE_URL" | sed -E 's#^(https?://[^/]+).*$#\1#')
+export NTFY_BASE_URL
 
 data_dir=/var/lib/ntfy
 auth_file=$data_dir/auth.db
