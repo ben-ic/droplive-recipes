@@ -29,10 +29,27 @@ for _ in $(seq 1 120); do
 done
 curl --fail --silent http://127.0.0.1:7681/api/health | grep -qx kolu
 
-release_id=$(kolu create --toplevel --cwd /workspace/northstar-relay --intent "Release 2.8 · readiness" -- bash -lc './scripts/release-checks; exec bash')
-kolu create --parent "$release_id" --cwd /workspace/northstar-relay --intent "World activity · live" -- bash -lc './scripts/activity' >/dev/null
-kolu create --toplevel --cwd /workspace/northstar-relay --intent "Issue 318 · worker fix" -- bash -lc 'printf "\nIssue 318 · scheduled export timeout\n\n"; git status --short; git diff -- config/export-worker.conf; ./services/relay-core/worker.sh; exec bash' >/dev/null
-kolu create --toplevel --cwd /workspace/northstar-relay --intent "Lumen · support context" -- bash -lc 'printf "\n"; sed -n "1,160p" docs/lumen-support.md; printf "\nRecent support work\n\n"; sed -n "1,8p" data/tasks.tsv; exec bash' >/dev/null
-kolu create --toplevel --cwd /workspace/northstar-relay --intent "Northstar · operating brief" -- bash -lc './scripts/briefing; exec bash' >/dev/null
+kolu_padi() {
+  kolu --state-root "$KOLU_PADI_STATE_DIR" "$@"
+}
+
+# HTTP readiness is earlier than Padi readiness. Wait for the exact Padi state
+# root owned by this Kolu server before creating the real terminal layout.
+for _ in $(seq 1 120); do
+  if kolu_padi ls >/dev/null 2>&1; then
+    break
+  fi
+  if ! kill -0 "$server_pid" 2>/dev/null; then
+    wait "$server_pid"
+  fi
+  sleep 0.25
+done
+kolu_padi ls >/dev/null
+
+release_id=$(kolu_padi create --toplevel --cwd /workspace/northstar-relay --intent "Release 2.8 · readiness" -- bash -lc './scripts/release-checks; exec bash')
+kolu_padi create --parent "$release_id" --cwd /workspace/northstar-relay --intent "World activity · live" -- bash -lc './scripts/activity' >/dev/null
+kolu_padi create --toplevel --cwd /workspace/northstar-relay --intent "Issue 318 · worker fix" -- bash -lc 'printf "\nIssue 318 · scheduled export timeout\n\n"; git status --short; git diff -- config/export-worker.conf; ./services/relay-core/worker.sh; exec bash' >/dev/null
+kolu_padi create --toplevel --cwd /workspace/northstar-relay --intent "Lumen · support context" -- bash -lc 'printf "\n"; sed -n "1,160p" docs/lumen-support.md; printf "\nRecent support work\n\n"; sed -n "1,8p" data/tasks.tsv; exec bash' >/dev/null
+kolu_padi create --toplevel --cwd /workspace/northstar-relay --intent "Northstar · operating brief" -- bash -lc './scripts/briefing; exec bash' >/dev/null
 
 wait "$server_pid"
