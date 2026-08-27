@@ -31,7 +31,7 @@ environment:
     owner: droplive
     format: hex
     length: 64
-  AA_MASTER_KEY:
+  ARTIST_ALLEY_MASTER_KEY_HEX:
     owner: droplive
-    format: base64
-    length: 44
+    format: hex
+    length: 64
