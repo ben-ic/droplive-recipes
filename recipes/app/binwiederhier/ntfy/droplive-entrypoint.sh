@@ -96,10 +96,16 @@ if ! test -f "$seed_marker"; then
       --title "$2" --tags "$3" --priority "$4" "http://127.0.0.1:8080/$1" "$5"
   }
   seed_ready=0
-  for attempt in $(seq 1 30); do
-    if publish northstar-release 'Release 2.8 review starts' 'rocket,clipboard' 5 'Maya owns the review. Confirm cancellation coverage and customer communication before approval.'; then
-      seed_ready=1
-      break
+  # A cold µVM can take longer than the old 30-second publish retry window to
+  # start the official server. Wait for the declared health response first, but
+  # keep a hard bound so a broken server still fails the build.
+  for attempt in $(seq 1 90); do
+    if wget -qO- http://127.0.0.1:8080/v1/health 2>/dev/null |
+      grep -Eq '"healthy"[[:space:]]*:[[:space:]]*true'; then
+      if publish northstar-release 'Release 2.8 review starts' 'rocket,clipboard' 5 'Maya owns the review. Confirm cancellation coverage and customer communication before approval.'; then
+        seed_ready=1
+        break
+      fi
     fi
     sleep 1
   done
