@@ -42,6 +42,11 @@ RUN for name in \
 # revision 1c856cb0a6d8bf1dbea4ea570e20d1acaa391839.
 FROM ghcr.io/artist-alley-org/artist-alley@sha256:527962ab113404b99677cde067fcce31d7f82cb42c62aa216629179c61432d85 AS artist-alley
 
+# Use the exact pgvector-capable PostgreSQL engine that DropLive supplies as
+# the managed PostgreSQL companion. This stage exists only while the official
+# asset previews are rendered and does not enter the final app image.
+FROM docker.io/pgvector/pgvector:pg16@sha256:1d533553fefe4f12e5d80c7b80622ba0c382abb5758856f52983d8789179f0fb AS pgvector
+
 # Keep a coherent raster-art slice of the official catalogue. Video and 3D
 # preview work is valuable in a permanent install, but it makes a disposable
 # demo wait for several minutes and keeps almost the whole source archive in the
@@ -59,11 +64,11 @@ RUN node /usr/local/lib/droplive-prune-seed.mjs \
 # The temporary database and its build-only keys do not enter the final image.
 # Only content-addressed derivative files survive; runtime seeding creates a
 # fresh database and reconciles its storage_variants rows against these bytes.
-FROM artist-alley AS preview-cache
-USER root
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends postgresql postgresql-client \
-    && rm -rf /var/lib/apt/lists/*
+FROM pgvector AS preview-cache
+# Overlay the official application runtime on the compatible Debian base. The
+# pgvector files remain available for the temporary database; Artist Alley's
+# Chromium, ffmpeg, ImageMagick, Node, and application binary render previews.
+COPY --from=artist-alley / /
 USER app
 COPY --from=prepared-seed --chown=app:app /tmp/artist-alley-prepared /opt/artist-alley-prepared
 COPY --chmod=0555 droplive-prebuild-previews.sh /usr/local/bin/droplive-prebuild-previews
