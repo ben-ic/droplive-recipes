@@ -11,7 +11,8 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
       org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
       org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
 
-RUN nix profile install --accept-flake-config --profile /opt/kolu \
+RUN mkdir -p /opt \
+    && nix profile install --accept-flake-config --profile /opt/kolu \
       "github:juspay/kolu/${DROPLIVE_SOURCE_COMMIT}#default" \
     && nix profile install --profile /opt/runtime \
       "github:NixOS/nixpkgs/d8e1b5b3c6faedb60c060c5dec2cc17c0c2473a0#bashInteractive" \
