@@ -23,7 +23,6 @@ RUN mkdir -p /opt \
       "github:NixOS/nixpkgs/d8e1b5b3c6faedb60c060c5dec2cc17c0c2473a0#git" \
       "github:NixOS/nixpkgs/d8e1b5b3c6faedb60c060c5dec2cc17c0c2473a0#gnugrep" \
       "github:NixOS/nixpkgs/d8e1b5b3c6faedb60c060c5dec2cc17c0c2473a0#gnused" \
-      "github:NixOS/nixpkgs/d8e1b5b3c6faedb60c060c5dec2cc17c0c2473a0#jq" \
     && mkdir -p /workspace /run/kolu /run/padi /opt/droplive/bin /home/demo \
     && chown -R 1000:1000 /workspace /run/kolu /run/padi /home/demo
 
