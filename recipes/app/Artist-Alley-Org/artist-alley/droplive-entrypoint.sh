@@ -7,12 +7,11 @@ set -eu
 : "${AA_DB_HOST:?DropLive must attach managed PostgreSQL}"
 : "${AA_DB_PASSWORD:?DropLive must attach managed PostgreSQL}"
 
-seed_root=/tmp/droplive-artist-alley-seed
-seed_marker=/var/lib/aa-storage/.droplive-emberlight-v1
+seed_root=/opt/artist-alley-seed
+seed_marker=/var/lib/aa-storage/.droplive-official-kaggle-v7
 cookie_jar=/tmp/droplive-artist-alley-cookie
 
-mkdir -p /var/lib/aa-storage "$seed_root"
-node /opt/droplive/generate-demo.mjs "$seed_root"
+mkdir -p /var/lib/aa-storage
 
 # Artist Alley requires standard Base64 for exactly 32 key bytes. DropLive
 # generates the unambiguous 64-character hex form; convert it inside the guest
