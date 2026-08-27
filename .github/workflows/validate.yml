@@ -19,3 +19,4 @@ jobs:
       - run: python3 tools/test_kind_schema.py
       - run: python3 tools/test_entrypoint_rules.py
       - run: python3 tools/test_byok_schema.py
+      - run: python3 tools/test_network_schema.py
