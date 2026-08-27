@@ -12,6 +12,7 @@ seed_marker=/var/lib/aa-storage/.droplive-official-kaggle-v7
 cookie_jar=/tmp/droplive-artist-alley-cookie
 feed_response=/tmp/droplive-artist-alley-feed
 me_response=/tmp/droplive-artist-alley-me
+seed_log=/tmp/droplive-artist-alley-seed.log
 internal_url=http://127.0.0.1:8081
 proxy_pid=
 
@@ -28,10 +29,14 @@ if [ ! -f "$seed_marker" ]; then
   # all relation writes. Its documented demo bootstrap is temporary: after the
   # server starts, this script changes that password to DropLive's generated
   # per-session owner value through the application's own authenticated API.
-  AA_BOOTSTRAP_DEFAULT_ADMIN=1 /app/aa seed \
-    --site "$seed_root/site" \
-    --catalogue "$seed_root/catalogue" \
-    --previews=true
+  if ! AA_BOOTSTRAP_DEFAULT_ADMIN=1 /app/aa seed \
+      --site "$seed_root/site" \
+      --catalogue "$seed_root/catalogue" \
+      --previews=true >"$seed_log" 2>&1; then
+    tail -n 40 "$seed_log" >&2
+    exit 1
+  fi
+  cat "$seed_log"
 fi
 
 "$@" &
@@ -126,11 +131,29 @@ until curl -fsS -b "user=$owner_session" \
     "$internal_url/api/v1/posts?limit=36&feed=latest&dir=desc" \
     && node /usr/local/lib/droplive-feed-ready.mjs "$feed_response"; do
   attempt=$((attempt + 1))
-  if [ "$attempt" -ge 300 ]; then
+  if [ "$attempt" -ge 60 ]; then
+    echo "artist-alley seed summary at readiness timeout:" >&2
+    if [ -f "$seed_log" ]; then
+      tail -n 30 "$seed_log" >&2
+    else
+      echo "seed was already complete before this process started" >&2
+    fi
+    echo "artist-alley authenticated session summary:" >&2
+    node -e '
+      const fs = require("node:fs");
+      const me = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+      console.error(JSON.stringify({
+        username: me.username,
+        capabilities: me.capabilities,
+        capabilities_status: me.capabilities_status,
+      }));
+    ' "$me_response"
+    echo "artist-alley first feed response:" >&2
+    cat "$feed_response" >&2
     echo "artist-alley first feed did not produce 24 cover previews" >&2
     exit 1
   fi
-  sleep 1
+  sleep 5
 done
 
 # A raw TCP forwarder keeps HTTP streaming and WebSocket upgrades intact. Port
