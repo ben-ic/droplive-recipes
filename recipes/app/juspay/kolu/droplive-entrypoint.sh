@@ -6,15 +6,13 @@ export KOLU_ALLOWED_ORIGINS="$DROPLIVE_PUBLIC_ORIGIN"
 
 cd /workspace
 /opt/droplive/bin/world-workspace.sh
-/opt/droplive/bin/world-arrivals.sh &
-arrivals_pid=$!
 
 kolu web --bind 0.0.0.0 --port 7681 &
 server_pid=$!
 
 cleanup() {
-  kill "$arrivals_pid" "$server_pid" 2>/dev/null || true
-  wait "$arrivals_pid" "$server_pid" 2>/dev/null || true
+  kill "$server_pid" 2>/dev/null || true
+  wait "$server_pid" 2>/dev/null || true
 }
 trap cleanup EXIT INT TERM
 

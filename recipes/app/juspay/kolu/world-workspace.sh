@@ -141,6 +141,8 @@ cat > "$workspace/apps/web-console/public/index.html" <<'EOF'
 </ul>
 EOF
 printf '%s\n' 'northstar-web-console: ready' > "$workspace/apps/web-console/public/health.txt"
+seq 1 50000 > "$workspace/var/export-50000.rows"
+seq 1 75000 > "$workspace/var/export-75000.rows"
 
 cat > "$workspace/scripts/release-checks" <<'EOF'
 #!/usr/bin/env bash
@@ -148,21 +150,37 @@ set -uo pipefail
 cd "$(dirname "$0")/.."
 printf '\nNorthstar Relay · Release 2.8 gate\n'
 failed=0
+check_rows() {
+  expected=$1
+  fixture=$2
+  actual=$(wc -l < "$fixture")
+  if [[ "$actual" -eq "$expected" ]]; then
+    printf '%-38s PASS  %s rows\n' "$expected-row export fixture" "$actual"
+  else
+    printf '%-38s FAIL  expected %s, found %s\n' "$expected-row export fixture" "$expected" "$actual"
+    failed=1
+  fi
+}
 if services/relay-core/worker.sh config/export-worker.conf >/dev/null; then
   printf '%-38s %s\n' 'scheduled worker timeout' 'PASS  360s'
 else
   printf '%-38s %s\n' 'scheduled worker timeout' 'FAIL  issue 318'
   failed=1
 fi
-printf '%-38s %s\n' '50,000-row scheduled export' 'PASS  92s'
-printf '%-38s %s\n' '75,000-row scheduled export' 'PASS  141s'
+check_rows 50000 var/export-50000.rows
+check_rows 75000 var/export-75000.rows
 if services/exports-service/cancel-fixture.sh config/export-worker.conf >/dev/null; then
   printf '%-38s %s\n' 'partial object removed on cancel' 'PASS'
 else
   printf '%-38s %s\n' 'partial object removed on cancel' 'FAIL  issue 319'
   failed=1
 fi
-printf '%-38s %s\n' 'audit timestamp label isolated' 'PASS  issue 322'
+if grep -q 'timeZone: zone' apps/web-console/audit-timezone.ts; then
+  printf '%-38s %s\n' 'audit time-zone source contract' 'PASS  issue 322'
+else
+  printf '%-38s %s\n' 'audit time-zone source contract' 'FAIL  issue 322'
+  failed=1
+fi
 if (( failed == 0 )); then
   printf '\nDecision: READY — all local release checks pass.\n\n'
 else
@@ -257,7 +275,3 @@ mv config/export-worker.conf.next config/export-worker.conf
 git commit -qam "Reproduce scheduled export timeout"
 sed 's/scheduled_timeout_seconds=120/scheduled_timeout_seconds=360/' config/export-worker.conf > config/export-worker.conf.next
 mv config/export-worker.conf.next config/export-worker.conf
-cat > var/activity.log <<'EOF'
-[workspace] 16 people · 4 projects · 14 tasks · 3 repositories · 2 support cases
-[workspace] Release 2.8 is at risk; cancellation cleanup is the active gate.
-EOF

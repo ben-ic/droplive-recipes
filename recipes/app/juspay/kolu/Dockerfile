@@ -30,7 +30,7 @@ RUN mkdir -p /opt \
     && mkdir -p /workspace /run/kolu /run/padi /opt/droplive/bin /home/demo \
     && chown -R 1000:1000 /workspace /run/kolu /run/padi /home/demo
 
-COPY --chmod=0755 droplive-entrypoint.sh world-workspace.sh world-arrivals.sh /opt/droplive/bin/
+COPY --chmod=0755 droplive-entrypoint.sh world-workspace.sh /opt/droplive/bin/
 
 ENV HOME=/home/demo \
     PATH=/opt/droplive/bin:/opt/kolu/bin:/opt/runtime/bin \
