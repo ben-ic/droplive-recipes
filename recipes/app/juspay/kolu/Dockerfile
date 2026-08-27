@@ -16,6 +16,7 @@ RUN mkdir -p /opt \
       "github:juspay/kolu/${DROPLIVE_SOURCE_COMMIT}#default" \
     && nix profile install --profile /opt/runtime \
       "github:NixOS/nixpkgs/d8e1b5b3c6faedb60c060c5dec2cc17c0c2473a0#bashInteractive" \
+      "github:NixOS/nixpkgs/d8e1b5b3c6faedb60c060c5dec2cc17c0c2473a0#busybox" \
       "github:NixOS/nixpkgs/d8e1b5b3c6faedb60c060c5dec2cc17c0c2473a0#coreutils" \
       "github:NixOS/nixpkgs/d8e1b5b3c6faedb60c060c5dec2cc17c0c2473a0#curl" \
       "github:NixOS/nixpkgs/d8e1b5b3c6faedb60c060c5dec2cc17c0c2473a0#findutils" \
