@@ -10,6 +10,9 @@ set -eu
 seed_root=/opt/artist-alley-seed
 seed_marker=/var/lib/aa-storage/.droplive-official-kaggle-v7
 cookie_jar=/tmp/droplive-artist-alley-cookie
+feed_response=/tmp/droplive-artist-alley-feed
+internal_url=http://127.0.0.1:8081
+proxy_pid=
 
 mkdir -p /var/lib/aa-storage
 
@@ -32,10 +35,20 @@ fi
 
 "$@" &
 app_pid=$!
-trap 'kill "$app_pid" 2>/dev/null || true; wait "$app_pid" 2>/dev/null || true' INT TERM EXIT
+
+cleanup() {
+  trap - INT TERM EXIT
+  if [ -n "$proxy_pid" ]; then
+    kill "$proxy_pid" 2>/dev/null || true
+    wait "$proxy_pid" 2>/dev/null || true
+  fi
+  kill "$app_pid" 2>/dev/null || true
+  wait "$app_pid" 2>/dev/null || true
+}
+trap cleanup INT TERM EXIT
 
 attempt=0
-until curl -fsS http://127.0.0.1:8080/healthz >/dev/null; do
+until curl -fsS "$internal_url/healthz" >/dev/null; do
   attempt=$((attempt + 1))
   if [ "$attempt" -ge 90 ]; then
     echo "artist-alley did not become healthy" >&2
@@ -49,7 +62,7 @@ if [ ! -f "$seed_marker" ]; then
     -c "$cookie_jar" \
     -H 'Content-Type: application/json' \
     -d '{"username":"admin","password":"ArtistAlleyMogul"}' \
-    http://127.0.0.1:8080/api/v1/auth/login)
+    "$internal_url/api/v1/auth/login")
   if [ "$login_code" != 200 ]; then
     echo "artist-alley owner bootstrap login failed with HTTP $login_code" >&2
     exit 1
@@ -61,7 +74,7 @@ if [ ! -f "$seed_marker" ]; then
     -X PUT \
     -H 'Content-Type: application/json' \
     --data "$change_body" \
-    http://127.0.0.1:8080/api/v1/account/password)
+    "$internal_url/api/v1/account/password")
   if [ "$change_code" != 200 ]; then
     echo "artist-alley owner password rotation failed with HTTP $change_code" >&2
     exit 1
@@ -69,4 +82,41 @@ if [ ! -f "$seed_marker" ]; then
   : > "$seed_marker"
 fi
 
-wait "$app_pid"
+# Always create a fresh authenticated session for the readiness check. The
+# bootstrap cookie can be revoked by password rotation, and a restarted guest
+# already has the marker and therefore never uses the bootstrap password.
+login_body=$(node -e 'process.stdout.write(JSON.stringify({username:"admin",password:process.env.ARTIST_ALLEY_OWNER_PASSWORD}))')
+login_code=$(curl -sS -o /tmp/droplive-owner-login-response -w '%{http_code}' \
+  -c "$cookie_jar" \
+  -H 'Content-Type: application/json' \
+  --data "$login_body" \
+  "$internal_url/api/v1/auth/login")
+if [ "$login_code" != 200 ]; then
+  echo "artist-alley generated owner login failed with HTTP $login_code" >&2
+  exit 1
+fi
+
+# The upstream seed command queues previews but does not render them. Its worker
+# pool starts with the private server above. Do not expose the public port until
+# the first 36-post feed has at least 24 real, servable cover previews. This is
+# the smallest useful screen-sized cohort: the launch page cannot pass while
+# the main feed is still a wall of fallback cards.
+attempt=0
+until curl -fsS -b "$cookie_jar" \
+    -o "$feed_response" \
+    "$internal_url/api/v1/posts?limit=36&feed=latest&dir=desc" \
+    && node /usr/local/lib/droplive-feed-ready.mjs "$feed_response"; do
+  attempt=$((attempt + 1))
+  if [ "$attempt" -ge 300 ]; then
+    echo "artist-alley first feed did not produce 24 cover previews" >&2
+    exit 1
+  fi
+  sleep 1
+done
+
+# A raw TCP forwarder keeps HTTP streaming and WebSocket upgrades intact. Port
+# 8080 does not exist before this point, so DropLive's /healthz probe is also a
+# visual-readiness gate without changing Artist Alley itself.
+node /usr/local/lib/droplive-tcp-proxy.mjs &
+proxy_pid=$!
+wait "$proxy_pid"
