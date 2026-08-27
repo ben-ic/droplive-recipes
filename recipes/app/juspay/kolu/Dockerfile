@@ -24,11 +24,8 @@ RUN mkdir -p /opt \
       "github:NixOS/nixpkgs/d8e1b5b3c6faedb60c060c5dec2cc17c0c2473a0#gnugrep" \
       "github:NixOS/nixpkgs/d8e1b5b3c6faedb60c060c5dec2cc17c0c2473a0#gnused" \
       "github:NixOS/nixpkgs/d8e1b5b3c6faedb60c060c5dec2cc17c0c2473a0#jq" \
-      "github:NixOS/nixpkgs/d8e1b5b3c6faedb60c060c5dec2cc17c0c2473a0#shadow" \
-    && /opt/runtime/bin/groupadd --gid 1000 demo \
-    && /opt/runtime/bin/useradd --uid 1000 --gid 1000 --home-dir /home/demo --create-home --shell /opt/runtime/bin/bash demo \
-    && mkdir -p /workspace /run/kolu /run/padi /opt/droplive/bin \
-    && chown -R demo:demo /workspace /run/kolu /run/padi /home/demo
+    && mkdir -p /workspace /run/kolu /run/padi /opt/droplive/bin /home/demo \
+    && chown -R 1000:1000 /workspace /run/kolu /run/padi /home/demo
 
 COPY --chmod=0755 droplive-entrypoint.sh world-workspace.sh world-arrivals.sh /opt/droplive/bin/
 
@@ -39,7 +36,7 @@ ENV HOME=/home/demo \
     SHELL=/opt/runtime/bin/bash \
     TERM=xterm-256color
 
-USER demo:demo
+USER 1000:1000
 WORKDIR /workspace/northstar-relay
 EXPOSE 7681
 ENTRYPOINT ["/opt/droplive/bin/droplive-entrypoint.sh"]
