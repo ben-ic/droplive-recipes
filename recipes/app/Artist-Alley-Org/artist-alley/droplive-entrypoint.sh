@@ -36,18 +36,18 @@ export AA_MASTER_KEY
 
 if [ ! -f "$seed_marker" ]; then
   # The upstream seed command owns schema migration, first-admin creation and
-  # all relation writes. Its coverage-complete profile keeps the official
-  # linked world while avoiding a full 1,960-asset import in every 15-minute
-  # guest. Upstream measures depth 8 at about 87 posts and 148 assets, with all
-  # required UI dimensions, media extensions and populated collections. Its
-  # documented demo bootstrap is temporary: after the server starts, this
-  # script changes that password to DropLive's generated per-session owner
-  # value through the application's own authenticated API.
+  # all relation writes. The official Kaggle v7 archive does not contain the
+  # external companion files that upstream's CI-only coverage profile requires,
+  # so that profile correctly refuses this archive. Use upstream's bounded
+  # extension mode instead: it keeps real official assets and their linked posts
+  # while avoiding the full 1,960-asset import in every 15-minute guest. The
+  # documented demo bootstrap is temporary: after the server starts, this script
+  # changes that password to DropLive's generated per-session owner value through
+  # the application's own authenticated API.
   if ! AA_BOOTSTRAP_DEFAULT_ADMIN=1 /app/aa seed \
       --site "$seed_root/site" \
       --catalogue "$seed_root/catalogue" \
-      --profile ci \
-      --coverage-depth 8 \
+      --limit-per-extension 8 \
       --previews=true >"$seed_log" 2>&1; then
     tail -n 40 "$seed_log" >&2
     exit 1
