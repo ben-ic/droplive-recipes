@@ -51,9 +51,9 @@ FROM artist-alley AS prepared-seed
 COPY --from=official-seed --chown=app:app /opt/artist-alley-seed /tmp/artist-alley-full
 COPY --chmod=0444 droplive-prune-seed.mjs /usr/local/lib/droplive-prune-seed.mjs
 RUN node /usr/local/lib/droplive-prune-seed.mjs \
-      /tmp/artist-alley-full/site /opt/artist-alley-prepared/site \
-    && mkdir -p /opt/artist-alley-prepared/catalogue \
-    && cp -a /tmp/artist-alley-full/catalogue/. /opt/artist-alley-prepared/catalogue/
+      /tmp/artist-alley-full/site /tmp/artist-alley-prepared/site \
+    && mkdir -p /tmp/artist-alley-prepared/catalogue \
+    && cp -a /tmp/artist-alley-full/catalogue/. /tmp/artist-alley-prepared/catalogue/
 
 # Render the selected assets with Artist Alley's own worker during the build.
 # The temporary database and its build-only keys do not enter the final image.
@@ -65,7 +65,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends postgresql postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 USER app
-COPY --from=prepared-seed --chown=app:app /opt/artist-alley-prepared /opt/artist-alley-prepared
+COPY --from=prepared-seed --chown=app:app /tmp/artist-alley-prepared /opt/artist-alley-prepared
 COPY --chmod=0555 droplive-prebuild-previews.sh /usr/local/bin/droplive-prebuild-previews
 RUN /usr/local/bin/droplive-prebuild-previews
 
@@ -90,7 +90,7 @@ ENV AA_HTTP_ADDR=127.0.0.1:8081 \
     AA_LOG_LEVEL=info \
     AA_LOG_FORMAT=json
 
-COPY --from=prepared-seed --chown=app:app /opt/artist-alley-prepared /opt/artist-alley-seed
+COPY --from=prepared-seed --chown=app:app /tmp/artist-alley-prepared /opt/artist-alley-seed
 COPY --from=preview-cache --chown=app:app /tmp/droplive-preview-cache /opt/artist-alley-preview-cache
 COPY --chmod=0555 droplive-entrypoint.sh /usr/local/bin/droplive-artist-alley
 COPY --chmod=0444 droplive-feed-ready.mjs /usr/local/lib/droplive-feed-ready.mjs
