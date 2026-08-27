@@ -40,7 +40,36 @@ RUN for name in \
 
 # Official v0.10.2 multi-architecture image. Its OCI config identifies source
 # revision 1c856cb0a6d8bf1dbea4ea570e20d1acaa391839.
-FROM ghcr.io/artist-alley-org/artist-alley@sha256:527962ab113404b99677cde067fcce31d7f82cb42c62aa216629179c61432d85
+FROM ghcr.io/artist-alley-org/artist-alley@sha256:527962ab113404b99677cde067fcce31d7f82cb42c62aa216629179c61432d85 AS artist-alley
+
+# Keep a coherent raster-art slice of the official catalogue. Video and 3D
+# preview work is valuable in a permanent install, but it makes a disposable
+# demo wait for several minutes and keeps almost the whole source archive in the
+# image. The script selects linked official posts first and asserts a useful
+# minimum instead of manufacturing substitute content.
+FROM artist-alley AS prepared-seed
+COPY --from=official-seed --chown=app:app /opt/artist-alley-seed /tmp/artist-alley-full
+COPY --chmod=0444 droplive-prune-seed.mjs /usr/local/lib/droplive-prune-seed.mjs
+RUN node /usr/local/lib/droplive-prune-seed.mjs \
+      /tmp/artist-alley-full/site /opt/artist-alley-prepared/site \
+    && mkdir -p /opt/artist-alley-prepared/catalogue \
+    && cp -a /tmp/artist-alley-full/catalogue/. /opt/artist-alley-prepared/catalogue/
+
+# Render the selected assets with Artist Alley's own worker during the build.
+# The temporary database and its build-only keys do not enter the final image.
+# Only content-addressed derivative files survive; runtime seeding creates a
+# fresh database and reconciles its storage_variants rows against these bytes.
+FROM artist-alley AS preview-cache
+USER root
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends postgresql postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+USER app
+COPY --from=prepared-seed --chown=app:app /opt/artist-alley-prepared /opt/artist-alley-prepared
+COPY --chmod=0555 droplive-prebuild-previews.sh /usr/local/bin/droplive-prebuild-previews
+RUN /usr/local/bin/droplive-prebuild-previews
+
+FROM artist-alley
 
 ARG DROPLIVE_SOURCE_COMMIT
 ARG DROPLIVE_SOURCE_TREE_SHA256
@@ -61,7 +90,8 @@ ENV AA_HTTP_ADDR=127.0.0.1:8081 \
     AA_LOG_LEVEL=info \
     AA_LOG_FORMAT=json
 
-COPY --from=official-seed --chown=app:app /opt/artist-alley-seed /opt/artist-alley-seed
+COPY --from=prepared-seed --chown=app:app /opt/artist-alley-prepared /opt/artist-alley-seed
+COPY --from=preview-cache --chown=app:app /tmp/droplive-preview-cache /opt/artist-alley-preview-cache
 COPY --chmod=0555 droplive-entrypoint.sh /usr/local/bin/droplive-artist-alley
 COPY --chmod=0444 droplive-feed-ready.mjs /usr/local/lib/droplive-feed-ready.mjs
 COPY --chmod=0444 droplive-tcp-proxy.mjs /usr/local/lib/droplive-tcp-proxy.mjs

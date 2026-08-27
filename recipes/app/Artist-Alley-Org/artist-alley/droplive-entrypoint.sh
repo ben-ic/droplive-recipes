@@ -8,7 +8,7 @@ set -eu
 : "${AA_DB_PASSWORD:?DropLive must attach managed PostgreSQL}"
 
 seed_root=/opt/artist-alley-seed
-seed_marker=/var/lib/aa-storage/.droplive-official-kaggle-v7
+seed_marker=/var/lib/aa-storage/.droplive-official-kaggle-v7-raster-preview-v1
 cookie_jar=/tmp/droplive-artist-alley-cookie
 feed_response=/tmp/droplive-artist-alley-feed
 me_response=/tmp/droplive-artist-alley-me
@@ -35,19 +35,20 @@ AA_MASTER_KEY=$(node -e 'process.stdout.write(Buffer.from(process.env.ARTIST_ALL
 export AA_MASTER_KEY
 
 if [ ! -f "$seed_marker" ]; then
+  # Build-time rendering stores no database or credential. Copy its
+  # content-addressed derivatives into this session's fresh storage volume;
+  # upstream seed jobs will reconcile their own rows against these files.
+  cp -a /opt/artist-alley-preview-cache/. /var/lib/aa-storage/
+
   # The upstream seed command owns schema migration, first-admin creation and
-  # all relation writes. The official Kaggle v7 archive does not contain the
-  # external companion files that upstream's CI-only coverage profile requires,
-  # so that profile correctly refuses this archive. Use upstream's bounded
-  # extension mode instead: it keeps real official assets and their linked posts
-  # while avoiding the full 1,960-asset import in every 15-minute guest. The
-  # documented demo bootstrap is temporary: after the server starts, this script
-  # changes that password to DropLive's generated per-session owner value through
-  # the application's own authenticated API.
+  # all relation writes. The image already contains a coherent, bounded raster
+  # subset of the official Kaggle archive, with its linked posts and real card
+  # previews. The documented demo bootstrap is temporary: after the server
+  # starts, this script changes that password to DropLive's generated
+  # per-session owner value through the application's own authenticated API.
   if ! AA_BOOTSTRAP_DEFAULT_ADMIN=1 /app/aa seed \
       --site "$seed_root/site" \
       --catalogue "$seed_root/catalogue" \
-      --limit-per-extension 8 \
       --previews=true >"$seed_log" 2>&1; then
     tail -n 40 "$seed_log" >&2
     exit 1
