@@ -7,9 +7,9 @@ if (!sourceRoot || !targetRoot) {
 }
 
 const allowedExtensions = new Set(["jpg", "jpeg", "png", "webp"]);
-const maxAssets = 72;
-const targetPublicPosts = 36;
-const targetPosts = 52;
+const maxAssets = 128;
+const targetPublicPosts = 28;
+const targetPosts = 36;
 
 const readJson = (name) =>
   JSON.parse(fs.readFileSync(path.join(sourceRoot, name), "utf8"));
@@ -84,7 +84,7 @@ const publicCount = selectedPosts.filter(publicPost).length;
 const collectionCount = new Set(selectedPosts.map((post) => post.collection_name).filter(Boolean)).size;
 const teamCount = new Set(selectedPosts.map((post) => post.team_name).filter(Boolean)).size;
 
-if (selectedAssets.length < 48 || selectedPosts.length < 44 || publicCount < 30) {
+if (selectedAssets.length < 96 || selectedPosts.length < 28 || publicCount < 24) {
   throw new Error(
     `official raster subset is too sparse: assets=${selectedAssets.length} ` +
       `posts=${selectedPosts.length} public=${publicCount}`,
