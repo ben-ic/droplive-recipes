@@ -18,7 +18,7 @@ from services.search_index_svc import reseed_search_index
 from werkzeug.security import generate_password_hash
 
 
-SEED_VERSION = "northstar-visio-v1"
+SEED_VERSION = "northstar-visio-v2"
 MEDIA = [
     "01-week-at-a-glance.png", "02-welcome-theo-martin.png", "03-theo-first-week.png",
     "04-release-2-8-readiness.png", "05-export-load-test.png", "06-lumen-renewal.png",
@@ -81,6 +81,42 @@ def build_config():
     support = [MEDIA[i] for i in (5, 6, 7, 15, 11)]
     operations = [MEDIA[i] for i in (0, 9, 10, 11, 14, 17)]
 
+    def slot(time_start, time_end, date_start=active_start, date_end=future_end):
+        return {
+            "date_start": date_start,
+            "date_end": date_end,
+            "time_start": time_start,
+            "time_end": time_end,
+        }
+
+    # Every display has a real working-day plan. The small gaps are intentional:
+    # they make the weekly gap detector useful without creating fake conflicts.
+    schedules = {
+        MEDIA[0]: slot("08:00", "10:00"),
+        MEDIA[13]: slot("10:00", "13:00"),
+        MEDIA[14]: slot("14:00", "18:00"),
+    }
+    reception_schedules = {
+        MEDIA[1]: slot("08:00", "10:30"),
+        MEDIA[9]: slot("10:30", "13:00"),
+        MEDIA[12]: slot("14:00", "18:00"),
+    }
+    team_hub_schedules = {
+        MEDIA[3]: slot("08:30", "11:00"),
+        MEDIA[4]: slot("11:00", "14:00"),
+        MEDIA[16]: slot("14:30", "18:30"),
+    }
+    support_schedules = {
+        MEDIA[6]: slot("07:00", "11:00"),
+        MEDIA[5]: slot("11:00", "15:00"),
+        MEDIA[15]: slot("15:00", "19:00"),
+    }
+    operations_schedules = {
+        MEDIA[10]: slot("07:30", "10:00"),
+        MEDIA[11]: slot("10:00", "13:00"),
+        MEDIA[17]: slot("14:00", "18:00"),
+    }
+
     return {
         "droplive_seed_version": SEED_VERSION,
         "app_name": "Northstar Displays",
@@ -89,6 +125,7 @@ def build_config():
         "order": reception,
         "durations": {name: 14 + (index % 4) * 3 for index, name in enumerate(MEDIA)},
         "disabled": [],
+        "schedules": schedules,
         "groups": groups,
         "group_pools": {"Company updates": 3, "Release 2.8": 3, "Customer operations": 3},
         "group_screens": {
@@ -100,10 +137,10 @@ def build_config():
         },
         "disabled_groups": [],
         "screens": {
-            "reception": {"order": reception, "disabled": [], "disabled_groups": [], "durations": {}, "schedules": {}, "halo_color": "#0ea5e9"},
-            "team-hub": {"order": team_hub, "disabled": [], "disabled_groups": [], "durations": {}, "schedules": {}, "halo_color": "#8b5cf6"},
-            "support-room": {"order": support, "disabled": [], "disabled_groups": [], "durations": {}, "schedules": {}, "halo_color": "#f43f5e"},
-            "operations": {"order": operations, "disabled": [], "disabled_groups": [], "durations": {}, "schedules": {}, "halo_color": "#14b8a6"},
+            "reception": {"order": reception, "disabled": [], "disabled_groups": [], "durations": {}, "schedules": reception_schedules, "halo_color": "#0ea5e9"},
+            "team-hub": {"order": team_hub, "disabled": [], "disabled_groups": [], "durations": {}, "schedules": team_hub_schedules, "halo_color": "#8b5cf6"},
+            "support-room": {"order": support, "disabled": [], "disabled_groups": [], "durations": {}, "schedules": support_schedules, "halo_color": "#f43f5e"},
+            "operations": {"order": operations, "disabled": [], "disabled_groups": [], "durations": {}, "schedules": operations_schedules, "halo_color": "#14b8a6"},
         },
         "broadcast_links": {},
         "campaigns": [
@@ -186,6 +223,7 @@ def seed_activity():
         (2, "lucas", "config", MEDIA[4], "duration:20 seconds"),
         (1, "hana", "campaign", None, "archived:Audit page review"),
         (1, "imani", "campaign", None, "updated:Welcome Theo"),
+        (0, "noor", "config", MEDIA[17], "display slots:operations weekday plan published"),
         (0, "maya", "login", None, f"seed:{SEED_VERSION}"),
     ]
     for index, (days, username, action, filename, details) in enumerate(events):

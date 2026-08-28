@@ -23,6 +23,8 @@ ENV LANG=C.UTF-8 \
     GUNICORN_WORKERS=2 \
     VISIO_DEMO_MODE=1
 
+COPY --chmod=0555 patch_upstream.py /usr/local/lib/patch-visio-upstream.py
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         ca-certificates curl ffmpeg poppler-utils \
@@ -34,6 +36,7 @@ RUN apt-get update \
     && mkdir -p /app \
     && tar -xzf /tmp/visio-display.tar.gz --strip-components=1 -C /app \
     && rm /tmp/visio-display.tar.gz \
+    && python /usr/local/lib/patch-visio-upstream.py /app \
     && python -m pip install --upgrade "pip==24.3.1" \
     && python -m pip install --no-cache-dir -r /app/web/requirements.txt \
     && apt-get purge -y curl \
