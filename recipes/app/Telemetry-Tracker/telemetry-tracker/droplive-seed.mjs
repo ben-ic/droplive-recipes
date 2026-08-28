@@ -19,6 +19,38 @@ const daysAgo = (days, minutes = 0) => minutesAgo(days * 1440 + minutes);
 const pick = (values, index) => values[index % values.length];
 const sha = (value) => createHash("sha256").update(value).digest("hex");
 
+const customers = [
+  ["Avery Brooks", "avery@acmelogistics.test", "Acme Logistics"],
+  ["Sofia Marin", "sofia@junipergoods.test", "Juniper Goods"],
+  ["Noah Williams", "noah@morrowsupply.test", "Morrow Supply"],
+  ["Fatima Zahra", "fatima@atlasfulfillment.test", "Atlas Fulfillment"],
+  ["Ethan Park", "ethan@brightlane.test", "Brightlane Retail"],
+  ["Camille Laurent", "camille@maisonverte.test", "Maison Verte"],
+  ["Mateo Silva", "mateo@coastlinefoods.test", "Coastline Foods"],
+  ["Priyanka Rao", "priyanka@orbitparts.test", "Orbit Parts"],
+  ["Jonas Weber", "jonas@northwindlabs.test", "Northwind Labs"],
+  ["Amara Okafor", "amara@kitemarket.test", "Kite Market"],
+  ["Grace Kim", "grace@fieldstonehome.test", "Fieldstone Home"],
+  ["Owen Campbell", "owen@cedaroutfitters.test", "Cedar Outfitters"],
+  ["Leila Haddad", "leila@harborhealth.test", "Harbor Health"],
+  ["Hugo Martin", "hugo@voltwheels.test", "Volt Wheels"],
+  ["Mina Tanaka", "mina@papercrane.test", "Paper Crane"],
+  ["Samuel Mensah", "samuel@laketrading.test", "Lake Trading"],
+  ["Nora Jensen", "nora@fjordstudio.test", "Fjord Studio"],
+  ["Diego Morales", "diego@solcommerce.test", "Sol Commerce"],
+  ["Elena Rossi", "elena@terracotta.test", "Terracotta"],
+  ["Isaac Cohen", "isaac@cornerstoneops.test", "Cornerstone Ops"],
+  ["Zara Khan", "zara@kindredcare.test", "Kindred Care"],
+  ["Theo Bernard", "theo@ateliernorth.test", "Atelier North"],
+  ["Anika Patel", "anika@meridianworks.test", "Meridian Works"],
+  ["Liam O'Brien", "liam@wildfern.test", "Wildfern"],
+];
+
+const customerAt = (index) => {
+  const [name, email, company] = pick(customers, index);
+  return { id: `contact-${String((index % customers.length) + 1).padStart(3, "0")}`, name, email, company };
+};
+
 function uuid(kind, index) {
   const hex = createHash("sha256").update(`${kind}:${index}`).digest("hex");
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-4${hex.slice(13, 16)}-8${hex.slice(17, 20)}-${hex.slice(20, 32)}`;
@@ -126,26 +158,27 @@ async function seedSessions() {
   const browsers = ["Chrome", "Safari", "Firefox", "Edge"];
   const systems = ["macOS", "Windows", "iOS", "Android", "Linux"];
   const rows = [];
-  for (let i = 0; i < 180; i += 1) {
-    const started = minutesAgo(i * 52 + (i % 7) * 11);
-    const duration = 2 + ((i * 17) % 38);
+  for (let i = 0; i < 420; i += 1) {
+    const customer = customerAt(i * 7);
+    const started = minutesAgo(i * 12 + (i % 7) * 2);
+    const duration = 4 + ((i * 17) % 43);
     rows.push({
       id: uuid("session", i),
       project_id: ids.project,
       session_id: `relay-session-${String(i + 1).padStart(4, "0")}`,
-      app: i % 5 === 0 ? "relay-admin" : "relay-web",
-      platform: i % 4 === 0 ? "mobile-web" : "web",
-      environment: i % 19 === 0 ? "staging" : "production",
-      release: i < 38 ? "2026.08.4" : i < 104 ? "2026.08.3" : "2026.08.2",
-      user_id: `customer-${String((i % 64) + 1).padStart(3, "0")}`,
-      anonymous_id: `anon-${String((i % 91) + 1).padStart(3, "0")}`,
-      user_email: `member${(i % 64) + 1}@customer.test`,
+      app: i % 7 === 0 ? "relay-admin" : "relay-web",
+      platform: i % 5 === 0 ? "mobile-web" : "web",
+      environment: i % 29 === 0 ? "staging" : "production",
+      release: i < 86 ? "2026.08.4" : i < 246 ? "2026.08.3" : "2026.08.2",
+      user_id: customer.id,
+      anonymous_id: `browser-${sha(customer.email).slice(0, 10)}`,
+      user_email: customer.email,
       country: pick(countries, i * 3),
       device_browser: pick(browsers, i),
       device_os: pick(systems, i * 2),
       sdk_version: "1.17.5",
       started_at: started,
-      ended_at: i % 23 === 0 ? null : new Date(started.getTime() + duration * 60_000),
+      ended_at: i < 3 ? null : new Date(started.getTime() + duration * 60_000),
     });
   }
   await prisma.session.createMany({ data: rows });
@@ -166,7 +199,8 @@ async function seedEvents() {
   const releases = ["2026.08.4", "2026.08.3", "2026.08.2"];
   const rows = [];
 
-  for (let i = 0; i < 720; i += 1) {
+  for (let i = 0; i < 8500; i += 1) {
+    const customer = customerAt(i * 11);
     const route = pick(routes, i * 5);
     rows.push({
       id: uuid("event", i),
@@ -176,21 +210,24 @@ async function seedEvents() {
       environment: i % 31 === 0 ? "staging" : "production",
       release: pick(releases, Math.floor(i / 130)),
       name: pick(productEvents, i * 3),
-      user_id: `customer-${String((i % 64) + 1).padStart(3, "0")}`,
-      session_id: `relay-session-${String((i % 180) + 1).padStart(4, "0")}`,
-      anonymous_id: `anon-${String((i % 91) + 1).padStart(3, "0")}`,
+      user_id: customer.id,
+      session_id: `relay-session-${String((i % 420) + 1).padStart(4, "0")}`,
+      anonymous_id: `browser-${sha(customer.email).slice(0, 10)}`,
       sdk_version: "1.17.5",
       properties: {
         route,
-        workspace: pick(["Acme Logistics", "Juniper Goods", "Morrow Supply"], i),
+        workspace: customer.company,
         plan: pick(["growth", "business", "starter"], i * 2),
         source: pick(["navigation", "command-palette", "notification"], i * 5),
+        shipment_id: `SHP-${20260000 + (i % 1840)}`,
+        carrier: pick(["DHL", "UPS", "FedEx", "LocalFleet"], i * 3),
       },
-      created_at: minutesAgo(i * 17 + (i % 13)),
+      created_at: minutesAgo(Math.floor(i * 0.72) + (i % 5)),
     });
   }
 
-  for (let i = 0; i < 300; i += 1) {
+  for (let i = 0; i < 2500; i += 1) {
+    const customer = customerAt(i * 5);
     const route = pick(routes, i);
     rows.push({
       id: uuid("request", i),
@@ -200,25 +237,31 @@ async function seedEvents() {
       environment: "production",
       release: pick(releases, Math.floor(i / 90)),
       name: "$request",
-      user_id: `customer-${String((i % 64) + 1).padStart(3, "0")}`,
-      session_id: `relay-session-${String((i % 180) + 1).padStart(4, "0")}`,
+      user_id: customer.id,
+      session_id: `relay-session-${String((i % 420) + 1).padStart(4, "0")}`,
       sdk_version: "1.17.5",
       properties: {
         method: i % 5 === 0 ? "POST" : "GET",
         url: `https://app.northstar-relay.test${route}`,
         path: route,
-        duration_ms: 78 + ((i * 47) % 760),
-        status_code: i % 37 === 0 ? 500 : i % 19 === 0 ? 429 : 200,
+        duration_ms: 54 + ((i * 47) % 520),
+        status_code: i % 211 === 0 ? 500 : i % 97 === 0 ? 429 : i % 23 === 0 ? 204 : 200,
+        region: pick(["iad", "fra", "lhr", "sin"], i),
       },
-      created_at: minutesAgo(i * 31 + 3),
+      created_at: minutesAgo(Math.floor(i * 1.55) + 3),
     });
   }
 
   const metrics = ["LCP", "INP", "CLS", "TTFB"];
-  for (let i = 0; i < 280; i += 1) {
+  for (let i = 0; i < 1000; i += 1) {
+    const customer = customerAt(i * 13);
     const metric = pick(metrics, i);
-    const base = metric === "LCP" ? 1800 : metric === "INP" ? 145 : metric === "CLS" ? 0.08 : 540;
-    const spread = metric === "CLS" ? ((i * 7) % 12) / 100 : (i * 41) % 850;
+    const base = metric === "LCP" ? 1550 : metric === "INP" ? 85 : metric === "CLS" ? 0.035 : 310;
+    const spread =
+      metric === "LCP" ? (i * 41) % 1250
+        : metric === "INP" ? (i * 17) % 260
+          : metric === "CLS" ? ((i * 7) % 14) / 100
+            : (i * 29) % 760;
     rows.push({
       id: uuid("vital", i),
       project_id: ids.project,
@@ -227,11 +270,11 @@ async function seedEvents() {
       environment: "production",
       release: pick(releases, Math.floor(i / 85)),
       name: "$web_vital",
-      user_id: `customer-${String((i % 64) + 1).padStart(3, "0")}`,
-      session_id: `relay-session-${String((i % 180) + 1).padStart(4, "0")}`,
+      user_id: customer.id,
+      session_id: `relay-session-${String((i % 420) + 1).padStart(4, "0")}`,
       sdk_version: "1.17.5",
       properties: { metric, value: base + spread, path: pick(routes, i * 3) },
-      created_at: minutesAgo(i * 34 + 7),
+      created_at: minutesAgo(Math.floor(i * 3.6) + 7),
     });
   }
 
@@ -240,18 +283,16 @@ async function seedEvents() {
 
 async function seedErrors() {
   const groups = [
-    ["Route estimate request timed out", "at fetchRouteEstimate (src/routes/estimate.ts:84:17)", "relay-api", "node"],
-    ["Cannot read properties of undefined (reading 'coordinates')", "at ShipmentMap (src/components/ShipmentMap.tsx:142:29)", "relay-web", "web"],
-    ["Carrier webhook signature mismatch", "at verifyCarrierWebhook (src/webhooks/carrier.ts:61:11)", "relay-api", "node"],
-    ["Failed to persist delivery checkpoint", "at saveCheckpoint (src/workers/checkpoints.ts:118:13)", "relay-worker", "node"],
-    ["ChunkLoadError: Loading chunk 481 failed", "at __webpack_require__.f.j (webpack-runtime.js:203:21)", "relay-web", "web"],
-    ["Export exceeded workbook row limit", "at buildOperationsExport (src/reports/export.ts:207:9)", "relay-api", "node"],
-    ["Notification preference update conflicted", "at updatePreferences (src/settings/notifications.ts:73:15)", "relay-web", "web"],
-    ["Geocoding provider returned an incomplete address", "at normalizeAddress (src/geocoding/normalize.ts:49:7)", "relay-worker", "node"],
+    ["Carrier rate request exceeded 2.5 s", "at fetchCarrierRates (src/carriers/rates.ts:118:17)", "relay-api", "node", 18, false],
+    ["Route map could not render a checkpoint", "at ShipmentMap (src/components/ShipmentMap.tsx:142:29)", "relay-web", "web", 14, false],
+    ["Webhook signature rejected after carrier key rotation", "at verifyCarrierWebhook (src/webhooks/carrier.ts:61:11)", "relay-api", "node", 11, false],
+    ["Delivery checkpoint write conflicted", "at saveCheckpoint (src/workers/checkpoints.ts:118:13)", "relay-worker", "node", 9, false],
+    ["Operations export exceeded the workbook row limit", "at buildOperationsExport (src/reports/export.ts:207:9)", "relay-api", "node", 7, true],
+    ["Notification preference update conflicted", "at updatePreferences (src/settings/notifications.ts:73:15)", "relay-web", "web", 5, true],
+    ["Geocoder returned an incomplete dock address", "at normalizeAddress (src/geocoding/normalize.ts:49:7)", "relay-worker", "node", 4, true],
   ];
   for (let g = 0; g < groups.length; g += 1) {
-    const [message, top_stack, app, platform] = groups[g];
-    const count = 9 + ((g * 13) % 35);
+    const [message, top_stack, app, platform, count, resolved] = groups[g];
     const groupId = uuid("error-group", g);
     await prisma.errorGroup.create({
       data: {
@@ -267,7 +308,7 @@ async function seedErrors() {
         occurrences: count,
         first_seen: daysAgo(12 - g),
         last_seen: minutesAgo(12 + g * 43),
-        resolved_at: g === 5 ? daysAgo(1, 90) : null,
+        resolved_at: resolved ? daysAgo(1 + (g % 2), 90) : null,
       },
     });
     const occurrences = [];
@@ -285,11 +326,11 @@ async function seedErrors() {
           carrier: pick(["DHL", "UPS", "FedEx", "LocalFleet"], i),
           handled: false,
         },
-        session_id: `relay-session-${String(((g * 17 + i) % 180) + 1).padStart(4, "0")}`,
-        user_id: `customer-${String(((g * 11 + i) % 64) + 1).padStart(3, "0")}`,
-        anonymous_id: `anon-${String(((g * 7 + i) % 91) + 1).padStart(3, "0")}`,
+        session_id: `relay-session-${String(((g * 47 + i * 19 + 31) % 420) + 1).padStart(4, "0")}`,
+        user_id: customerAt(g * 5 + i).id,
+        anonymous_id: `browser-${sha(customerAt(g * 5 + i).email).slice(0, 10)}`,
         sdk_version: "1.17.5",
-        created_at: minutesAgo(12 + g * 43 + i * (17 + g)),
+        created_at: minutesAgo(45 + g * 77 + i * (1100 + g * 17)),
       });
     }
     await prisma.errorOccurrence.createMany({ data: occurrences });
@@ -299,7 +340,7 @@ async function seedErrors() {
 async function seedOperations() {
   const yearMonth = now.toISOString().slice(0, 7);
   await prisma.usageMonthly.create({
-    data: { id: uuid("usage", 0), project_id: ids.project, year_month: yearMonth, ingest_units: 1534 },
+    data: { id: uuid("usage", 0), project_id: ids.project, year_month: yearMonth, ingest_units: 68420 },
   });
 
   await prisma.apiKey.createMany({
@@ -326,7 +367,7 @@ async function seedOperations() {
     data: [
       {
         id: uuid("rule", 0), project_id: ids.project, name: "Production error burst", enabled: true,
-        conditions: [{ type: "ERROR_COUNT", threshold: 20, windowMinutes: 15, environment: "production" }],
+        conditions: [{ type: "ERROR_COUNT", threshold: 12, windowMinutes: 15, environment: "production" }],
         destination_ids: ["project-email"], cooldown_minutes: 20, last_fired_at: minutesAgo(95),
       },
       {
@@ -350,17 +391,17 @@ async function seedOperations() {
     data: [
       {
         id: uuid("alert", 0), project_id: ids.project, rule: "ERROR_SPIKE",
-        title: "Production error spike", body: "Route estimate timeouts crossed 20 occurrences in 15 minutes.",
+        title: "Carrier rate latency increased", body: "Carrier rate failures crossed 12 occurrences during the release ramp.",
         href: `/dashboard/errors/${uuid("error-group", 0)}`, dedupe_key: "demo:error-spike:latest", fired_at: minutesAgo(95),
       },
       {
         id: uuid("alert", 1), project_id: ids.project, rule: "ALERT_RULE",
-        title: "Affected users threshold reached", body: "14 customers saw delivery checkpoint failures in the last hour.",
+        title: "Affected users threshold reached", body: "12 operators saw delayed checkpoint updates in the last hour.",
         href: `/dashboard/errors/${uuid("error-group", 3)}`, dedupe_key: "demo:affected-users:latest", fired_at: daysAgo(1, 20),
       },
       {
         id: uuid("alert", 2), project_id: ids.project, rule: "QUOTA_NEAR",
-        title: "Monthly ingest at 76%", body: "Relay Console is approaching its monthly telemetry budget.",
+        title: "Monthly ingest at 68%", body: "Relay Console is tracking slightly above its monthly telemetry budget.",
         href: "/dashboard/settings/billing", dedupe_key: "demo:quota:latest", fired_at: daysAgo(3, 45),
       },
     ],
@@ -418,4 +459,3 @@ main()
     process.exit(1);
   })
   .finally(() => prisma.$disconnect());
-
