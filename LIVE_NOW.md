@@ -1,6 +1,6 @@
 # Live now
 
-130 projects have a current public DropLive demo. 48 include sample data.
+131 projects have a current public DropLive demo. 47 include sample data.
 
 This file is generated each day from the [public DropLive catalogue](https://droplive.io/projects?sort=name). Do not edit it by hand.
 
@@ -24,6 +24,7 @@ This file is generated each day from the [public DropLive catalogue](https://dro
 | actual | A local-first personal finance app | — | [![Try with DropLive](https://droplive.io/badge/actual.svg)](https://droplive.io/projects/actual) |
 | adminer | Database management in a single PHP file | — | [![Try with DropLive](https://droplive.io/badge/adminer.svg)](https://droplive.io/projects/adminer) |
 | akaunting | Accounting for small businesses: invoices, bills, expenses and reports | — | [![Try with DropLive](https://droplive.io/badge/akaunting.svg)](https://droplive.io/projects/akaunting) |
+| artist-alley | Review, organize, search and archive a game studio's artwork and media | — | [![Try with DropLive](https://droplive.io/badge/artist-alley.svg)](https://droplive.io/projects/artist-alley) |
 | audiobookshelf | Self-hosted audiobook and podcast server | — | [![Try with DropLive](https://droplive.io/badge/audiobookshelf.svg)](https://droplive.io/projects/audiobookshelf) |
 | babybuddy | Track a baby's sleep, feeds, nappy changes and growth for caregivers | — | [![Try with DropLive](https://droplive.io/badge/babybuddy.svg)](https://droplive.io/projects/babybuddy) |
 | bazarr | Finds and downloads subtitles for the films and series Sonarr and Radarr manage | — | [![Try with DropLive](https://droplive.io/badge/bazarr.svg)](https://droplive.io/projects/bazarr) |
@@ -76,7 +77,7 @@ This file is generated each day from the [public DropLive catalogue](https://dro
 | jotty | Personal notes and checklists kept as plain files | — | [![Try with DropLive](https://droplive.io/badge/jotty.svg)](https://droplive.io/projects/jotty) |
 | kanboard | Kanban project management software | Yes | [![Try with DropLive](https://droplive.io/badge/kanboard.svg)](https://droplive.io/projects/kanboard) |
 | kavita | Reading server for comics, manga and ebooks, with a browser-based reader | — | [![Try with DropLive](https://droplive.io/badge/kavita.svg)](https://droplive.io/projects/kavita) |
-| kimai | Track time against projects and customers, and export it for invoicing | Yes | [![Try with DropLive](https://droplive.io/badge/kimai.svg)](https://droplive.io/projects/kimai) |
+| kimai | Track time against projects and customers, and export it for invoicing | — | [![Try with DropLive](https://droplive.io/badge/kimai.svg)](https://droplive.io/projects/kimai) |
 | kroki | Renders diagrams from text for many diagram languages through one API | — | [![Try with DropLive](https://droplive.io/badge/kroki.svg)](https://droplive.io/projects/kroki) |
 | linkding | Self-hosted bookmark manager that is designed be to be minimal, fast, and easy to set up using Docker | Yes | [![Try with DropLive](https://droplive.io/badge/linkding.svg)](https://droplive.io/projects/linkding) |
 | linkwarden | Save, annotate and archive bookmarks, keeping a copy of the page | Yes | [![Try with DropLive](https://droplive.io/badge/linkwarden.svg)](https://droplive.io/projects/linkwarden) |
