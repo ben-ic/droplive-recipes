@@ -46,7 +46,10 @@ kolu_padi ls >/dev/null
 
 release_id=$(kolu_padi create --toplevel --cwd /workspace/northstar-relay --intent "Release 2.8 · failing gate" -- bash -lc './scripts/release-checks || true; exec bash')
 kolu_padi create --parent "$release_id" --cwd /workspace/northstar-relay --intent "Release gate · file watcher" -- bash -lc './scripts/watch-tests' >/dev/null
-kolu_padi create --toplevel --cwd /workspace/northstar-relay --intent "Web console · development server" -- bash -lc './scripts/dev-server' >/dev/null
+# In its OWN checkout, so the dock draws a second repo group. That grouping is
+# the dock's whole job, and with one repo there was nothing for it to show.
+kolu_padi create --toplevel --cwd /workspace/web-console --intent "Web console · development server" -- bash -lc './scripts/dev-server' >/dev/null
+kolu_padi create --toplevel --cwd /workspace/web-console --intent "Issue 322 · audit time-zone labels" -- bash -lc 'git status --short --branch; printf "\n"; git --no-pager diff; exec bash' >/dev/null
 kolu_padi create --toplevel --cwd /workspace/northstar-relay --intent "Issue 319 · cleanup worker" -- bash -lc './scripts/export-worker; exec bash' >/dev/null
 kolu_padi create --toplevel --cwd /workspace/northstar-relay --intent "Northstar · completed briefing" -- bash -lc './scripts/briefing; printf "\n[briefing] complete\n"; exec bash' >/dev/null
 
