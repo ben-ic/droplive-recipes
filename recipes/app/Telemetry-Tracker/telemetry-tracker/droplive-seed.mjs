@@ -51,6 +51,42 @@ const customerAt = (index) => {
   return { id: `contact-${String((index % customers.length) + 1).padStart(3, "0")}`, name, email, company };
 };
 
+const deviceProfiles = [
+  { platform: "web", browser: "Chrome", os: "Windows", country: "US" },
+  { platform: "web", browser: "Safari", os: "macOS", country: "GB" },
+  { platform: "mobile-web", browser: "Safari", os: "iOS", country: "CA" },
+  { platform: "mobile-web", browser: "Chrome", os: "Android", country: "DE" },
+  { platform: "web", browser: "Chrome", os: "macOS", country: "NL" },
+  { platform: "web", browser: "Firefox", os: "Windows", country: "AU" },
+  { platform: "web", browser: "Firefox", os: "Linux", country: "FR" },
+  { platform: "web", browser: "Edge", os: "Windows", country: "SG" },
+];
+
+function sessionContext(index) {
+  const customer = customerAt(index * 7);
+  const device = pick(deviceProfiles, index * 5);
+  const started = minutesAgo(5 + index * 12 + (index % 7) * 2);
+  const duration = 8 + ((index * 17) % 39);
+  const app = index % 7 === 0 ? "relay-admin" : "relay-web";
+  return {
+    index,
+    customer,
+    device,
+    started,
+    duration,
+    app,
+    environment: index % 29 === 0 ? "staging" : "production",
+    release: index < 86 ? "2026.08.4" : index < 246 ? "2026.08.3" : "2026.08.2",
+    sessionId: `relay-session-${String(index + 1).padStart(4, "0")}`,
+  };
+}
+
+function eventTime(session, ordinal, total) {
+  const ageMinutes = Math.max(1, (now.getTime() - session.started.getTime()) / 60_000);
+  const availableMinutes = Math.max(1, Math.min(session.duration - 1, ageMinutes - 1));
+  return new Date(session.started.getTime() + ((ordinal + 1) / (total + 1)) * availableMinutes * 60_000);
+}
+
 function uuid(kind, index) {
   const hex = createHash("sha256").update(`${kind}:${index}`).digest("hex");
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-4${hex.slice(13, 16)}-8${hex.slice(17, 20)}-${hex.slice(20, 32)}`;
@@ -154,31 +190,26 @@ async function clearDemoRows() {
 }
 
 async function seedSessions() {
-  const countries = ["US", "DE", "GB", "CA", "NL", "AU", "FR", "SG"];
-  const browsers = ["Chrome", "Safari", "Firefox", "Edge"];
-  const systems = ["macOS", "Windows", "iOS", "Android", "Linux"];
   const rows = [];
   for (let i = 0; i < 420; i += 1) {
-    const customer = customerAt(i * 7);
-    const started = minutesAgo(i * 12 + (i % 7) * 2);
-    const duration = 4 + ((i * 17) % 43);
+    const session = sessionContext(i);
     rows.push({
       id: uuid("session", i),
       project_id: ids.project,
-      session_id: `relay-session-${String(i + 1).padStart(4, "0")}`,
-      app: i % 7 === 0 ? "relay-admin" : "relay-web",
-      platform: i % 5 === 0 ? "mobile-web" : "web",
-      environment: i % 29 === 0 ? "staging" : "production",
-      release: i < 86 ? "2026.08.4" : i < 246 ? "2026.08.3" : "2026.08.2",
-      user_id: customer.id,
-      anonymous_id: `browser-${sha(customer.email).slice(0, 10)}`,
-      user_email: customer.email,
-      country: pick(countries, i * 3),
-      device_browser: pick(browsers, i),
-      device_os: pick(systems, i * 2),
+      session_id: session.sessionId,
+      app: session.app,
+      platform: session.device.platform,
+      environment: session.environment,
+      release: session.release,
+      user_id: session.customer.id,
+      anonymous_id: `browser-${sha(session.customer.email).slice(0, 10)}`,
+      user_email: session.customer.email,
+      country: session.device.country,
+      device_browser: session.device.browser,
+      device_os: session.device.os,
       sdk_version: "1.17.5",
-      started_at: started,
-      ended_at: i < 3 ? null : new Date(started.getTime() + duration * 60_000),
+      started_at: session.started,
+      ended_at: i < 3 ? null : new Date(session.started.getTime() + session.duration * 60_000),
     });
   }
   await prisma.session.createMany({ data: rows });
@@ -196,86 +227,116 @@ async function seedEvents() {
     "report_exported",
   ];
   const routes = ["/dashboard", "/shipments", "/routes", "/exceptions", "/reports", "/settings/team"];
-  const releases = ["2026.08.4", "2026.08.3", "2026.08.2"];
   const rows = [];
-
-  for (let i = 0; i < 8500; i += 1) {
-    const customer = customerAt(i * 11);
-    const route = pick(routes, i * 5);
-    rows.push({
-      id: uuid("event", i),
-      project_id: ids.project,
-      app: i % 8 === 0 ? "relay-admin" : "relay-web",
-      platform: "web",
-      environment: i % 31 === 0 ? "staging" : "production",
-      release: pick(releases, Math.floor(i / 130)),
-      name: pick(productEvents, i * 3),
-      user_id: customer.id,
-      session_id: `relay-session-${String((i % 420) + 1).padStart(4, "0")}`,
-      anonymous_id: `browser-${sha(customer.email).slice(0, 10)}`,
-      sdk_version: "1.17.5",
-      properties: {
-        route,
-        workspace: customer.company,
-        plan: pick(["growth", "business", "starter"], i * 2),
-        source: pick(["navigation", "command-palette", "notification"], i * 5),
-        shipment_id: `SHP-${20260000 + (i % 1840)}`,
-        carrier: pick(["DHL", "UPS", "FedEx", "LocalFleet"], i * 3),
-      },
-      created_at: minutesAgo(Math.floor(i * 0.72) + (i % 5)),
-    });
-  }
-
-  for (let i = 0; i < 2500; i += 1) {
-    const customer = customerAt(i * 5);
-    const route = pick(routes, i);
-    rows.push({
-      id: uuid("request", i),
-      project_id: ids.project,
-      app: "relay-api",
-      platform: "node",
-      environment: "production",
-      release: pick(releases, Math.floor(i / 90)),
-      name: "$request",
-      user_id: customer.id,
-      session_id: `relay-session-${String((i % 420) + 1).padStart(4, "0")}`,
-      sdk_version: "1.17.5",
-      properties: {
-        method: i % 5 === 0 ? "POST" : "GET",
-        url: `https://app.northstar-relay.test${route}`,
-        path: route,
-        duration_ms: 54 + ((i * 47) % 520),
-        status_code: i % 211 === 0 ? 500 : i % 97 === 0 ? 429 : i % 23 === 0 ? 204 : 200,
-        region: pick(["iad", "fra", "lhr", "sin"], i),
-      },
-      created_at: minutesAgo(Math.floor(i * 1.55) + 3),
-    });
-  }
-
   const metrics = ["LCP", "INP", "CLS", "TTFB"];
-  for (let i = 0; i < 1000; i += 1) {
-    const customer = customerAt(i * 13);
-    const metric = pick(metrics, i);
-    const base = metric === "LCP" ? 1550 : metric === "INP" ? 85 : metric === "CLS" ? 0.035 : 310;
-    const spread =
-      metric === "LCP" ? (i * 41) % 1250
-        : metric === "INP" ? (i * 17) % 260
-          : metric === "CLS" ? ((i * 7) % 14) / 100
-            : (i * 29) % 760;
-    rows.push({
-      id: uuid("vital", i),
-      project_id: ids.project,
-      app: "relay-web",
-      platform: "web",
-      environment: "production",
-      release: pick(releases, Math.floor(i / 85)),
-      name: "$web_vital",
-      user_id: customer.id,
-      session_id: `relay-session-${String((i % 420) + 1).padStart(4, "0")}`,
-      sdk_version: "1.17.5",
-      properties: { metric, value: base + spread, path: pick(routes, i * 3) },
-      created_at: minutesAgo(Math.floor(i * 3.6) + 7),
-    });
+  let productIndex = 0;
+  let pageIndex = 0;
+  let requestIndex = 0;
+  let vitalIndex = 0;
+
+  for (let i = 0; i < 420; i += 1) {
+    const session = sessionContext(i);
+    const productCount = 12 + ((i * 7) % 13);
+    const pageCount = 2 + (i % 4);
+    const requestCount = 4 + ((i * 3) % 5);
+    const vitalCount = session.app === "relay-web" ? 2 + (i % 2) : 0;
+    const total = productCount + pageCount + requestCount + vitalCount;
+    let ordinal = 0;
+
+    for (let j = 0; j < productCount; j += 1) {
+      const route = pick(routes, i + j * 5);
+      const eventName = j === 0 ? "workspace_opened" : pick(productEvents, i * 3 + j * 5);
+      rows.push({
+        id: uuid("event", productIndex),
+        project_id: ids.project,
+        app: session.app,
+        platform: session.device.platform,
+        environment: session.environment,
+        release: session.release,
+        name: eventName,
+        user_id: session.customer.id,
+        session_id: session.sessionId,
+        anonymous_id: `browser-${sha(session.customer.email).slice(0, 10)}`,
+        sdk_version: "1.17.5",
+        properties: {
+          route,
+          workspace: session.customer.company,
+          plan: pick(["growth", "business", "starter"], i + j),
+          source: pick(["navigation", "command-palette", "notification"], i * 2 + j),
+          shipment_id: `SHP-${20260000 + ((i * 31 + j * 7) % 1840)}`,
+          carrier: pick(["DHL", "UPS", "FedEx", "LocalFleet"], i + j * 3),
+        },
+        created_at: eventTime(session, ordinal++, total),
+      });
+      productIndex += 1;
+    }
+
+    for (let j = 0; j < pageCount; j += 1) {
+      const route = pick(routes, i * 3 + j);
+      rows.push({
+        id: uuid("page", pageIndex),
+        project_id: ids.project,
+        app: session.app,
+        platform: session.device.platform,
+        environment: session.environment,
+        release: session.release,
+        name: "page_view",
+        user_id: session.customer.id,
+        session_id: session.sessionId,
+        anonymous_id: `browser-${sha(session.customer.email).slice(0, 10)}`,
+        sdk_version: "1.17.5",
+        properties: { name: pick(["Operations", "Shipments", "Routes", "Exceptions", "Reports", "Team settings"], i + j), path: route, url: `https://app.northstar-relay.test${route}` },
+        created_at: eventTime(session, ordinal++, total),
+      });
+      pageIndex += 1;
+    }
+
+    for (let j = 0; j < requestCount; j += 1) {
+      const route = pick(routes, i + j * 2);
+      rows.push({
+        id: uuid("request", requestIndex),
+        project_id: ids.project,
+        app: "relay-api",
+        platform: "node",
+        environment: session.environment,
+        release: session.release,
+        name: "$request",
+        user_id: session.customer.id,
+        session_id: session.sessionId,
+        sdk_version: "1.17.5",
+        properties: {
+          method: (i + j) % 5 === 0 ? "POST" : "GET",
+          url: `https://app.northstar-relay.test${route}`,
+          path: route,
+          duration_ms: 54 + (((i * 29 + j * 47)) % 520),
+          status_code: requestIndex % 211 === 0 ? 500 : requestIndex % 97 === 0 ? 429 : requestIndex % 23 === 0 ? 204 : 200,
+          region: pick(["iad", "fra", "lhr", "sin"], i + j),
+        },
+        created_at: eventTime(session, ordinal++, total),
+      });
+      requestIndex += 1;
+    }
+
+    for (let j = 0; j < vitalCount; j += 1) {
+      const metric = pick(metrics, i + j);
+      const base = metric === "LCP" ? 1550 : metric === "INP" ? 85 : metric === "CLS" ? 0.035 : 310;
+      const spread = metric === "LCP" ? (vitalIndex * 41) % 1250 : metric === "INP" ? (vitalIndex * 17) % 260 : metric === "CLS" ? ((vitalIndex * 7) % 14) / 100 : (vitalIndex * 29) % 760;
+      rows.push({
+        id: uuid("vital", vitalIndex),
+        project_id: ids.project,
+        app: session.app,
+        platform: session.device.platform,
+        environment: session.environment,
+        release: session.release,
+        name: "$web_vital",
+        user_id: session.customer.id,
+        session_id: session.sessionId,
+        sdk_version: "1.17.5",
+        properties: { metric, value: base + spread, path: pick(routes, i + j * 3) },
+        created_at: eventTime(session, ordinal++, total),
+      });
+      vitalIndex += 1;
+    }
   }
 
   await prisma.event.createMany({ data: rows });
@@ -294,6 +355,8 @@ async function seedErrors() {
   for (let g = 0; g < groups.length; g += 1) {
     const [message, top_stack, app, platform, count, resolved] = groups[g];
     const groupId = uuid("error-group", g);
+    const firstOccurrenceMinutes = 45 + g * 77;
+    const lastOccurrenceMinutes = firstOccurrenceMinutes + (count - 1) * (1100 + g * 17);
     await prisma.errorGroup.create({
       data: {
         id: groupId,
@@ -306,13 +369,16 @@ async function seedErrors() {
         release: g < 3 ? "2026.08.4" : g < 6 ? "2026.08.3" : "2026.08.2",
         platform,
         occurrences: count,
-        first_seen: daysAgo(12 - g),
-        last_seen: minutesAgo(12 + g * 43),
+        first_seen: minutesAgo(lastOccurrenceMinutes),
+        last_seen: minutesAgo(firstOccurrenceMinutes),
         resolved_at: resolved ? daysAgo(1 + (g % 2), 90) : null,
       },
     });
     const occurrences = [];
     for (let i = 0; i < count; i += 1) {
+      const occurrenceMinutes = firstOccurrenceMinutes + i * (1100 + g * 17);
+      const sessionIndex = Math.min(419, Math.max(0, Math.floor((occurrenceMinutes - 5) / 12)));
+      const linkedSession = sessionContext(sessionIndex);
       occurrences.push({
         id: uuid(`occurrence-${g}`, i),
         error_group_id: groupId,
@@ -326,11 +392,11 @@ async function seedErrors() {
           carrier: pick(["DHL", "UPS", "FedEx", "LocalFleet"], i),
           handled: false,
         },
-        session_id: `relay-session-${String(((g * 47 + i * 19 + 31) % 420) + 1).padStart(4, "0")}`,
-        user_id: customerAt(g * 5 + i).id,
-        anonymous_id: `browser-${sha(customerAt(g * 5 + i).email).slice(0, 10)}`,
+        session_id: linkedSession.sessionId,
+        user_id: linkedSession.customer.id,
+        anonymous_id: `browser-${sha(linkedSession.customer.email).slice(0, 10)}`,
         sdk_version: "1.17.5",
-        created_at: minutesAgo(45 + g * 77 + i * (1100 + g * 17)),
+        created_at: minutesAgo(occurrenceMinutes),
       });
     }
     await prisma.errorOccurrence.createMany({ data: occurrences });
