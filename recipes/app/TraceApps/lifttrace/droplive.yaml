@@ -16,6 +16,6 @@ environment:
     owner: droplive
     format: password
     length: 24
-    pattern: '^[A-Z][a-z][0-9][!@#$%^&*_-][A-Za-z0-9!@#$%^&*_-]{20}$'
+    pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).{24}$'
     login:
       username: lucas
