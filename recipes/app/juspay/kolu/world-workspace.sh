@@ -3,10 +3,18 @@ set -euo pipefail
 
 workspace_root=${DROPLIVE_WORKSPACE_ROOT:-/workspace}
 workspace="$workspace_root/northstar-relay"
+# `data/repositories.tsv` has always named three repositories. The workspace
+# shipped them as directories inside ONE checkout, so kolu's dock — whose whole
+# job is grouping terminals BY REPO — had a single group to draw and the feature
+# was invisible. web-console is the clean extraction: nothing in it is imported
+# by the relay services, and its two open issues (322, 327) are already a
+# separate story from the release blocker.
+console="$workspace_root/web-console"
 
 cd "$workspace_root"
-rm -rf "$workspace"
-mkdir -p "$workspace"/{apps/web-console/public,config,data,docs,services/exports-service,services/relay-core,scripts,var}
+rm -rf "$workspace" "$console"
+mkdir -p "$workspace"/{config,data,docs,services/exports-service,services/relay-core,scripts,var}
+mkdir -p "$console"/{src,public,scripts}
 
 cat > "$workspace/README.md" <<'EOF'
 # Northstar Relay
@@ -121,13 +129,13 @@ printf 'worker lease released: yes\npartial object removed: %s\n' "$cleanup"
 test "$cleanup" = true
 EOF
 
-cat > "$workspace/apps/web-console/audit-timezone.ts" <<'EOF'
+cat > "$console/src/audit-timezone.ts" <<'EOF'
 export function auditTimestampLabel(value: Date, zone: string): string {
   return `${value.toLocaleString("en-US", { timeZone: zone })} ${zone}`;
 }
 EOF
 
-cat > "$workspace/apps/web-console/public/index.html" <<'EOF'
+cat > "$console/public/index.html" <<'EOF'
 <!doctype html>
 <html lang="en">
 <meta charset="utf-8">
@@ -140,7 +148,7 @@ cat > "$workspace/apps/web-console/public/index.html" <<'EOF'
   <li>Audit time-zone labels: isolated</li>
 </ul>
 EOF
-printf '%s\n' 'northstar-web-console: ready' > "$workspace/apps/web-console/public/health.txt"
+printf '%s\n' 'northstar-web-console: ready' > "$console/public/health.txt"
 seq 1 50000 > "$workspace/var/export-50000.rows"
 seq 1 75000 > "$workspace/var/export-75000.rows"
 
@@ -175,7 +183,7 @@ else
   printf '%-38s %s\n' 'partial object removed on cancel' 'FAIL  issue 319'
   failed=1
 fi
-if grep -q 'timeZone: zone' apps/web-console/audit-timezone.ts; then
+if grep -q 'timeZone: zone' ../web-console/src/audit-timezone.ts; then
   printf '%-38s %s\n' 'audit time-zone source contract' 'PASS  issue 322'
 else
   printf '%-38s %s\n' 'audit time-zone source contract' 'FAIL  issue 322'
@@ -219,11 +227,11 @@ while sleep 2; do
 done
 EOF
 
-cat > "$workspace/scripts/dev-server" <<'EOF'
+cat > "$console/scripts/dev-server" <<'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
-busybox httpd -f -p 4173 -h apps/web-console/public &
+busybox httpd -f -p 4173 -h public &
 http_pid=$!
 cleanup() {
   kill "$http_pid" 2>/dev/null || true
@@ -261,7 +269,30 @@ scripts/release-checks
 printf '[worker] work complete; the shell remains open for inspection\n'
 EOF
 
-chmod +x "$workspace"/scripts/* "$workspace"/services/*/*.sh
+chmod +x "$workspace"/scripts/* "$workspace"/services/*/*.sh "$console"/scripts/*
+
+cat > "$console/README.md" <<'EOF'
+# web-console
+
+Customer administration and audit-log interface for Northstar Relay.
+
+Open work: issue 322 (show audit timestamps in the account time zone) and
+issue 327 (preserve export filters in shared links). Both are deliberately
+separate from the release-2.8 export blocker in `relay-core`.
+EOF
+
+# The console is its own history. It is mid-review on 322, so the branch is
+# checked out and the change is still in the working tree -- what the Code tab
+# and the right panel are for.
+cd "$console"
+git init -q -b main
+git config user.name "Northstar Relay"
+git config user.email "engineering@northstar-relay.test"
+git add .
+git commit -q -m "Audit log interface for Release 2.8"
+git switch -q -c fix/audit-timezone-labels
+sed 's/en-US/en-GB/' src/audit-timezone.ts > src/audit-timezone.ts.next
+mv src/audit-timezone.ts.next src/audit-timezone.ts
 
 cd "$workspace"
 git init -q -b main
