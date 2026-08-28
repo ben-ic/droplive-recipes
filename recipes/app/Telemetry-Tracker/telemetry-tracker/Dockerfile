@@ -12,23 +12,18 @@ RUN tar -xzf /tmp/telemetry-tracker.tar.gz --strip-components=1 \
   && pnpm --filter @telemetry-tracker/core build \
   && pnpm --filter @telemetry-tracker/next build \
   && pnpm --filter api build \
-  && pnpm --filter dashboard build
-RUN pnpm --filter api add --save-prod prisma@6.19.2 \
-  && pnpm --filter dashboard add --save-prod typescript@5.9.3 \
-  && pnpm --filter api deploy --prod /runtime/api \
-  && cd /runtime/api \
-  && node node_modules/prisma/build/index.js generate \
-  && cd /app \
-  && pnpm --filter dashboard deploy --prod /runtime/dashboard \
-  && rm -rf /runtime/dashboard/.next/cache
+  && pnpm --filter dashboard build \
+  && rm -rf apps/dashboard/.next/cache
 
 FROM node:22-bookworm@sha256:0557ac14e0d45d02ed563067b82856ca5e7aa3437fa28d98d4350ea9c3d9494a
 
 WORKDIR /app
-COPY --from=build --chown=node:node /runtime/api /app/api
-COPY --from=build --chown=node:node /runtime/dashboard /app/dashboard
+RUN corepack enable
+
+COPY --from=build --chown=node:node /app /app
+COPY --from=build --chown=node:node /root/.cache/node/corepack /home/node/.cache/node/corepack
 COPY --chmod=0555 droplive-entrypoint.sh /usr/local/bin/droplive-telemetry-tracker
-COPY --chown=node:node --chmod=0444 droplive-seed.mjs /app/api/droplive-seed.mjs
+COPY --chown=node:node --chmod=0444 droplive-seed.mjs /app/apps/api/droplive-seed.mjs
 
 ARG DROPLIVE_SOURCE_COMMIT
 ARG DROPLIVE_SOURCE_TREE_SHA256
@@ -42,6 +37,7 @@ LABEL org.opencontainers.image.version="v1.17.5" \
       org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
 
 ENV NODE_ENV=production \
+    COREPACK_HOME=/home/node/.cache/node/corepack \
     HOST=127.0.0.1 \
     PORT=3001 \
     API_URL=http://127.0.0.1:3001 \
