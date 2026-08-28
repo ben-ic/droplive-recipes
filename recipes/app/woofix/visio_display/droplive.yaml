@@ -1,0 +1,32 @@
+version: 1
+kind: app
+tagline: Digital signage
+description: Manage media, campaigns, schedules, and kiosk displays from one web administration console
+repository: https://github.com/woofix/visio_display
+world: business.saas_company.v2
+run:
+  port: 8080
+  health: /login
+  open: /login
+environment:
+  ADMIN_PASSWORD:
+    owner: droplive
+    format: password
+    length: 24
+    login:
+      username: maya
+  SECRET_KEY:
+    owner: droplive
+    format: hex
+    length: 64
+  DISPLAY_API_TOKEN:
+    owner: droplive
+    format: url-safe
+    length: 40
+  CLIENT_HEARTBEAT_TOKEN:
+    owner: droplive
+    format: url-safe
+    length: 40
+companions:
+  database: postgres
+  cache: redis
