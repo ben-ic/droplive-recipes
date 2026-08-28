@@ -1,0 +1,21 @@
+version: 1
+kind: app
+tagline: "Product observability"
+description: "Track application errors, product events, user sessions, releases and web performance"
+repository: https://github.com/Telemetry-Tracker/telemetry-tracker
+run:
+  port: 3000
+  health: /login
+  open: /login
+companions:
+  database:
+    type: postgres
+    bindings:
+      DATABASE_URL: url
+environment:
+  TELEMETRY_OWNER_PASSWORD:
+    owner: droplive
+    format: password
+    length: 24
+    login:
+      username: owner@northstar-relay.test
