@@ -1,0 +1,21 @@
+version: 1
+kind: app
+tagline: Workout tracker
+description: Self-hosted strength training diary with programs, exercise history, body metrics, and progress statistics
+repository: https://github.com/TraceApps/lifttrace
+run:
+  port: 3003
+  health: /api/auth/status
+  open: /
+environment:
+  JWT_SECRET:
+    owner: droplive
+    format: hex
+    length: 64
+  LIFTTRACE_OWNER_PASSWORD:
+    owner: droplive
+    format: password
+    length: 24
+    pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).{24}$'
+    login:
+      username: lucas
