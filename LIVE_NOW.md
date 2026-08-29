@@ -1,6 +1,6 @@
 # Live now
 
-131 projects have a current public DropLive demo. 47 include sample data.
+134 projects have a current public DropLive demo. 47 include sample data.
 
 This file is generated each day from the [public DropLive catalogue](https://droplive.io/projects?sort=name). Do not edit it by hand.
 
@@ -78,7 +78,9 @@ This file is generated each day from the [public DropLive catalogue](https://dro
 | kanboard | Kanban project management software | Yes | [![Try with DropLive](https://droplive.io/badge/kanboard.svg)](https://droplive.io/projects/kanboard) |
 | kavita | Reading server for comics, manga and ebooks, with a browser-based reader | — | [![Try with DropLive](https://droplive.io/badge/kavita.svg)](https://droplive.io/projects/kavita) |
 | kimai | Track time against projects and customers, and export it for invoicing | — | [![Try with DropLive](https://droplive.io/badge/kimai.svg)](https://droplive.io/projects/kimai) |
+| kolu | Organize real terminal sessions on an infinite browser canvas | — | [![Try with DropLive](https://droplive.io/badge/kolu.svg)](https://droplive.io/projects/kolu) |
 | kroki | Renders diagrams from text for many diagram languages through one API | — | [![Try with DropLive](https://droplive.io/badge/kroki.svg)](https://droplive.io/projects/kroki) |
+| lifttrace | Self-hosted strength training diary with programs, exercise history, body metrics, and progress statistics | — | [![Try with DropLive](https://droplive.io/badge/lifttrace.svg)](https://droplive.io/projects/lifttrace) |
 | linkding | Self-hosted bookmark manager that is designed be to be minimal, fast, and easy to set up using Docker | Yes | [![Try with DropLive](https://droplive.io/badge/linkding.svg)](https://droplive.io/projects/linkding) |
 | linkwarden | Save, annotate and archive bookmarks, keeping a copy of the page | Yes | [![Try with DropLive](https://droplive.io/badge/linkwarden.svg)](https://droplive.io/projects/linkwarden) |
 | listmonk | High performance, self-hosted, newsletter and mailing list manager with a modern dashboard | Yes | [![Try with DropLive](https://droplive.io/badge/listmonk.svg)](https://droplive.io/projects/listmonk) |
@@ -121,6 +123,7 @@ This file is generated each day from the [public DropLive catalogue](https://dro
 | statping-ng | An updated drop-in for statping | — | [![Try with DropLive](https://droplive.io/badge/statping-ng.svg)](https://droplive.io/projects/statping-ng) |
 | swagger-ui | Renders an OpenAPI description as browsable, testable API documentation | Yes | [![Try with DropLive](https://droplive.io/badge/swagger-ui.svg)](https://droplive.io/projects/swagger-ui) |
 | syncthing | Open Source Continuous File Synchronization | — | [![Try with DropLive](https://droplive.io/badge/syncthing.svg)](https://droplive.io/projects/syncthing) |
+| telemetry-tracker | Track application errors, product events, user sessions, releases and web performance | — | [![Try with DropLive](https://droplive.io/badge/telemetry-tracker.svg)](https://droplive.io/projects/telemetry-tracker) |
 | tika | The Apache Tika toolkit detects and extracts metadata and text from over a thousand different file types (such as PPT, XLS, and PDF) | — | [![Try with DropLive](https://droplive.io/badge/tika.svg)](https://droplive.io/projects/tika) |
 | transmission | Official Transmission BitTorrent client repository | — | [![Try with DropLive](https://droplive.io/badge/transmission.svg)](https://droplive.io/projects/transmission) |
 | trilium | The original Trilium Notes hierarchical note taking application, continued as TriliumNext | — | [![Try with DropLive](https://droplive.io/badge/trilium.svg)](https://droplive.io/projects/trilium) |
