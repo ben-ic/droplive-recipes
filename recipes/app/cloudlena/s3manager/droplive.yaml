@@ -1,0 +1,10 @@
+version: 1
+kind: app
+tagline: S3 bucket browser
+description: Browse, download, and upload company files in an isolated WorldFixture S3 store.
+repository: https://github.com/cloudlena/s3manager
+run:
+  port: 8080
+  health: /
+  data:
+    - /data
