@@ -1,584 +1,756 @@
 [
-    {
-        "id": "northstar-exports",
-        "type": "tab",
-        "label": "Scheduled exports",
-        "disabled": false,
-        "info": "The nightly run that builds every customer's scheduled export.\n\nSince 3 August a job over 50,000 rows has been handed to the legacy worker, which still carries a 120 second timeout. Lumen Labs reproduced it at 52,184 rows. The fix is in 2.8 and is not merged."
-    },
-    {
-        "id": "exports-nightly",
-        "type": "inject",
-        "z": "northstar-exports",
-        "name": "02:00 nightly",
-        "x": 120,
-        "y": 80,
-        "wires": [
-            [
-                "exports-claim"
-            ]
-        ],
-        "props": [
-            {
-                "p": "payload"
-            }
-        ],
-        "repeat": "",
-        "crontab": "00 02 * * *",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "scheduled-export-run",
-        "payload": "",
-        "payloadType": "date"
-    },
-    {
-        "id": "exports-now",
-        "type": "inject",
-        "z": "northstar-exports",
-        "name": "Run one now",
-        "x": 120,
-        "y": 160,
-        "wires": [
-            [
-                "exports-claim"
-            ]
-        ],
-        "props": [
-            {
-                "p": "payload"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "manual-export-run",
-        "payload": "",
-        "payloadType": "date"
-    },
-    {
-        "id": "exports-claim",
-        "type": "function",
-        "z": "northstar-exports",
-        "name": "Claim due jobs",
-        "x": 300,
-        "y": 120,
-        "wires": [
-            [
-                "exports-route"
-            ]
-        ],
-        "func": "// One row per scheduled export that is due. Row counts are the estimate the\n// planner returns before the job is built, not a count(*).\nconst jobs = [\n    {\n        \"id\": \"exp-9114\",\n        \"account\": \"Lumen Labs\",\n        \"dataset\": \"events\",\n        \"rows\": 52184\n    },\n    {\n        \"id\": \"exp-9115\",\n        \"account\": \"Ember Commerce\",\n        \"dataset\": \"events\",\n        \"rows\": 18402\n    },\n    {\n        \"id\": \"exp-9116\",\n        \"account\": \"Lumen Labs\",\n        \"dataset\": \"invoices\",\n        \"rows\": 1291\n    },\n    {\n        \"id\": \"exp-9117\",\n        \"account\": \"Harbor Mobility\",\n        \"dataset\": \"events\",\n        \"rows\": 74910\n    },\n    {\n        \"id\": \"exp-9118\",\n        \"account\": \"Fieldnote Studio\",\n        \"dataset\": \"attachments\",\n        \"rows\": 640\n    }\n];\nnode.status({ fill: 'blue', shape: 'dot', text: jobs.length + ' due' });\nreturn [jobs.map(job => ({ payload: job, topic: job.id }))];\n",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": []
-    },
-    {
-        "id": "exports-route",
-        "type": "switch",
-        "z": "northstar-exports",
-        "name": "Over 50k rows?",
-        "x": 480,
-        "y": 120,
-        "wires": [
-            [
-                "exports-legacy"
-            ],
-            [
-                "exports-stream"
-            ]
-        ],
-        "property": "payload.rows",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "gt",
-                "v": "50000",
-                "vt": "num"
-            },
-            {
-                "t": "else"
-            }
-        ],
-        "checkall": "false",
-        "repair": false,
-        "outputs": 2
-    },
-    {
-        "id": "exports-stream",
-        "type": "function",
-        "z": "northstar-exports",
-        "name": "Stream out",
-        "x": 650,
-        "y": 200,
-        "wires": [
-            [
-                "exports-delivered"
-            ]
-        ],
-        "func": "// Under the limit the job is streamed straight out and never touches a worker.\nconst job = msg.payload;\nmsg.payload = {\n    ...job,\n    route: 'streaming',\n    object: `s3://northstar-exports/${job.account.toLowerCase().replace(/ /g, '-')}/${job.id}.csv.gz`,\n    seconds: Math.round(job.rows / 9000),\n    status: 'delivered',\n};\nnode.status({ fill: 'green', shape: 'dot', text: job.id + ' delivered' });\nreturn msg;\n",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": []
-    },
-    {
-        "id": "exports-legacy",
-        "type": "function",
-        "z": "northstar-exports",
-        "name": "Legacy worker",
-        "x": 650,
-        "y": 60,
-        "wires": [
-            [
-                "exports-incident"
-            ],
-            [
-                "exports-delivered"
-            ]
-        ],
-        "func": "// Above the limit the planner falls back to the batch worker, which still\n// carries the 120 second timeout the scheduler was supposed to have replaced.\n// relay-core issue 318.\nconst job = msg.payload;\nconst seconds = Math.round(job.rows / 430);\nmsg.payload = {\n    ...job,\n    route: 'legacy-worker',\n    timeoutSeconds: 120,\n    estimatedSeconds: seconds,\n    status: seconds > 120 ? 'timed out' : 'delivered',\n};\nnode.status({\n    fill: seconds > 120 ? 'red' : 'green',\n    shape: 'dot',\n    text: `${job.id} ${seconds}s`,\n});\n// First output is the run that ran out of time; second is the one that made it.\nreturn seconds > 120 ? [msg, null] : [null, msg];\n",
-        "outputs": 2,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": []
-    },
-    {
-        "id": "exports-incident",
-        "type": "function",
-        "z": "northstar-exports",
-        "name": "Raise incident",
-        "x": 830,
-        "y": 60,
-        "wires": [
-            [
-                "exports-incident-out"
-            ]
-        ],
-        "func": "// What the support case Lumen opened on 18 August was raised from.\nconst job = msg.payload;\nmsg.payload = {\n    case: 'scheduled export stops at two minutes',\n    account: job.account,\n    job: job.id,\n    rows: job.rows,\n    reachedSeconds: job.timeoutSeconds,\n    neededSeconds: job.estimatedSeconds,\n    tracked: 'relay-core#318',\n    workaround: 'run the export in two halves by date range',\n};\nnode.warn(`${job.account}: ${job.id} stopped at ${job.timeoutSeconds}s, needed ${job.estimatedSeconds}s`);\nreturn msg;\n",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": []
-    },
-    {
-        "id": "exports-incident-out",
-        "type": "debug",
-        "z": "northstar-exports",
-        "name": "Incident",
-        "x": 1010,
-        "y": 60,
-        "wires": [],
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto"
-    },
-    {
-        "id": "exports-delivered",
-        "type": "debug",
-        "z": "northstar-exports",
-        "name": "Delivered",
-        "x": 840,
-        "y": 200,
-        "wires": [],
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto"
-    },
-    {
-        "id": "exports-catch",
-        "type": "catch",
-        "z": "northstar-exports",
-        "name": "Anything that throws",
-        "x": 160,
-        "y": 320,
-        "wires": [
-            [
-                "exports-failure"
-            ]
-        ],
-        "scope": null,
-        "uncaught": false
-    },
-    {
-        "id": "exports-failure",
-        "type": "debug",
-        "z": "northstar-exports",
-        "name": "Run failure",
-        "x": 400,
-        "y": 320,
-        "wires": [],
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "error",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto"
-    },
-    {
-        "id": "northstar-billing",
-        "type": "tab",
-        "label": "Billing watch",
-        "disabled": false,
-        "info": "Watches every open invoice and says which ones need chasing.\n\nInvoice 4471 belongs to the Lumen Labs renewal and is deliberately left alone until the renewal review: it is open, not overdue, and the account is mid-conversation about the export incident. Every other account is settled."
-    },
-    {
-        "id": "billing-daily",
-        "type": "inject",
-        "z": "northstar-billing",
-        "name": "08:30 weekdays",
-        "x": 120,
-        "y": 80,
-        "wires": [
-            [
-                "billing-open"
-            ]
-        ],
-        "props": [
-            {
-                "p": "payload"
-            }
-        ],
-        "repeat": "",
-        "crontab": "30 08 * * 1-5",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "billing-sweep",
-        "payload": "",
-        "payloadType": "date"
-    },
-    {
-        "id": "billing-now",
-        "type": "inject",
-        "z": "northstar-billing",
-        "name": "Check now",
-        "x": 120,
-        "y": 160,
-        "wires": [
-            [
-                "billing-open"
-            ]
-        ],
-        "props": [
-            {
-                "p": "payload"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "billing-sweep",
-        "payload": "",
-        "payloadType": "date"
-    },
-    {
-        "id": "billing-open",
-        "type": "function",
-        "z": "northstar-billing",
-        "name": "Open invoices",
-        "x": 300,
-        "y": 120,
-        "wires": [
-            [
-                "billing-route"
-            ]
-        ],
-        "func": "// Every invoice worth looking at this morning, sorted into what should happen\n// to it. Days are counted from today, so an invoice that was fine yesterday\n// turns up in a different bucket on its own.\nconst today = new Date();\nconst invoices = [\n    {\n        \"number\": \"4471\",\n        \"account\": \"Lumen Labs\",\n        \"amount\": 412.0,\n        \"due\": \"2026-08-30\",\n        \"status\": \"open\"\n    },\n    {\n        \"number\": \"2607-63\",\n        \"account\": \"Harbor Mobility\",\n        \"amount\": 356.0,\n        \"due\": \"2026-08-11\",\n        \"status\": \"paid\"\n    },\n    {\n        \"number\": \"2607-18\",\n        \"account\": \"Fieldnote Studio\",\n        \"amount\": 99.0,\n        \"due\": \"2026-08-08\",\n        \"status\": \"paid\"\n    },\n    {\n        \"number\": \"2607-42\",\n        \"account\": \"Ember Commerce\",\n        \"amount\": 289.0,\n        \"due\": \"2026-08-05\",\n        \"status\": \"paid\"\n    }\n];\nnode.status({ fill: 'blue', shape: 'dot', text: invoices.length + ' open' });\nreturn [invoices.map(invoice => {\n    const days = Math.round((new Date(invoice.due) - today) / 86400000);\n    const bucket = invoice.status === 'paid' ? 'settled'\n        : days < 0 ? 'overdue'\n        : days <= 10 ? 'due-soon'\n        : 'later';\n    return { topic: invoice.number, payload: { ...invoice, daysToDue: days, bucket } };\n})];\n",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": []
-    },
-    {
-        "id": "billing-route",
-        "type": "switch",
-        "z": "northstar-billing",
-        "name": "What to do",
-        "x": 480,
-        "y": 120,
-        "wires": [
-            [
-                "billing-overdue"
-            ],
-            [
-                "billing-soon"
-            ],
-            [
-                "billing-fine"
-            ],
-            [
-                "billing-settled"
-            ]
-        ],
-        "property": "payload.bucket",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "eq",
-                "v": "overdue",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "due-soon",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "later",
-                "vt": "str"
-            },
-            {
-                "t": "else"
-            }
-        ],
-        "checkall": "false",
-        "repair": false,
-        "outputs": 4
-    },
-    {
-        "id": "billing-overdue",
-        "type": "function",
-        "z": "northstar-billing",
-        "name": "Chase it",
-        "x": 660,
-        "y": 40,
-        "wires": [
-            [
-                "billing-out"
-            ]
-        ],
-        "func": "const invoice = msg.payload;\nmsg.payload = {\n    ...msg.payload,\n    action: 'send the reminder',\n    to: 'accounts@' + invoice.account.toLowerCase().replace(/ /g, '') + '.droplive.test',\n};\nnode.status({ fill: 'red', shape: 'dot', text: invoice.number + ' overdue' });\nreturn msg;\n",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": []
-    },
-    {
-        "id": "billing-soon",
-        "type": "function",
-        "z": "northstar-billing",
-        "name": "Due this week",
-        "x": 670,
-        "y": 120,
-        "wires": [
-            [
-                "billing-out"
-            ]
-        ],
-        "func": "// 4471 is held back on purpose. The account is mid-conversation about the\n// export incident and the renewal review is next week; a reminder in the middle\n// of that reads as a threat.\nconst invoice = msg.payload;\nconst held = invoice.number === '4471';\nmsg.payload = {\n    ...invoice,\n    action: held ? 'hold until the renewal review' : 'send the friendly notice',\n    reason: held ? 'Lumen renewal in progress' : undefined,\n};\nnode.status({\n    fill: held ? 'yellow' : 'grey',\n    shape: held ? 'ring' : 'dot',\n    text: invoice.number + (held ? ' held' : ' notice'),\n});\nreturn msg;\n",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": []
-    },
-    {
-        "id": "billing-fine",
-        "type": "function",
-        "z": "northstar-billing",
-        "name": "Not due yet",
-        "x": 665,
-        "y": 200,
-        "wires": [
-            [
-                "billing-out"
-            ]
-        ],
-        "func": "node.status({ fill: 'grey', shape: 'ring', text: msg.payload.number + ' not due' });\nmsg.payload = { ...msg.payload, action: 'leave it' };\nreturn msg;\n",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": []
-    },
-    {
-        "id": "billing-settled",
-        "type": "function",
-        "z": "northstar-billing",
-        "name": "Settled",
-        "x": 650,
-        "y": 280,
-        "wires": [
-            [
-                "billing-out"
-            ]
-        ],
-        "func": "node.status({ fill: 'green', shape: 'ring', text: msg.payload.number + ' settled' });\nmsg.payload = { ...msg.payload, action: 'nothing, it is paid' };\nreturn msg;\n",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": []
-    },
-    {
-        "id": "billing-out",
-        "type": "debug",
-        "z": "northstar-billing",
-        "name": "Billing decisions",
-        "x": 880,
-        "y": 160,
-        "wires": [],
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto"
-    },
-    {
-        "id": "droplive-starter-tab",
-        "type": "tab",
-        "label": "DropLive starter",
-        "disabled": false,
-        "info": "A small starter flow that provides health and hello endpoints."
-    },
-    {
-        "id": "droplive-health-in",
-        "type": "http in",
-        "z": "droplive-starter-tab",
-        "name": "Health check",
-        "url": "/healthz",
-        "method": "get",
-        "upload": false,
-        "swaggerDoc": "",
-        "x": 150,
-        "y": 80,
-        "wires": [
-            [
-                "droplive-health-body"
-            ]
-        ]
-    },
-    {
-        "id": "droplive-health-body",
-        "type": "change",
-        "z": "droplive-starter-tab",
-        "name": "Healthy JSON",
-        "rules": [
-            {
-                "t": "set",
-                "p": "statusCode",
-                "pt": "msg",
-                "to": "200",
-                "tot": "num"
-            },
-            {
-                "t": "set",
-                "p": "payload",
-                "pt": "msg",
-                "to": "{\"status\":\"ok\",\"app\":\"node-red\",\"flow\":\"droplive-starter\"}",
-                "tot": "json"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 370,
-        "y": 80,
-        "wires": [
-            [
-                "droplive-health-out"
-            ]
-        ]
-    },
-    {
-        "id": "droplive-health-out",
-        "type": "http response",
-        "z": "droplive-starter-tab",
-        "name": "Health response",
-        "statusCode": "",
-        "headers": {},
-        "x": 600,
-        "y": 80,
-        "wires": []
-    },
-    {
-        "id": "droplive-hello-in",
-        "type": "http in",
-        "z": "droplive-starter-tab",
-        "name": "Hello endpoint",
-        "url": "/hello",
-        "method": "get",
-        "upload": false,
-        "swaggerDoc": "",
-        "x": 150,
-        "y": 160,
-        "wires": [
-            [
-                "droplive-hello-body"
-            ]
-        ]
-    },
-    {
-        "id": "droplive-hello-body",
-        "type": "change",
-        "z": "droplive-starter-tab",
-        "name": "Hello JSON",
-        "rules": [
-            {
-                "t": "set",
-                "p": "payload",
-                "pt": "msg",
-                "to": "{\"message\":\"Node-RED is running\",\"source\":\"DropLive starter flow\"}",
-                "tot": "json"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 370,
-        "y": 160,
-        "wires": [
-            [
-                "droplive-hello-out"
-            ]
-        ]
-    },
-    {
-        "id": "droplive-hello-out",
-        "type": "http response",
-        "z": "droplive-starter-tab",
-        "name": "Hello response",
-        "statusCode": "",
-        "headers": {},
-        "x": 600,
-        "y": 160,
-        "wires": []
-    }
+  {
+    "id": "github-slack",
+    "type": "tab",
+    "label": "GitHub → Slack",
+    "disabled": false,
+    "info": "WorldFixture runs GitHub and Slack inside this demo. Click Run workflow. The flow discovers a repository and channel, reads open issues, posts a Slack summary, and reads that exact message back. Open Debug to inspect the receipt. Each click posts one new synthetic message. No real provider account is used."
+  },
+  {
+    "id": "github-slack-guide",
+    "type": "comment",
+    "z": "github-slack",
+    "name": "Start here: click the Inject button, then open Debug",
+    "info": "WorldFixture runs GitHub and Slack inside this demo. Click Run workflow. The flow discovers a repository and channel, reads open issues, posts a Slack summary, and reads that exact message back. Open Debug to inspect the receipt. Each click posts one new synthetic message. No real provider account is used.",
+    "x": 310,
+    "y": 40,
+    "wires": []
+  },
+  {
+    "id": "github-slack-run",
+    "type": "inject",
+    "z": "github-slack",
+    "name": "Run workflow",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 120,
+    "y": 100,
+    "wires": [
+      [
+        "github-slack-step-0"
+      ]
+    ]
+  },
+  {
+    "id": "github-slack-step-0",
+    "type": "function",
+    "name": "GitHub: list repositories",
+    "func": "msg.url = env.get('GITHUB_BASE_URL') + '/orgs/' + encodeURIComponent(env.get('GITHUB_ORGANIZATION')) + '/repos?per_page=100';\nmsg.method = 'GET';\nmsg.headers = {Authorization: 'Bearer ' + env.get('GITHUB_TOKEN'), 'Content-Type': 'application/json'};\nmsg.payload = undefined;\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "z": "github-slack",
+    "x": 350,
+    "y": 100,
+    "wires": [
+      [
+        "github-slack-http-0"
+      ]
+    ]
+  },
+  {
+    "id": "github-slack-http-0",
+    "type": "http request",
+    "name": "GitHub API",
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "timeout": "15000",
+    "z": "github-slack",
+    "x": 585,
+    "y": 100,
+    "wires": [
+      [
+        "github-slack-step-1"
+      ]
+    ]
+  },
+  {
+    "id": "github-slack-step-1",
+    "type": "function",
+    "name": "GitHub: read open issues",
+    "func": "if (!(msg.statusCode >= 200 && msg.statusCode < 300) || msg.payload?.ok === false) throw new Error('Provider request failed: HTTP ' + msg.statusCode);\nconst repo = msg.payload.filter(r => !r.archived && r.permissions?.push !== false).sort((a,b) => a.full_name.localeCompare(b.full_name))[0]; if (!repo) throw new Error('No writable repository'); msg.repository = repo.full_name;\nmsg.url = env.get('GITHUB_BASE_URL') + '/repos/' + msg.repository + '/issues?state=open&per_page=100';\nmsg.method = 'GET';\nmsg.headers = {Authorization: 'Bearer ' + env.get('GITHUB_TOKEN'), 'Content-Type': 'application/json'};\nmsg.payload = undefined;\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "z": "github-slack",
+    "x": 820,
+    "y": 100,
+    "wires": [
+      [
+        "github-slack-http-1"
+      ]
+    ]
+  },
+  {
+    "id": "github-slack-http-1",
+    "type": "http request",
+    "name": "GitHub API",
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "timeout": "15000",
+    "z": "github-slack",
+    "x": 1055,
+    "y": 100,
+    "wires": [
+      [
+        "github-slack-step-2"
+      ]
+    ]
+  },
+  {
+    "id": "github-slack-step-2",
+    "type": "function",
+    "name": "Slack: find a channel",
+    "func": "if (!(msg.statusCode >= 200 && msg.statusCode < 300) || msg.payload?.ok === false) throw new Error('Provider request failed: HTTP ' + msg.statusCode);\nif (!Array.isArray(msg.payload)) throw new Error('Expected GitHub issues'); msg.issueCount = msg.payload.filter(i => !i.pull_request).length;\nmsg.url = env.get('SLACK_BASE_URL') + '/api/conversations.list';\nmsg.method = 'POST';\nmsg.headers = {Authorization: 'Bearer ' + env.get('SLACK_TOKEN'), 'Content-Type': 'application/json'};\nmsg.payload = {limit:200,exclude_archived:true};\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "z": "github-slack",
+    "x": 350,
+    "y": 210,
+    "wires": [
+      [
+        "github-slack-http-2"
+      ]
+    ]
+  },
+  {
+    "id": "github-slack-http-2",
+    "type": "http request",
+    "name": "Slack API",
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "timeout": "15000",
+    "z": "github-slack",
+    "x": 585,
+    "y": 210,
+    "wires": [
+      [
+        "github-slack-step-3"
+      ]
+    ]
+  },
+  {
+    "id": "github-slack-step-3",
+    "type": "function",
+    "name": "Slack: post summary",
+    "func": "if (!(msg.statusCode >= 200 && msg.statusCode < 300) || msg.payload?.ok === false) throw new Error('Provider request failed: HTTP ' + msg.statusCode);\nconst channel = msg.payload.channels?.filter(c => !c.is_archived && !c.is_private && c.is_member).sort((a,b) => a.name.localeCompare(b.name))[0]; if (!channel) throw new Error('No Slack channel'); msg.summary = msg.repository + ': ' + msg.issueCount + ' open issues (first page). Run ' + msg._msgid;\nmsg.url = env.get('SLACK_BASE_URL') + '/api/chat.postMessage';\nmsg.method = 'POST';\nmsg.headers = {Authorization: 'Bearer ' + env.get('SLACK_TOKEN'), 'Content-Type': 'application/json'};\nmsg.payload = {channel:channel.id, text:msg.summary};\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "z": "github-slack",
+    "x": 820,
+    "y": 210,
+    "wires": [
+      [
+        "github-slack-http-3"
+      ]
+    ]
+  },
+  {
+    "id": "github-slack-http-3",
+    "type": "http request",
+    "name": "Slack API",
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "timeout": "15000",
+    "z": "github-slack",
+    "x": 1055,
+    "y": 210,
+    "wires": [
+      [
+        "github-slack-step-4"
+      ]
+    ]
+  },
+  {
+    "id": "github-slack-step-4",
+    "type": "function",
+    "name": "Slack: read message back",
+    "func": "if (!(msg.statusCode >= 200 && msg.statusCode < 300) || msg.payload?.ok === false) throw new Error('Provider request failed: HTTP ' + msg.statusCode);\nif (!msg.payload.ts || !msg.payload.channel) throw new Error('Slack did not return a message'); msg.posted = {channel:msg.payload.channel, ts:msg.payload.ts};\nmsg.url = env.get('SLACK_BASE_URL') + '/api/conversations.history';\nmsg.method = 'POST';\nmsg.headers = {Authorization: 'Bearer ' + env.get('SLACK_TOKEN'), 'Content-Type': 'application/json'};\nmsg.payload = {channel:msg.posted.channel,limit:100};\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "z": "github-slack",
+    "x": 350,
+    "y": 320,
+    "wires": [
+      [
+        "github-slack-http-4"
+      ]
+    ]
+  },
+  {
+    "id": "github-slack-http-4",
+    "type": "http request",
+    "name": "Slack API",
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "timeout": "15000",
+    "z": "github-slack",
+    "x": 585,
+    "y": 320,
+    "wires": [
+      [
+        "github-slack-step-5"
+      ]
+    ]
+  },
+  {
+    "id": "github-slack-step-5",
+    "type": "function",
+    "name": "Verify message content",
+    "func": "if (!(msg.statusCode >= 200 && msg.statusCode < 300) || msg.payload?.ok === false) throw new Error('Provider request failed: HTTP ' + msg.statusCode);\nconst message = msg.payload.messages?.find(m => m.ts === msg.posted.ts); if (message?.text !== msg.summary) throw new Error('Slack read-back did not match'); msg.payload = {ok:true, workflow:'GitHub → Slack', repository:msg.repository, openIssuesOnPage:msg.issueCount, channel:msg.posted.channel, timestamp:msg.posted.ts, text:message.text}; flow.set('lastResult', msg.payload); delete msg.headers; delete msg.url; return msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "z": "github-slack",
+    "x": 820,
+    "y": 320,
+    "wires": [
+      [
+        "github-slack-debug"
+      ]
+    ]
+  },
+  {
+    "id": "github-slack-debug",
+    "type": "debug",
+    "z": "github-slack",
+    "name": "Verified result",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": true,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "payload.ok",
+    "statusType": "msg",
+    "x": 600,
+    "y": 430,
+    "wires": []
+  },
+  {
+    "id": "github-slack-catch",
+    "type": "catch",
+    "z": "github-slack",
+    "name": "Workflow error",
+    "scope": null,
+    "uncaught": false,
+    "x": 130,
+    "y": 620,
+    "wires": [
+      [
+        "github-slack-error"
+      ]
+    ]
+  },
+  {
+    "id": "github-slack-error",
+    "type": "function",
+    "z": "github-slack",
+    "name": "Record failure",
+    "func": "msg.payload = {ok:false, error:msg.error.message}; flow.set('lastResult', msg.payload); delete msg.headers; return msg;",
+    "outputs": 1,
+    "x": 350,
+    "y": 620,
+    "wires": [
+      [
+        "github-slack-debug"
+      ]
+    ]
+  },
+  {
+    "id": "github-slack-result-in",
+    "type": "http in",
+    "z": "github-slack",
+    "name": "Read last result",
+    "url": "/demo/github-slack/result",
+    "method": "get",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 150,
+    "y": 700,
+    "wires": [
+      [
+        "github-slack-result"
+      ]
+    ]
+  },
+  {
+    "id": "github-slack-result",
+    "type": "function",
+    "z": "github-slack",
+    "name": "Last execution",
+    "func": "msg.payload = flow.get('lastResult') || {ok:false, status:'not_run'}; return msg;",
+    "outputs": 1,
+    "x": 380,
+    "y": 700,
+    "wires": [
+      [
+        "github-slack-result-out"
+      ]
+    ]
+  },
+  {
+    "id": "github-slack-result-out",
+    "type": "http response",
+    "z": "github-slack",
+    "name": "JSON result",
+    "statusCode": "",
+    "headers": {},
+    "x": 610,
+    "y": 700,
+    "wires": []
+  },
+  {
+    "id": "notion-github",
+    "type": "tab",
+    "label": "Notion → GitHub",
+    "disabled": false,
+    "info": "WorldFixture runs Notion and GitHub inside this demo. Click Run workflow. The flow discovers a Notion page, reads its blocks, creates a GitHub issue from that content, then reads the issue back. Open Debug to inspect the receipt. Each click creates one new synthetic issue. The page and repository are discovered from the running providers."
+  },
+  {
+    "id": "notion-github-guide",
+    "type": "comment",
+    "z": "notion-github",
+    "name": "Start here: click the Inject button, then open Debug",
+    "info": "WorldFixture runs Notion and GitHub inside this demo. Click Run workflow. The flow discovers a Notion page, reads its blocks, creates a GitHub issue from that content, then reads the issue back. Open Debug to inspect the receipt. Each click creates one new synthetic issue. The page and repository are discovered from the running providers.",
+    "x": 310,
+    "y": 40,
+    "wires": []
+  },
+  {
+    "id": "notion-github-run",
+    "type": "inject",
+    "z": "notion-github",
+    "name": "Run workflow",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 120,
+    "y": 100,
+    "wires": [
+      [
+        "notion-github-step-0"
+      ]
+    ]
+  },
+  {
+    "id": "notion-github-step-0",
+    "type": "function",
+    "name": "Notion: find a page",
+    "func": "msg.url = env.get('NOTION_BASE_URL') + '/v1/search';\nmsg.method = 'POST';\nmsg.headers = {Authorization: 'Bearer ' + env.get('NOTION_TOKEN'), 'Content-Type': 'application/json'};\nmsg.headers['Notion-Version'] = '2026-03-11';\nmsg.payload = {filter:{property:'object',value:'page'}, page_size:100};\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "z": "notion-github",
+    "x": 350,
+    "y": 100,
+    "wires": [
+      [
+        "notion-github-http-0"
+      ]
+    ]
+  },
+  {
+    "id": "notion-github-http-0",
+    "type": "http request",
+    "name": "Notion API",
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "timeout": "15000",
+    "z": "notion-github",
+    "x": 585,
+    "y": 100,
+    "wires": [
+      [
+        "notion-github-step-1"
+      ]
+    ]
+  },
+  {
+    "id": "notion-github-step-1",
+    "type": "function",
+    "name": "Notion: read page blocks",
+    "func": "if (!(msg.statusCode >= 200 && msg.statusCode < 300) || msg.payload?.ok === false) throw new Error('Provider request failed: HTTP ' + msg.statusCode);\nconst page = msg.payload.results?.find(p => p.object === 'page' && !p.archived); if (!page) throw new Error('No Notion page'); const title = Object.values(page.properties || {}).find(p => p.type === 'title')?.title || []; msg.pageTitle = title.map(t => t.plain_text || t.text?.content || '').join('') || page.id; msg.pageId = page.id;\nmsg.url = env.get('NOTION_BASE_URL') + '/v1/blocks/' + encodeURIComponent(msg.pageId) + '/children?page_size=100';\nmsg.method = 'GET';\nmsg.headers = {Authorization: 'Bearer ' + env.get('NOTION_TOKEN'), 'Content-Type': 'application/json'};\nmsg.headers['Notion-Version'] = '2026-03-11';\nmsg.payload = undefined;\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "z": "notion-github",
+    "x": 820,
+    "y": 100,
+    "wires": [
+      [
+        "notion-github-http-1"
+      ]
+    ]
+  },
+  {
+    "id": "notion-github-http-1",
+    "type": "http request",
+    "name": "Notion API",
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "timeout": "15000",
+    "z": "notion-github",
+    "x": 1055,
+    "y": 100,
+    "wires": [
+      [
+        "notion-github-step-2"
+      ]
+    ]
+  },
+  {
+    "id": "notion-github-step-2",
+    "type": "function",
+    "name": "GitHub: find repository",
+    "func": "if (!(msg.statusCode >= 200 && msg.statusCode < 300) || msg.payload?.ok === false) throw new Error('Provider request failed: HTTP ' + msg.statusCode);\nif (!Array.isArray(msg.payload.results)) throw new Error('No Notion blocks'); msg.pageContent = msg.payload.results.map(b => (b[b.type]?.rich_text || []).map(t => t.plain_text || t.text?.content || '').join('')).filter(Boolean).join('\\n\\n'); if (!msg.pageContent) throw new Error('Notion page has no readable text');\nmsg.url = env.get('GITHUB_BASE_URL') + '/orgs/' + encodeURIComponent(env.get('GITHUB_ORGANIZATION')) + '/repos?per_page=100';\nmsg.method = 'GET';\nmsg.headers = {Authorization: 'Bearer ' + env.get('GITHUB_TOKEN'), 'Content-Type': 'application/json'};\nmsg.payload = undefined;\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "z": "notion-github",
+    "x": 350,
+    "y": 210,
+    "wires": [
+      [
+        "notion-github-http-2"
+      ]
+    ]
+  },
+  {
+    "id": "notion-github-http-2",
+    "type": "http request",
+    "name": "GitHub API",
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "timeout": "15000",
+    "z": "notion-github",
+    "x": 585,
+    "y": 210,
+    "wires": [
+      [
+        "notion-github-step-3"
+      ]
+    ]
+  },
+  {
+    "id": "notion-github-step-3",
+    "type": "function",
+    "name": "GitHub: create issue",
+    "func": "if (!(msg.statusCode >= 200 && msg.statusCode < 300) || msg.payload?.ok === false) throw new Error('Provider request failed: HTTP ' + msg.statusCode);\nconst repo = msg.payload.filter(r => !r.archived && r.permissions?.push !== false).sort((a,b) => a.full_name.localeCompare(b.full_name))[0]; if (!repo) throw new Error('No writable repository'); msg.repository = repo.full_name; msg.issueTitle = '[WorldFixture] ' + msg.pageTitle; msg.issueBody = 'Source Notion page: ' + msg.pageId + '\\n\\n' + msg.pageContent + '\\n\\nRun: ' + msg._msgid;\nmsg.url = env.get('GITHUB_BASE_URL') + '/repos/' + msg.repository + '/issues';\nmsg.method = 'POST';\nmsg.headers = {Authorization: 'Bearer ' + env.get('GITHUB_TOKEN'), 'Content-Type': 'application/json'};\nmsg.payload = {title:msg.issueTitle, body:msg.issueBody};\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "z": "notion-github",
+    "x": 820,
+    "y": 210,
+    "wires": [
+      [
+        "notion-github-http-3"
+      ]
+    ]
+  },
+  {
+    "id": "notion-github-http-3",
+    "type": "http request",
+    "name": "GitHub API",
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "timeout": "15000",
+    "z": "notion-github",
+    "x": 1055,
+    "y": 210,
+    "wires": [
+      [
+        "notion-github-step-4"
+      ]
+    ]
+  },
+  {
+    "id": "notion-github-step-4",
+    "type": "function",
+    "name": "GitHub: read issue back",
+    "func": "if (!(msg.statusCode >= 200 && msg.statusCode < 300) || msg.payload?.ok === false) throw new Error('Provider request failed: HTTP ' + msg.statusCode);\nif (!Number.isInteger(msg.payload.number)) throw new Error('GitHub did not return an issue'); msg.issueNumber = msg.payload.number;\nmsg.url = env.get('GITHUB_BASE_URL') + '/repos/' + msg.repository + '/issues/' + msg.issueNumber;\nmsg.method = 'GET';\nmsg.headers = {Authorization: 'Bearer ' + env.get('GITHUB_TOKEN'), 'Content-Type': 'application/json'};\nmsg.payload = undefined;\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "z": "notion-github",
+    "x": 350,
+    "y": 320,
+    "wires": [
+      [
+        "notion-github-http-4"
+      ]
+    ]
+  },
+  {
+    "id": "notion-github-http-4",
+    "type": "http request",
+    "name": "GitHub API",
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "timeout": "15000",
+    "z": "notion-github",
+    "x": 585,
+    "y": 320,
+    "wires": [
+      [
+        "notion-github-step-5"
+      ]
+    ]
+  },
+  {
+    "id": "notion-github-step-5",
+    "type": "function",
+    "name": "Verify issue content",
+    "func": "if (!(msg.statusCode >= 200 && msg.statusCode < 300) || msg.payload?.ok === false) throw new Error('Provider request failed: HTTP ' + msg.statusCode);\nif (msg.payload.title !== msg.issueTitle || msg.payload.body !== msg.issueBody) throw new Error('GitHub read-back did not match'); msg.payload = {ok:true, workflow:'Notion → GitHub', sourcePage:msg.pageId, title:msg.pageTitle, repository:msg.repository, issueNumber:msg.issueNumber, copiedCharacters:msg.pageContent.length}; flow.set('lastResult', msg.payload); delete msg.headers; delete msg.url; return msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "z": "notion-github",
+    "x": 820,
+    "y": 320,
+    "wires": [
+      [
+        "notion-github-debug"
+      ]
+    ]
+  },
+  {
+    "id": "notion-github-debug",
+    "type": "debug",
+    "z": "notion-github",
+    "name": "Verified result",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": true,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "payload.ok",
+    "statusType": "msg",
+    "x": 600,
+    "y": 430,
+    "wires": []
+  },
+  {
+    "id": "notion-github-catch",
+    "type": "catch",
+    "z": "notion-github",
+    "name": "Workflow error",
+    "scope": null,
+    "uncaught": false,
+    "x": 130,
+    "y": 620,
+    "wires": [
+      [
+        "notion-github-error"
+      ]
+    ]
+  },
+  {
+    "id": "notion-github-error",
+    "type": "function",
+    "z": "notion-github",
+    "name": "Record failure",
+    "func": "msg.payload = {ok:false, error:msg.error.message}; flow.set('lastResult', msg.payload); delete msg.headers; return msg;",
+    "outputs": 1,
+    "x": 350,
+    "y": 620,
+    "wires": [
+      [
+        "notion-github-debug"
+      ]
+    ]
+  },
+  {
+    "id": "notion-github-result-in",
+    "type": "http in",
+    "z": "notion-github",
+    "name": "Read last result",
+    "url": "/demo/notion-github/result",
+    "method": "get",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 150,
+    "y": 700,
+    "wires": [
+      [
+        "notion-github-result"
+      ]
+    ]
+  },
+  {
+    "id": "notion-github-result",
+    "type": "function",
+    "z": "notion-github",
+    "name": "Last execution",
+    "func": "msg.payload = flow.get('lastResult') || {ok:false, status:'not_run'}; return msg;",
+    "outputs": 1,
+    "x": 380,
+    "y": 700,
+    "wires": [
+      [
+        "notion-github-result-out"
+      ]
+    ]
+  },
+  {
+    "id": "notion-github-result-out",
+    "type": "http response",
+    "z": "notion-github",
+    "name": "JSON result",
+    "statusCode": "",
+    "headers": {},
+    "x": 610,
+    "y": 700,
+    "wires": []
+  }
 ]

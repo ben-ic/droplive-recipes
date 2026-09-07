@@ -74,4 +74,4 @@ fi
 
 echo '[node-red-runtime] Starting Node-RED on port 1880 as UID 1000.'
 cd /usr/src/node-red
-exec ./entrypoint.sh
+exec /opt/worldfixture/bin/node /usr/src/node-red/worldfixture-launch.mjs
