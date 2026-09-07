@@ -56,7 +56,7 @@ try {
   if (!ready || stopping) throw new Error('Metabase did not become ready; see private startup.log');
   const properties = await api('/api/session/properties', undefined, 'GET');
   const identity = { email: 'maya@northstar-relay.droplive.test', password: process.env.METABASE_OWNER_PASSWORD };
-  if (properties['setup-token']) {
+  if (properties['has-user-setup'] !== true && properties['setup-token']) {
     session = (await api('/api/setup', { token: properties['setup-token'], user: { ...identity, first_name: 'Maya', last_name: 'Chen', site_name: 'Northstar Relay' },
       prefs: { site_name: 'Northstar Relay', site_locale: 'en', allow_tracking: false } })).id;
   } else {
