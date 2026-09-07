@@ -1,8 +1,10 @@
 version: 1
 kind: app
-tagline: "Cloud file manager"
-description: "Universal file manager for S3, FTP, SFTP, WebDAV and other storage backends"
+tagline: Cloud file manager
+description: Browse and edit files in a populated WorldFixture S3 store with Filestash.
 repository: https://github.com/mickael-kerjean/filestash
 run:
   port: 8334
-  health: /
+  data:
+    - /data
+  health: /healthz
