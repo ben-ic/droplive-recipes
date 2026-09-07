@@ -3,27 +3,7 @@ kind: app
 tagline: "Business intelligence"
 description: "Open source business intelligence tool that lets everyone query and chart data"
 repository: https://github.com/metabase/metabase
-# The company this demo is stocked with before the visitor arrives. Its data is
-# in the application's own store, so there is no emulator to hang it off.
-world: business.saas_company.v2
-run:
-  port: 3000
-  health: /api/health
-companions:
-  # Metabase reads its application database in parts, not as a single URL, and
-  # the seed points the demo's own reports back at this same server.
-  database:
-    type: postgres
-    bindings:
-      MB_DB_HOST: host
-      MB_DB_PORT: port
-      MB_DB_DBNAME: database
-      MB_DB_USER: username
-      MB_DB_PASS: password
 environment:
-  # Metabase has no owner until first-run setup creates one. The entrypoint runs
-  # that setup with this minted value and puts Maya on the sign-in card. Metabase
-  # refuses a password with no digit, which is what the pattern states.
   METABASE_OWNER_PASSWORD:
     owner: droplive
     format: password
@@ -31,3 +11,8 @@ environment:
     pattern: '^[A-Za-z0-9!@#$%^&*_-]*[0-9][A-Za-z0-9!@#$%^&*_-]*$'
     login:
       username: maya@northstar-relay.droplive.test
+run:
+  port: 3000
+  health: /healthz
+  data:
+    - /data
