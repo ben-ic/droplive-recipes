@@ -1,99 +1,41 @@
 {
-  "title": "Northstar Relay",
-  "description": "A small software company that automates large operational data exports, as of 21 August 2026. Four customers, one export incident holding a renewal, one release with a late decision in it, and an engineer starting on Monday.",
-  "license": "Synthetic demonstration data",
+  "title": "Northstar Relay — WorldFixture",
+  "description": "Synthetic company data from WorldFixture business.saas-company:v3. Fixed snapshot with authored dates in 2027. Money is stored in integer cents with its currency. Select a table or saved query to explore the company.",
+  "source": "WorldFixture 0.2.5",
+  "source_url": "https://worldfixture.com/",
   "databases": {
     "northstar": {
-      "description": "Everything the company knows about itself: its people and projects, the exports it runs for its customers, the money, and the conversation.",
-      "tables": {
-        "organizations": {
-          "description": "Northstar Relay, its four customers, and its two suppliers."
-        },
-        "people": {
-          "description": "Everyone at Northstar, and the contact at each customer and supplier."
-        },
-        "customers": {
-          "description": "The four subscriptions, what each one pays, and who to talk to."
-        },
-        "suppliers": {
-          "description": "Who Northstar buys from."
-        },
-        "projects": {
-          "description": "The four pieces of work in flight in late August."
-        },
-        "project_members": {
-          "description": "Who is on which project."
-        },
-        "tasks": {
-          "description": "Every task in those projects, with its status, owner and due date."
-        },
-        "time_entries": {
-          "description": "Time booked against a task."
-        },
-        "repositories": {
-          "description": "The three services the product is built from."
-        },
-        "issues": {
-          "description": "Open issues, including the export timeout behind the Lumen incident."
-        },
-        "support_cases": {
-          "description": "The two cases support is carrying."
-        },
-        "invoices": {
-          "description": "Twelve months of subscription billing."
-        },
-        "supplier_bills": {
-          "description": "Twelve months of compute and office costs."
-        },
-        "ledger_entries": {
-          "description": "The double-entry record behind every invoice, payment and bill."
-        },
-        "export_runs": {
-          "description": "Six months of export jobs -- the product's own operational record."
-        },
-        "calendar_events": {
-          "description": "The three meetings that decide this week."
-        },
-        "chat_messages": {
-          "description": "What the team said in general, lumen-renewal and release-2-8."
-        },
-        "email_messages": {
-          "description": "The mail behind the invoices and the incident."
-        },
-        "documents": {
-          "description": "The renewal brief and Theo's first-week plan."
-        }
-      },
+      "title": "Northstar Relay — WorldFixture",
+      "description": "Synthetic people, projects, finance, support, software, and communication from WorldFixture business.saas-company:v3. Fixed snapshot; source dates extend to 2027. Money is stored in integer cents with its currency. Timeline events are not applied.",
       "queries": {
-        "scheduled_export_timeouts": {
-          "title": "Scheduled exports that timed out",
-          "description": "Every scheduled run stopped by the legacy 120-second worker limit, newest first. This is the incident behind the Lumen Labs renewal.",
-          "sql": "select date(started_at) as day, customer_id, row_count, duration_s, failure_reason\nfrom export_runs\nwhere status = 'failed'\norder by started_at desc"
-        },
-        "export_volume_by_month": {
-          "title": "Export volume by customer, by month",
-          "description": "How much data each account moves, and how fast that is changing.",
-          "sql": "select substr(started_at, 1, 7) as month, customer_id,\n       count(*) as runs, sum(row_count) as rows_exported\nfrom export_runs\ngroup by 1, 2\norder by 1 desc, 4 desc"
-        },
         "open_work": {
           "title": "Open work, and who has it",
-          "description": "Every task that is not done, with the person carrying it.",
-          "sql": "select projects.name as project, tasks.title, tasks.status, tasks.priority,\n       assignee.name as assignee, tasks.due_on\nfrom tasks\njoin projects on projects.id = tasks.project_id\nleft join people as assignee on assignee.id = tasks.assignee_person_id\nwhere tasks.status != 'done'\norder by case tasks.priority when 'urgent' then 0 when 'high' then 1 else 2 end,\n         tasks.due_on"
+          "sql": "select projects.name as project, tasks.title, tasks.status, tasks.priority, people.name as assignee, tasks.due_on\nfrom tasks\njoin projects on projects.id = tasks.project_id\nleft\njoin people on people.id = tasks.assignee_id\nwhere tasks.status != 'done'\norder by case tasks.priority when 'urgent' then 0 when 'high' then 1 else 2 end, tasks.due_on"
         },
         "time_logged": {
           "title": "Time logged, by person",
-          "description": "Everything booked against a task, newest first.",
-          "sql": "select time_entries.date, people.name as person, tasks.title as task,\n       time_entries.minutes, time_entries.note\nfrom time_entries\njoin people on people.id = time_entries.person_id\njoin tasks on tasks.id = time_entries.task_id\norder by time_entries.date desc, people.name"
+          "sql": "select time_entries.date, people.name as person, tasks.title as task, time_entries.minutes, time_entries.note\nfrom time_entries\njoin people on people.id = time_entries.person_id\njoin tasks on tasks.id = time_entries.task_id\norder by time_entries.date desc, people.name"
         },
         "money_owed": {
           "title": "Invoices that are still open",
-          "description": "What has been billed and not yet paid.",
-          "sql": "select number, customer_id, description, issued_on, due_on, amount_usd, status\nfrom invoices\nwhere status != 'paid'\norder by due_on"
+          "sql": "select invoices.number, customers.name as customer, invoices.description, invoices.issued_on, invoices.due_on, invoices.amount_cents, invoices.currency, invoices.status\nfrom invoices\njoin customers on customers.id = invoices.customer_id\nwhere invoices.status != 'paid'\norder by invoices.due_on"
         },
         "monthly_books": {
-          "title": "Invoiced against supplier costs, by month",
-          "description": "Subscription billing next to what the company paid out.",
-          "sql": "select months.month,\n       (select round(sum(amount_usd), 2) from invoices\n         where substr(issued_on, 1, 7) = months.month) as invoiced,\n       (select round(sum(amount_usd), 2) from supplier_bills\n         where substr(issued_on, 1, 7) = months.month) as supplier_costs\nfrom (select distinct substr(issued_on, 1, 7) as month from invoices) as months\norder by months.month desc"
+          "title": "Invoices and supplier bills by month and currency",
+          "sql": "select substr(issued_on, 1, 7) as month, currency, sum(invoiced_cents) as invoiced_cents, sum(supplier_cost_cents) as supplier_cost_cents\nfrom (select issued_on, currency, amount_cents as invoiced_cents, 0 as supplier_cost_cents\nfrom invoices\nunion all select issued_on, currency, 0, amount_cents\nfrom supplier_bills)\ngroup by 1, 2\norder by 1 desc, 2"
+        },
+        "support_queue": {
+          "title": "Support cases and their owners",
+          "sql": "select support_cases.title, customers.name as customer, people.name as owner, support_cases.state, support_cases.priority, support_cases.next_action\nfrom support_cases\njoin customers on customers.id = support_cases.customer_id\nleft\njoin people on people.id = support_cases.owner_id\norder by support_cases.opened_at desc"
+        },
+        "recent_messages": {
+          "title": "Recent team messages",
+          "sql": "select chat_messages.timestamp, channels.name as channel, people.name as author, chat_messages.text\nfrom chat_messages\njoin channels on channels.id = chat_messages.channel_id\njoin people on people.id = chat_messages.author_id\norder by chat_messages.timestamp desc\nlimit 100"
+        }
+      },
+      "tables": {
+        "worldfixture_source": {
+          "description": "WorldFixture artifact identity and manifest SHA-256 used to build this database."
         }
       }
     }
