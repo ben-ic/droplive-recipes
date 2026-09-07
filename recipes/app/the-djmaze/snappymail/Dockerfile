@@ -5,7 +5,7 @@ FROM ghcr.io/ben-ic/worldfixture@sha256:de90b87caba05396b7570807fed2ae50d85e0f82
 # exposed ports. This app publishes only its webmail surface.
 FROM scratch
 COPY --from=worldfixture / /
-ENV DEBIAN_FRONTEND=noninteractive NODE_ENV=production PYTHONPATH=/opt/worldfixture/compiler WORLDFIXTURE_SINGLE_CONTAINER=1 WORLDFIXTURE_WORKBENCH_REVEAL_WEBHOOK_SECRETS=0
+ENV DEBIAN_FRONTEND=noninteractive NODE_ENV=production
 ARG DROPLIVE_SOURCE_COMMIT
 ARG DROPLIVE_SOURCE_TREE_SHA256
 ARG DROPLIVE_RUNTIME_CONTRACT_SHA256
