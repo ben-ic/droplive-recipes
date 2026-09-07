@@ -39,9 +39,10 @@ try {
       for (const record of starting.children) {
         const password = record.launch.environment.POSTGRES_PASSWORD;
         for (const stream of [record.child.stdout, record.child.stderr]) {
+          const output = stream === record.child.stderr ? process.stderr : process.stdout;
           createInterface({ input: stream }).on('line', line => {
             const safe = password ? line.replaceAll(password, '[REDACTED]') : line;
-            console.log(`[worldfixture postgres] ${safe}`);
+            output.write(`[worldfixture postgres] ${safe}\n`);
           });
         }
         record.child.on('exit', (code, signal) => {
