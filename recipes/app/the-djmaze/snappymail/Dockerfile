@@ -1,6 +1,11 @@
 # syntax=docker/dockerfile:1
 FROM docker.io/djmaze/snappymail@sha256:5e3d990438809a8a49f8ac5758db03e858e6e9fc0e369e1f9e474f7664079905 AS upstream
-FROM ghcr.io/ben-ic/worldfixture@sha256:de90b87caba05396b7570807fed2ae50d85e0f82ab302cfabc8ad1ed21d9d41e
+FROM ghcr.io/ben-ic/worldfixture@sha256:de90b87caba05396b7570807fed2ae50d85e0f82ab302cfabc8ad1ed21d9d41e AS worldfixture
+# Keep the pinned runtime filesystem, but do not inherit the full emulator's
+# exposed ports. This app publishes only its webmail surface.
+FROM scratch
+COPY --from=worldfixture / /
+ENV DEBIAN_FRONTEND=noninteractive NODE_ENV=production PYTHONPATH=/opt/worldfixture/compiler WORLDFIXTURE_SINGLE_CONTAINER=1 WORLDFIXTURE_WORKBENCH_REVEAL_WEBHOOK_SECRETS=0
 ARG DROPLIVE_SOURCE_COMMIT
 ARG DROPLIVE_SOURCE_TREE_SHA256
 ARG DROPLIVE_RUNTIME_CONTRACT_SHA256
