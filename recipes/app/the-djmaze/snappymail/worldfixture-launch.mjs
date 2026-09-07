@@ -32,7 +32,7 @@ try {
   const log = await open(`${state}/startup.log`, 'w', 0o600);
   console.log(`[worldfixture] Starting ${part}`);
   run(process.execPath, ['/opt/worldfixture/runtime/bin/worldfixture.mjs', 'up',
-    '--world-path', '/opt/worldfixture/dist/business.saas-company.v3',
+    '--world-path', '/opt/worldfixture/dist/business.saas-company.v2',
     '--service-root', '/opt/worldfixture/emulators', '--state', state,
     '--only', part, '--no-rebase', '--setup'], {
     env: { ...process.env, WORLDFIXTURE_SINGLE_CONTAINER: '1' },

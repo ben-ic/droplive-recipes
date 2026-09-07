@@ -16,10 +16,6 @@ USER root
 RUN apt-get update && apt-get install -y --no-install-recommends php8.2-cli php8.2-mbstring php8.2-xml php8.2-curl php8.2-zip && rm -rf /var/lib/apt/lists/*
 COPY --from=upstream /snappymail /snappymail
 RUN chown -R root:www-data /snappymail && chmod -R g+rX /snappymail
-# This mailbox is disposable and the entire session stops on provider failure.
-# Avoid disk synchronization for every temporary Cyrus index update while
-# seeding the full world. Keep the runtime's normal state and reset paths.
-RUN printf '\nskiplist_unsafe: 1\n' >> /etc/worldfixture-mail/imapd.conf
 COPY WORLDFIXTURE-NOTICE /usr/share/licenses/worldfixture/NOTICE
 COPY worldfixture-launch.mjs app-setup.mjs /opt/droplive/
 COPY setup.php router.php /opt/droplive/
