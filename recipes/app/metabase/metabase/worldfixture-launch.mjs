@@ -1,4 +1,5 @@
 import { spawn } from 'node:child_process';
+import { createInterface } from 'node:readline';
 import { mkdir, readFile, writeFile, rm } from 'node:fs/promises';
 import { loadManifests } from '/opt/worldfixture/runtime/src/manifests.mjs';
 import { resolveEnvironment } from '/opt/worldfixture/runtime/src/resolve.mjs';
@@ -18,8 +19,8 @@ async function stop(code) {
   await instance?.stop({ graceMs: 5000 });
   await rm(`${stateDir}/bindings.json`, { force: true });
 }
-process.on('SIGTERM', () => { void stop(0); });
-process.on('SIGINT', () => { void stop(0); });
+process.on('SIGTERM', () => { console.error('[worldfixture] Received SIGTERM'); void stop(0); });
+process.on('SIGINT', () => { console.error('[worldfixture] Received SIGINT'); void stop(0); });
 try {
   await mkdir(stateDir, { recursive: true });
   await rm(`${stateDir}/bindings.json`, { force: true });
@@ -32,7 +33,24 @@ try {
     target: { kind: 'none', identity: world.people.find(person => person.primary).id },
   }, { manifests: loadManifests(serviceRoot), artifactPath });
   console.log('[worldfixture] Starting PostgreSQL');
-  instance = await start(lock, { artifactPath, serviceRoot, stateDir, runner: 'process', readyTimeoutMs: 120000 });
+  instance = await start(lock, {
+    artifactPath, serviceRoot, stateDir, runner: 'process', readyTimeoutMs: 120000,
+    onSpawned(starting) {
+      for (const record of starting.children) {
+        const password = record.launch.environment.POSTGRES_PASSWORD;
+        for (const stream of [record.child.stdout, record.child.stderr]) {
+          createInterface({ input: stream }).on('line', line => {
+            const safe = password ? line.replaceAll(password, '[REDACTED]') : line;
+            console.log(`[worldfixture postgres] ${safe}`);
+          });
+        }
+        record.child.on('exit', (code, signal) => {
+          console.error(`[worldfixture] PostgreSQL exited: code=${code} signal=${signal}`);
+        });
+      }
+    },
+  });
+  console.log('[worldfixture] PostgreSQL is ready');
   if (stopping) { await instance.stop({ graceMs: 5000 }); process.exitCode = 1; }
   else {
     for (const record of instance.children) {
