@@ -14,7 +14,7 @@ $config->Set('webmail', 'title', 'Northstar mail');
 $config->Save();
 $d = \RainLoop\Model\Domain::fromArray($domain, [
     'IMAP' => ['host'=>$imapHost, 'port'=>(int)$imapPort, 'type'=>0, 'shortLogin'=>false],
-    'SMTP' => ['host'=>$smtpHost, 'port'=>(int)$smtpPort, 'type'=>0, 'shortLogin'=>false, 'useAuth'=>true],
+    'SMTP' => ['host'=>$smtpHost, 'port'=>(int)$smtpPort, 'type'=>0, 'shortLogin'=>false, 'useAuth'=>false],
     'Sieve' => ['enabled'=>false, 'host'=>'127.0.0.1', 'port'=>4190, 'type'=>0], 'whiteList'=>'',
 ]);
 $provider = new \RainLoop\Providers\Domain\DefaultDomain(APP_PRIVATE_DATA.'domains');
