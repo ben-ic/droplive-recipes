@@ -3,9 +3,17 @@ kind: app
 tagline: "Low-code event flows"
 description: "Low-code programming for event-driven applications"
 repository: https://github.com/node-red/node-red
-# The company whose automations this demo carries. Its data is in the flows
-# file the image ships, so there is no emulator to hang it off.
-world: business.saas_company.v2
+# WorldFixture's pinned provider runtime and world are included in the image.
+environment:
+  NODE_RED_ADMIN_PASSWORD:
+    owner: droplive
+    format: password
+    login:
+      username: admin
+  NODE_RED_CREDENTIAL_SECRET:
+    owner: droplive
+    format: hex
+    length: 96
 run:
   port: 1880
   data:
