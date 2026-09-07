@@ -18,4 +18,6 @@ The native arm64 image built. Sign-in reached the populated dashboard and opened
 
 The first local runs stopped because the adapter tried to parse an empty successful Metabase API response as JSON. The adapter now accepts an empty success response. These runs also showed why readiness must include dashboard setup, not just Metabase's health response.
 
+A restart check found that Metabase retains a setup token after the owner exists. The adapter now checks `has-user-setup` before choosing setup or login. The corrected restart reached readiness with the saved dashboard, and the all-table data/rollback check passed again.
+
 The local test uses the final app source mounted over a built pinned image. Public development sandbox review, exact-version sign-off, production release, and production browser review remain required.
