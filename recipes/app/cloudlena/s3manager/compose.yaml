@@ -1,0 +1,8 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      # Publish the embedded workbench through DropLive's session-service link.
+      DROPLIVE_WORKBENCH_PORT: "4715"

@@ -14,3 +14,9 @@ CLI 0.2.5 cannot select Notion by name. The launcher therefore uses the pinned i
 Local browser runs of both flows and independent API readback passed. A fresh second instance did not contain the first instance's writes. Runtime syntax checks pass. The current recipe lint has 57 existing errors elsewhere; this change removes Node-RED's stale world-reference error. Public sandbox review and production release remain required.
 
 Known limit: seeded Notion page URL strings are malformed in this WorldFixture pin. These flows use page IDs and do not open those URLs. Timeline events, OAuth, webhooks, full pagination, and reset during an active app session have not been tested.
+
+## Workbench
+
+`compose.yaml` declares the non-secret `DROPLIVE_WORKBENCH_PORT=4715` runtime literal. DropLive uses that explicit declaration to show **Open workbench** under the session services, on a separate hostname in the same guest. It does not change old recipes that omit the declaration.
+
+This adapter also imports `startWorkbench` from `/opt/worldfixture/runtime/src/workbench.mjs` and attaches it to the same running GitHub, Slack, and Notion instance. It closes the workbench when the app stops. The clock remains paused as before; the workbench has no scheduler timeline from this direct-runtime adapter. Local amd64 image build, workbench overview, and populated GitHub view passed. Updated Firecracker and production browser review remain pending.

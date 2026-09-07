@@ -3,13 +3,14 @@ import { mkdir, readFile, writeFile, rm } from 'node:fs/promises';
 import { loadManifests } from '/opt/worldfixture/runtime/src/manifests.mjs';
 import { resolveEnvironment } from '/opt/worldfixture/runtime/src/resolve.mjs';
 import { start } from '/opt/worldfixture/runtime/src/supervisor.mjs';
+import { startWorkbench } from '/opt/worldfixture/runtime/src/workbench.mjs';
 
 const artifactPath = '/opt/worldfixture/dist/business.saas-company.v3';
 const serviceRoot = '/opt/worldfixture/emulators';
 const stateDir = '/data/worldfixture';
 // Provider manifests execute `node`. Node-RED retains its original executable.
 process.env.PATH = `/opt/worldfixture/bin:${process.env.PATH}`;
-let instance, app, stopping = false;
+let instance, workbench, app, stopping = false;
 
 async function stop(code) {
   if (stopping) return;
@@ -18,6 +19,7 @@ async function stop(code) {
   app?.kill('SIGTERM');
   const deadline = setTimeout(() => app?.kill('SIGKILL'), 10000);
   deadline.unref();
+  await workbench?.close();
   await instance?.stop({ graceMs: 5000 });
   await rm(`${stateDir}/bindings.json`, { force: true });
 }
@@ -48,6 +50,10 @@ try {
     record.child.on('exit', () => { void stop(1); });
     if (record.exited) throw new Error(`WorldFixture ${record.service} stopped`);
   }
+  workbench = await startWorkbench(instance, {
+    artifactPath, stateDir, host: '0.0.0.0',
+    port: Number(process.env.DROPLIVE_WORKBENCH_PORT || 4715),
+  });
   const bindings = instance.bindings();
   bindings.GITHUB_ORGANIZATION = world.people.find(person => person.primary).organization_id;
   for (const name of Object.keys(profiles)) {
