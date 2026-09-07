@@ -1,3 +1,6 @@
+# WorldFixture 0.2.5 supplies the reviewed data at build time only.
+FROM ghcr.io/ben-ic/worldfixture@sha256:de90b87caba05396b7570807fed2ae50d85e0f82ab302cfabc8ad1ed21d9d41e AS world
+
 FROM docker.io/datasetteproject/datasette@sha256:0f57db16cf4eb6cca57f1cedaa0a696bca1c65a1d75b8f7ee372c2dd909a32a0
 
 ARG DROPLIVE_SOURCE_COMMIT
@@ -8,14 +11,16 @@ LABEL org.opencontainers.image.revision="${DROPLIVE_SOURCE_COMMIT}" \
       org.droplive.source.tree.sha256="${DROPLIVE_SOURCE_TREE_SHA256}" \
       org.droplive.runtime.contract.sha256="${DROPLIVE_RUNTIME_CONTRACT_SHA256}"
 
-# Datasette explores a database it is given. This one is the Northstar Relay
-# company, built here from one SQL script rather than shipped as a binary blob,
-# so what the demo serves is reviewable in the recipe. SQLite is in the image's
-# own Python, so nothing is installed to do it.
-COPY seed/northstar.sql /tmp/northstar.sql
+# Build from verified neutral packs with the Python already in Datasette.
+# No WorldFixture service or application data runs outside the session.
+COPY --from=world /opt/worldfixture/dist/business.saas-company.v3/manifest.json /tmp/worldfixture/manifest.json
+COPY --from=world /opt/worldfixture/dist/business.saas-company.v3/packs /tmp/worldfixture/packs
+COPY --from=world /usr/share/licenses/worldfixture/LICENSE /usr/share/licenses/worldfixture/LICENSE
+COPY seed/WORLDFIXTURE-NOTICE /usr/share/licenses/worldfixture/NOTICE
+COPY seed/worldfixture.py /tmp/worldfixture.py
 COPY --chmod=0444 seed/metadata.json /usr/local/lib/droplive-datasette-metadata.json
-RUN python3 -c "import sqlite3; db = sqlite3.connect('/usr/local/lib/northstar.db'); db.executescript(open('/tmp/northstar.sql').read()); db.commit(); db.close()" \
-    && rm -f /tmp/northstar.sql \
+RUN python3 /tmp/worldfixture.py /tmp/worldfixture /usr/local/lib/northstar.db \
+    && rm -rf /tmp/worldfixture /tmp/worldfixture.py \
     && chmod 0444 /usr/local/lib/northstar.db
 
 EXPOSE 8001
@@ -26,7 +31,7 @@ EXPOSE 8001
 # empty instance the visitor has to find data for.
 #
 # --immutable is the honest declaration: the file is read-only, and it lets
-# Datasette cache row counts instead of recounting half a million rows a page.
+# Datasette cache row counts for the fixed snapshot.
 CMD ["datasette", "serve", "--host", "0.0.0.0", "--port", "8001", \
      "--metadata", "/usr/local/lib/droplive-datasette-metadata.json", \
      "--immutable", "/usr/local/lib/northstar.db"]
